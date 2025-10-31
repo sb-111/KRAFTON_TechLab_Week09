@@ -51,6 +51,18 @@ void UScriptComponent::EndPlay(EEndPlayReason Reason)
 	Super::EndPlay(Reason);
 }
 
+void UScriptComponent::OnSerialized()
+{
+	Super::OnSerialized();
+
+	// 씬 로드 후 스크립트 파일 경로가 복원되었으면 스크립트 로드
+	if (!ScriptFilePath.empty() && !bScriptLoaded)
+	{
+		LoadScript(ScriptFilePath);
+		UE_LOG("[ScriptComponent] Script loaded from serialization: %s", ScriptFilePath.c_str());
+	}
+}
+
 void UScriptComponent::InitializeEnvironment()
 {
 	if (bEnvironmentInitialized) return;

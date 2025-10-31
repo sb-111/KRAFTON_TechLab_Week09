@@ -482,6 +482,9 @@ void UMainToolbarWidget::OnNewScene()
         CurrentWorld->GetLightManager()->ClearAllLightList();
         CurrentWorld->SetLevel(ULevelService::CreateNewLevel());
 
+        // 씬 이름 초기화
+        CurrentWorld->SetSceneName("Untitled");
+
         UE_LOG("MainToolbar: New scene created");
     }
     catch (const std::exception& Exception)

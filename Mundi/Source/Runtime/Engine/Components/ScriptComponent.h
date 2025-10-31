@@ -68,12 +68,26 @@ public:
 	void LoadScript(const FString& FilePath);
 
 	/**
+	 * @brief 스크립트가 로드되었는지 확인합니다.
+	 * @return 스크립트 파일이 설정되어 있으면 true
+	 */
+	bool HasScriptFile() const { return !ScriptFilePath.empty(); }
+
+	/**
 	 * @brief 현재 스크립트를 다시 로드합니다 (Hot Reload).
 	 * @details 기존 Lua 환경을 초기화하고 스크립트 파일을 다시 읽어옵니다.
 	 * 게임이 실행 중이라면 'BeginPlay' 함수를 다시 호출하여 변경 사항을 즉시 적용합니다.
 	 */
 	void ReloadScript();
 
+protected:
+	/**
+	 * @brief 직렬화가 완료된 후 호출됩니다.
+	 * @details 씬 로드 시 ScriptFilePath가 복원된 후 스크립트를 자동으로 로드합니다.
+	 */
+	void OnSerialized() override;
+
+public:
 	// Lua 함수 호출 헬퍼
 	/**
 	 * @brief 스크립트 내에 정의된 Lua 함수를 안전하게 호출합니다.

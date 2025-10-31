@@ -552,10 +552,25 @@ void UTargetActorTransformWidget::RenderSelectedActorDetails(AActor* SelectedAct
 		for (UScriptComponent* ScriptComp : ScriptComponents)
 		{
 			ImGui::PushID(ScriptComp); // 각 컴포넌트 UI에 고유 ID 부여
-	
-			// Script Comp가 Lua 파일 경로를 가지고 있는지 확인 (Script Comp가 소유한 파일네임)
-			bool bFileExists = !ScriptComp->ScriptFilePath.empty() && std::filesystem::exists(ScriptComp->ScriptFilePath.c_str());
-	
+
+			// Script Comp가 Lua 파일 경로를 가지고 있는지 확인
+			bool bHasScriptPath = ScriptComp->HasScriptFile();
+			bool bFileExists = false;
+
+			if (bHasScriptPath)
+			{
+				// 절대 경로로 변환해서 파일 존재 확인
+				std::filesystem::path AbsPath = std::filesystem::absolute(ScriptComp->ScriptFilePath.c_str());
+				bFileExists = std::filesystem::exists(AbsPath);
+
+				// 디버깅용 로그
+				if (!bFileExists)
+				{
+					UE_LOG("[ScriptUI] File not found - Relative: %s, Absolute: %s",
+						ScriptComp->ScriptFilePath.c_str(), AbsPath.string().c_str());
+				}
+			}
+
 			ImGui::Text("Script File:");
 			ImGui::SameLine();
 	
