@@ -2,6 +2,7 @@
 #include "MeshComponent.h"
 #include "Enums.h"
 #include "AABB.h"
+#include "Delegate.h"
 
 class UStaticMesh;
 class UShader;
@@ -44,6 +45,9 @@ public:
 
 	void DuplicateSubObjects() override;
 	DECLARE_DUPLICATE(UStaticMeshComponent)
+	//DECLARE_MULTICAST_DELEGATE(OnRight, float);
+
+	//void TickComponent(float DeltaTime) override;
 
 protected:
 	void OnTransformUpdated() override;

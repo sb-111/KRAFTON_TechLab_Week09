@@ -34,6 +34,9 @@ public:
 	virtual void DuplicateSubObjects() override;
 	DECLARE_DUPLICATE(UPointLightComponent)
 
+	//void BeginPlay() override;
+	//void MoveUp(float Delta);
+
 protected:
 	float SourceRadius = 0.0f; // 광원 반경
 };

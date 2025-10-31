@@ -460,9 +460,11 @@
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="Source\Editor\Clipboard\ClipboardManager.h" />
+    <ClInclude Include="Source\Runtime\Core\Memory\WeakPtr.h" />
+    <ClInclude Include="Source\Runtime\Core\Misc\Delegate.h" />
     <ClInclude Include="Source\Runtime\Core\Misc\DelegateBinding.h" />
     <ClInclude Include="Source\Runtime\Core\Misc\DynamicBinding.h" />
-    <ClInclude Include="Source\Runtime\Core\Misc\MultiCastDelegate.h" />
+    <ClInclude Include="Source\Runtime\Core\Misc\MultiCastDelegateImproved.h" />
     <ClInclude Include="Source\Runtime\Core\Misc\PathUtils.h" />
     <ClInclude Include="Source\Runtime\Core\Object\Property.h" />
     <ClInclude Include="Source\Runtime\Engine\Components\MovementComponent.h" />

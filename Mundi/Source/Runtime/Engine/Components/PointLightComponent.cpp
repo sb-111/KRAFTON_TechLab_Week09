@@ -1,6 +1,9 @@
 ﻿#include "pch.h"
 #include "PointLightComponent.h"
 #include "BillboardComponent.h"
+#include "Delegate.h"
+#include "ObjectIterator.h"
+#include "StaticMeshComponent.h"
 
 IMPLEMENT_CLASS(UPointLightComponent)
 
@@ -158,3 +161,23 @@ void UPointLightComponent::DuplicateSubObjects()
 {
 	Super::DuplicateSubObjects();
 }
+
+//void UPointLightComponent::BeginPlay()
+//{
+//	bHasBegunPlay = true;
+//	for (TObjectIterator<UStaticMeshComponent> It; It; ++It)
+//	{
+//		UStaticMeshComponent* StaticMeshComponent = *It;
+//		if (StaticMeshComponent)
+//		{
+//			StaticMeshComponent->OnRight.AddDynamic(this, &UPointLightComponent::MoveUp);
+//		}
+//	}
+//}
+//
+//void UPointLightComponent::MoveUp(float Delta)
+//{
+//	FVector Location = GetRelativeLocation();
+//	Location.Y += Delta * 1;
+//	SetRelativeLocation(Location);
+//}
