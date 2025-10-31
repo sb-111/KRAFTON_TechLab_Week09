@@ -524,6 +524,9 @@ void UMainToolbarWidget::OnSaveScene()
         CurrentWorld->GetLevel()->Serialize(false, LevelJson);
         bool bSuccess = FJsonSerializer::SaveJsonToFile(LevelJson, FilePath);
 
+        // Update World's scene name for script file naming
+        CurrentWorld->SetSceneName(SceneName);
+
         UE_LOG("MainToolbar: Scene saved: %s", SceneName.c_str());
     }
     catch (const std::exception& Exception)
@@ -563,6 +566,9 @@ void UMainToolbarWidget::OnLoadScene()
             UE_LOG("MainToolbar: Cannot find World!");
             return;
         }
+
+        // Update World's scene name for script file naming
+        CurrentWorld->SetSceneName(SceneName);
 
         // 로드 직전: Transform 위젯/선택 초기화
         UUIManager::GetInstance().ClearTransformWidgetSelection();

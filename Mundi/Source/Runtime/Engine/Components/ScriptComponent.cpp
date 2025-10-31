@@ -9,6 +9,7 @@ IMPLEMENT_CLASS(UScriptComponent)
 
 BEGIN_PROPERTIES(UScriptComponent)
 	MARK_AS_COMPONENT("스크립트 컴포넌트", "액터에 Lua 스크립트를 연결하여 실행합니다.")
+	ADD_PROPERTY(FString, ScriptFilePath, "Script", false, "Path to the Lua script file")
 END_PROPERTIES()
 
 

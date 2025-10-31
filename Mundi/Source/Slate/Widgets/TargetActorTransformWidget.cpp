@@ -553,6 +553,7 @@ void UTargetActorTransformWidget::RenderSelectedActorDetails(AActor* SelectedAct
 		{
 			ImGui::PushID(ScriptComp); // 각 컴포넌트 UI에 고유 ID 부여
 	
+			// Script Comp가 Lua 파일 경로를 가지고 있는지 확인 (Script Comp가 소유한 파일네임)
 			bool bFileExists = !ScriptComp->ScriptFilePath.empty() && std::filesystem::exists(ScriptComp->ScriptFilePath.c_str());
 	
 			ImGui::Text("Script File:");
@@ -561,13 +562,14 @@ void UTargetActorTransformWidget::RenderSelectedActorDetails(AActor* SelectedAct
 			FString DisplayPath;
 			if (bFileExists)
 			{
+				// Lua 파일이 존재하면 위젯에 파일명 표시
 				DisplayPath = ScriptComp->ScriptFilePath;
 				ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), "%s", DisplayPath.c_str());
 			}
 			else
 			{
-				// 파일이 없으면 제안 경로를 생성
-				FString SceneName = SelectedActor->GetWorld() ? SelectedActor->GetWorld()->GetName() : "Scene";
+				// Lua 파일이 없으면 제안 경로(임시)를 생성해서 위젯에 파일명 표시
+				FString SceneName = SelectedActor->GetWorld() ? SelectedActor->GetWorld()->GetSceneName() : "Untitled";
 				FString ActorName = SelectedActor->GetName().ToString();
 				DisplayPath = "Scripts/" + SceneName + "_" + ActorName + "_" + std::to_string(ScriptIndex) + ".lua";
 				ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1.0f), "%s (proposed)", DisplayPath.c_str());
@@ -602,14 +604,32 @@ void UTargetActorTransformWidget::RenderSelectedActorDetails(AActor* SelectedAct
 			}
 			else
 			{
-				// Create Script 버튼
+				// Create Script 버튼 (스크립트가 없는 경우)
+				// 씬이 저장되지 않았으면 버튼 비활성화
+				bool bSceneSaved = SelectedActor->GetWorld() &&
+				                   SelectedActor->GetWorld()->GetSceneName() != "Untitled";
+
+				if (!bSceneSaved)
+				{
+					ImGui::BeginDisabled();
+				}
+
 				if (ImGui::Button("Create Script", ImVec2(150, 0)))
 				{
 					// 제안된 경로로 스크립트 생성
 					ScriptComp->CreateScript(DisplayPath);
 					UE_LOG("[UI] Script created: %s", ScriptComp->ScriptFilePath.c_str());
 				}
-				if (ImGui::IsItemHovered())
+
+				if (!bSceneSaved)
+				{
+					ImGui::EndDisabled();
+					if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
+					{
+						ImGui::SetTooltip("Please save the scene first before creating scripts");
+					}
+				}
+				else if (ImGui::IsItemHovered())
 				{
 					ImGui::SetTooltip("Create a new Lua script from template.lua");
 				}

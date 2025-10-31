@@ -104,6 +104,10 @@ public:
     // Lua State accessor
     sol::state& GetLuaState() { return LuaState; }
 
+    // Scene name tracking
+    void SetSceneName(const FString& InSceneName) { CurrentSceneName = InSceneName; }
+    const FString& GetSceneName() const { return CurrentSceneName; }
+
     // PIE용 World 생성
     static UWorld* DuplicateWorldForPIE(UWorld* InEditorWorld);
 
@@ -140,6 +144,9 @@ private:
     * UWorld 파괴 시 VM 함께 파괴
     */
     sol::state LuaState;
+
+    // Scene name (set when saving/loading)
+    FString CurrentSceneName = "Untitled";
 };
 
 template<class T>
