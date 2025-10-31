@@ -1,0 +1,29 @@
+*** Begin Patch
+*** Update File: Mundi/Source/Slate/StatsOverlayD2D.cpp
+@@
+-    if (Format)
+-    {
+-        Format->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
+-        Format->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
+-        InD2dCtx->DrawTextW(
+-            InText,
+-            static_cast<UINT32>(wcslen(InText)),
+-            Format,
+-            InRect,
+-            BrushText);
+-        Format->Release();
+-    }
++    if (Format)
++    {
++        Format->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
++        Format->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
++        Format->SetWordWrapping(DWRITE_WORD_WRAPPING_WRAP);
++        InD2dCtx->DrawTextW(
++            InText,
++            static_cast<UINT32>(wcslen(InText)),
++            Format,
++            InRect,
++            BrushText);
++        Format->Release();
++    }
+*** End Patch

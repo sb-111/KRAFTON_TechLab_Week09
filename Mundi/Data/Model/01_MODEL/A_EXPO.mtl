@@ -1,0 +1,180 @@
+newmtl SU_COLOR
+Kd 0.502 0.502 0.502
+Ke 0 0 0
+Ka 1 1 1
+Ks 0 0 0
+Ns 500
+Tr 0
+d 1
+Ni 1.5
+Tf 1 1 1
+map_Kd 02_TEXTURE/T_ATLAS_01_A.png
+
+newmtl SU_GROUND_02
+Kd 0.502 0.502 0.502
+Ke 0 0 0
+Ka 1 1 1
+Ks 0 0 0
+Ns 500
+Tr 0
+d 1
+Ni 1.5
+Tf 1 1 1
+map_Kd 02_TEXTURE/T_GROUND_02_A.jpg
+
+newmtl SU_ROOF_05
+Kd 0.502 0.502 0.502
+Ke 0 0 0
+Ka 1 1 1
+Ks 0 0 0
+Ns 500
+Tr 0
+d 1
+Ni 1.5
+Tf 1 1 1
+map_Kd 02_TEXTURE/T_ROOF_05_A.jpg
+
+newmtl SU_WALL_03
+Kd 0.502 0.502 0.502
+Ke 0 0 0
+Ka 1 1 1
+Ks 0 0 0
+Ns 500
+Tr 0
+d 1
+Ni 1.5
+Tf 1 1 1
+map_Kd 02_TEXTURE/T_WALL_17_A.jpg
+
+newmtl SU_COLOR
+Kd 0.502 0.502 0.502
+Ke 0 0 0
+Ka 1 1 1
+Ks 0 0 0
+Ns 500
+Tr 0
+d 1
+Ni 1.5
+Tf 1 1 1
+map_Kd 02_TEXTURE/T_ATLAS_01_A.png
+
+newmtl SU_GROUND_01
+Kd 0.502 0.502 0.502
+Ke 0 0 0
+Ka 1 1 1
+Ks 0 0 0
+Ns 500
+Tr 0
+d 1
+Ni 1.5
+Tf 1 1 1
+map_Kd 02_TEXTURE/T_GROUND_25_A.JPG
+
+newmtl SU_GROUND_02
+Kd 0.502 0.502 0.502
+Ke 0 0 0
+Ka 1 1 1
+Ks 0 0 0
+Ns 500
+Tr 0
+d 1
+Ni 1.5
+Tf 1 1 1
+map_Kd 02_TEXTURE/T_GROUND_02_A.jpg
+
+newmtl SU_ROOF_01
+Kd 0.502 0.502 0.502
+Ke 0 0 0
+Ka 1 1 1
+Ks 0 0 0
+Ns 500
+Tr 0
+d 1
+Ni 1.5
+Tf 1 1 1
+map_Kd 02_TEXTURE/T_ROOF_03_A.jpg
+
+newmtl SU_ROOF_02
+Kd 0.502 0.502 0.502
+Ke 0 0 0
+Ka 1 1 1
+Ks 0 0 0
+Ns 500
+Tr 0
+d 1
+Ni 1.5
+Tf 1 1 1
+map_Kd 02_TEXTURE/T_ROOF_04_A.jpg
+
+newmtl SU_ROOF_05
+Kd 0.502 0.502 0.502
+Ke 0 0 0
+Ka 1 1 1
+Ks 0 0 0
+Ns 500
+Tr 0
+d 1
+Ni 1.5
+Tf 1 1 1
+map_Kd 02_TEXTURE/T_ROOF_05_A.jpg
+
+newmtl SU_WALL_01
+Kd 0.502 0.502 0.502
+Ke 0 0 0
+Ka 1 1 1
+Ks 0 0 0
+Ns 500
+Tr 0
+d 1
+Ni 1.5
+Tf 1 1 1
+map_Kd 02_TEXTURE/T_WALL_01_A.jpg
+
+newmtl SU_WALL_02
+Kd 0.502 0.502 0.502
+Ke 0 0 0
+Ka 1 1 1
+Ks 0 0 0
+Ns 500
+Tr 0
+d 1
+Ni 1.5
+Tf 1 1 1
+map_Kd 02_TEXTURE/T_GROUND_14_SNOW_A.jpg
+
+newmtl SU_WALL_03
+Kd 0.502 0.502 0.502
+Ke 0 0 0
+Ka 1 1 1
+Ks 0 0 0
+Ns 500
+Tr 0
+d 1
+Ni 1.5
+Tf 1 1 1
+map_Kd 02_TEXTURE/T_WALL_17_A.jpg
+
+newmtl SU_COLOR
+Kd 0.502 0.502 0.502
+Ke 0 0 0
+Ka 1 1 1
+Ks 0 0 0
+Ns 500
+Tr 0
+d 1
+Ni 1.5
+Tf 1 1 1
+map_Kd 02_TEXTURE/T_ATLAS_01_A.png
+
+newmtl SU_WALL_03
+Kd 0.502 0.502 0.502
+Ke 0 0 0
+Ka 1 1 1
+Ks 0 0 0
+Ns 500
+Tr 0
+d 1
+Ni 1.5
+Tf 1 1 1
+map_Kd 02_TEXTURE/T_WALL_17_A.jpg
+
