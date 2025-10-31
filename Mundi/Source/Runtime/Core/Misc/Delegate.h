@@ -1,109 +1,112 @@
 ﻿#pragma once
-#include "UEContainer.h"
+#include "DelegateBinding.h"
+#include "StaticBinding.h"
+#include "DynamicBinding.h"
+#include "LambdaBinding.h"
 
 #define DECLARE_DELEGATE(Name, ...) TDelegate<__VA_ARGS__> Name
-#define DECLARE_MULTICAST_DELEGATE(Name, ...) TMultiCastDelegate<__VA_ARGS__> Name
-
-
-struct FBindingHandle
-{
-    uint32 ID = -1;
-
-    FBindingHandle()
-        :ID(-1) {
-    }
-    FBindingHandle(uint32 InID)
-        :ID(InID) {
-    }
-    bool operator==(const FBindingHandle& InOther)
-    {
-        return ID == InOther.ID;
-    }
-};
 
 
 template<typename... Args>
 class TDelegate
 {
 public:
-    using HandlerType = std::function<void(Args...)>;
+    using LambdaType = std::function<void(Args...)>;
+    using StaticType = void(*)(Args...);
 
-
-    void Bind(const HandlerType& InHandler)
+    ~TDelegate()
     {
-        Handler = InHandler;
+        ClearBinding();
+    }
+    
+    void BindStatic(StaticType InFunction)
+    {
+        ClearBinding();
+        Binding = new FStaticBinding(FBindingHandle(0), InFunction);
     }
    
-
+    void BindLambda(LambdaType InFunction)
+    {
+        ClearBinding();
+        Binding = new FLambdaBinding(FBindingHandle(0), InFunction);
+    }
     // 클래스 멤버 함수 바인딩
     template<typename T>
-    void BindDynamic(T* Instance, void (T::* Func)(Args...))
+    void BindDynamic(T* Instance, void (T::* InFunction)(Args...) )
     {
-        Bind(HandlerType([Instance, Func](Args... InArgs) {
-            (Instance->*Func)(InArgs...);
-            }));
+        ClearBinding();
+        Binding = new FDynamicBinding(FBindingHandle(0), Instance, InFunction);
+
     }
 
     void UnBind()
     {
-        Handler = nullptr;
+        ClearBinding();
     }
 
     void Execute(Args... InArgs)
     {
-        if (Handler)
+        if (Binding && Binding->IsValid())
         {
-            Handler(InArgs...);
+            Binding->Execute(InArgs);
         }
     }
 private:
-    HandlerType Handler = nullptr;
+    IDelegateBinding<Args...>* Binding = nullptr;
 
-};
-
-template<typename... Args>
-class TMultiCastDelegate
-{
-public:
-    using HandlerType = std::function<void(Args...)>;
-    // 일반 함수나 람다 등록
-    FBindingHandle Add(const HandlerType& Handler)
+    void ClearBinding()
     {
-        Handlers.Add(Handler);
-        FBindingHandle Handle{ HandlerIndex++ };
-        return Handle;
-    }
-
-    // 클래스 멤버 함수 바인딩
-    template<typename T>
-    FBindingHandle AddDynamic(T* Instance, void (T::* Func)(Args...))
-    {
-        Add(HandlerType([Instance, Func](Args... InArgs) {
-            (Instance->*Func)(InArgs...);
-            }));
-        FBindingHandle Handle{ HandlerIndex++ };
-        return Handle;
-    }
-
-    void UnBind(FBindingHandle Handle)
-    {
-        Handlers[Handle.ID] = nullptr;
-    }
-
-    void Broadcast(Args... InArgs)
-    {
-        for (HandlerType Handler : Handlers)
+        if (Binding)
         {
-            if (Handler)
-            {
-                Handler(InArgs...);
-            }
+            delete Binding;
+            Binding = nullptr;
         }
     }
-
-private:
-    TArray<HandlerType> Handlers;
-    //핸들러 삭제를 고려하지 않음. MultiCastDelegateImproved에서 바인딩 객체를 만들고 핸들러 동적 관리할 것임.
-    uint32 HandlerIndex = 0;
-
 };
+
+//template<typename... Args>
+//class TMultiCastDelegate
+//{
+//public:
+//    using HandlerType = std::function<void(Args...)>;
+//    // 일반 함수나 람다 등록
+//    FBindingHandle Add(const HandlerType& Handler)
+//    {
+//        Handlers.Add(Handler);
+//        FBindingHandle Handle{ HandlerIndex++ };
+//        return Handle;
+//    }
+//
+//    // 클래스 멤버 함수 바인딩
+//    template<typename T>
+//    FBindingHandle AddDynamic(T* Instance, void (T::* Func)(Args...))
+//    {
+//        Add(HandlerType([Instance, Func](Args... InArgs) {
+//            (Instance->*Func)(InArgs...);
+//            }));
+//        FBindingHandle Handle{ HandlerIndex++ };
+//        return Handle;
+//    }
+//
+//    void UnBind(FBindingHandle Handle)
+//    {
+//        Handlers[Handle.ID] = nullptr;
+//    }
+//
+//    void Broadcast(Args... InArgs)
+//    {
+//        for (HandlerType Handler : Handlers)
+//        {
+//            if (Handler)
+//            {
+//                Handler(InArgs...);
+//            }
+//        }
+//    }
+//
+//private:
+//    TArray<HandlerType> Handlers;
+//    //핸들러 삭제를 고려하지 않음. MultiCastDelegateImproved에서 바인딩 객체를 만들고 핸들러 동적 관리할 것임.
+//    uint32 HandlerIndex = 0;
+//
+//};

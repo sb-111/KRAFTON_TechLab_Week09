@@ -2,6 +2,7 @@
 #include "PointLightComponent.h"
 #include "BillboardComponent.h"
 #include "Delegate.h"
+#include "MultiCastDelegate.h"
 #include "ObjectIterator.h"
 #include "StaticMeshComponent.h"
 
@@ -162,17 +163,29 @@ void UPointLightComponent::DuplicateSubObjects()
 	Super::DuplicateSubObjects();
 }
 
+// 델리게이트 테스트
 //void UPointLightComponent::BeginPlay()
 //{
 //	bHasBegunPlay = true;
 //	for (TObjectIterator<UStaticMeshComponent> It; It; ++It)
 //	{
 //		UStaticMeshComponent* StaticMeshComponent = *It;
-//		if (StaticMeshComponent)
+//		
+//		if (StaticMeshComponent && StaticMeshComponent->GetOwner() && StaticMeshComponent->GetOwner()->GetWorld()->bPie)
 //		{
-//			StaticMeshComponent->OnRight.AddDynamic(this, &UPointLightComponent::MoveUp);
+//			BroadCasters.Add(StaticMeshComponent);
+//			BindingHandles.Add(StaticMeshComponent->OnRight.AddDynamic(this, &UPointLightComponent::MoveUp));
 //		}
 //	}
+//}
+//
+//void UPointLightComponent::EndPlay(EEndPlayReason Reason)
+//{
+//	/*for (UStaticMeshComponent* BroadCaster : BroadCasters)
+//	{
+//		int Index = 0;
+//		BroadCaster->OnRight.Remove(BindingHandles[Index++]);
+//	}*/
 //}
 //
 //void UPointLightComponent::MoveUp(float Delta)

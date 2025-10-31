@@ -879,7 +879,13 @@
     <ClInclude Include="Source\Runtime\Core\Memory\WeakPtr.h">
       <Filter>Source\Runtime\Core\Memory</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Runtime\Core\Misc\MultiCastDelegateImproved.h">
+    <ClInclude Include="Source\Runtime\Core\Misc\MultiCastDelegate.h">
+      <Filter>Source\Runtime\Core\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\Core\Misc\LambdaBinding.h">
+      <Filter>Source\Runtime\Core\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\Core\Misc\StaticBinding.h">
       <Filter>Source\Runtime\Core\Misc</Filter>
     </ClInclude>
   </ItemGroup>
