@@ -63,6 +63,7 @@ void UWorld::Initialize()
 
 	InitializeGrid();
 	InitializeGizmo();
+	InitializeLuaState();
 }
 
 void UWorld::InitializeGrid()
@@ -82,6 +83,77 @@ void UWorld::InitializeGizmo()
 		FVector{ 1, 1, 1 }));
 
 	EditorActors.push_back(GizmoActor);
+}
+
+void UWorld::InitializeLuaState()
+{
+	// Lua 표준 라이브러리 로드
+	LuaState.open_libraries(sol::lib::base, sol::lib::math, sol::lib::string, sol::lib::table, sol::lib::coroutine);
+
+	// FVector 바인딩 (설계도 등록)
+	LuaState.new_usertype<FVector>("Vector", // Lua에서 사용할 타입 이름
+		// 생성자 바인딩: Lua에서 Vector(1, 2, 3) 처럼 호출 가능
+		sol::constructors<FVector(), FVector(float, float, float)>(),
+		// 멤버 변수 바인딩: Lua에서 vec.x = 10처럼 접근 가능
+		"x", &FVector::X,
+		"y", &FVector::Y,
+		"z", &FVector::Z,
+		// 연산자 오버로딩: Lua에서 vec1 +- vec2 가능
+		sol::meta_function::addition, [](const FVector& a, const FVector& b) {
+			return FVector(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
+		},
+		sol::meta_function::subtraction, [](const FVector& a, const FVector& b) {
+			return FVector(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
+		},
+		// 곱셈 오버로딩 (벡터 * 스칼라, 스칼라 * 벡터 둘 다 지원)
+		sol::meta_function::multiplication, sol::overload(
+			[](const FVector& v, float f) { return v * f; },
+			[](float f, const FVector& v) { return v * f; }
+		),
+		sol::meta_function::division, [](const FVector& v, float f) {
+			return v / f;
+		}
+	);
+
+	// FTransform 바인딩
+	LuaState.new_usertype<FTransform>("Transform",
+		sol::constructors<FTransform()>(),
+		// 멤버 변수 바인딩 (간단한 구조체라 Get/Set 대신 직접 접근)
+		"Location", &FTransform::Translation,
+		"Rotation", &FTransform::Rotation,
+		"Scale", &FTransform::Scale3D
+	);
+
+	// AActor 바인딩
+	LuaState.new_usertype<AActor>("Actor",
+		// 함수 바인딩: Lua의 obj:GetActorLocation() 호출이 C++ Actor::GetActorLocation 실행
+		"GetActorLocation", &AActor::GetActorLocation,
+		"SetActorLocation", &AActor::SetActorLocation,
+		"GetActorRotation", &AActor::GetActorRotation,
+		// 함수 오버로딩: SetActorRotation이 FVector, FQuat 두 버전을 받으므로
+		// sol::overload를 사용해 Lua에 둘 다 등록
+		"SetActorRotation", sol::overload(
+			static_cast<void(AActor::*)(const FVector&)>(&AActor::SetActorRotation),
+			static_cast<void(AActor::*)(const FQuat&)>(&AActor::SetActorRotation)
+		),
+		"GetActorScale", &AActor::GetActorScale,
+		"SetActorScale", &AActor::SetActorScale,
+		"GetActorTransform", &AActor::GetActorTransform,
+		"SetActorTransform", &AActor::SetActorTransform,
+
+		// 유틸리티 함수들
+		"GetActorForward", &AActor::GetActorForward,
+		"GetActorRight", &AActor::GetActorRight,
+		"GetActorUp", &AActor::GetActorUp,
+		"AddActorWorldLocation", &AActor::AddActorWorldLocation,
+		"AddActorLocalLocation", &AActor::AddActorLocalLocation,
+		// Lua에서 C++ 액터를 소멸시킬 수 있게 함(주의)
+		"Destroy", &AActor::Destroy,
+		// Lua에서 액터 이름을 가져올 수 있게 함(디버깅 유용)
+		"GetName", &AActor::GetName
+	);
+
+	UE_LOG("Lua State initialized successfully");
 }
 
 void UWorld::Tick(float DeltaSeconds)

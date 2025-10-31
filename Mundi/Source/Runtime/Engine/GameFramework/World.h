@@ -5,6 +5,7 @@
 #include "Level.h"
 #include "Gizmo/GizmoActor.h"
 #include "LightManager.h"
+#include "sol/sol.hpp"
 
 // Forward Declarations
 class UResourceManager;
@@ -44,6 +45,7 @@ public:
     void Initialize();
     void InitializeGrid();
     void InitializeGizmo();
+    void InitializeLuaState();
 
     template<class T>
     T* SpawnActor();
@@ -99,6 +101,9 @@ public:
     // Per-world SelectionManager accessor
     USelectionManager* GetSelectionManager() { return SelectionMgr.get(); }
 
+    // Lua State accessor
+    sol::state& GetLuaState() { return LuaState; }
+
     // PIE용 World 생성
     static UWorld* DuplicateWorldForPIE(UWorld* InEditorWorld);
 
@@ -128,6 +133,13 @@ private:
 
     // Per-world selection manager
     std::unique_ptr<USelectionManager> SelectionMgr;
+
+    // Lua State
+    /**
+    * Lua 가상 머신(VM) 인스턴스
+    * UWorld 파괴 시 VM 함께 파괴
+    */
+    sol::state LuaState;
 };
 
 template<class T>
