@@ -43,6 +43,9 @@ public:
 		return Handle;
 	}
 
+	// 객체가 소멸될 때 명시적으로 Remove를 호출해줘야함.
+	// 안 해줘도 WeakPtr을 쓰기 때문에 문제가 생기진 않는데 쌓이면 쌓일 수록 성능 부담이 생길 수도 있음.
+	// 가비지컬렉터처럼 일정 주기마다 알아서 리스트 관리를 해주면 좋을듯.
 	void Remove(FBindingHandle Handle)
 	{
 		for (uint32 Index = 0; Index < Bindings.Num(); Index++)
@@ -82,7 +85,9 @@ public:
 
 
 private:
-
+	// 현재 Duplicate에서 얕은복사하면서 NextID가 그대로 유지되고있음.
+	// Duplicate포함 총 4,294,967,296개 이상의 객체를 바인딩 하는 경우 문제가 생김
+	// Duplicate하거나 PIE에서 돌아올 때 초기화 해줘야 함.
 	uint32 NextID = 0;
 	TArray<IDelegateBinding<Args...>*> Bindings;
 
