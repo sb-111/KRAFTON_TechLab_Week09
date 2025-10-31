@@ -28,6 +28,7 @@
 #include "PointLightComponent.h"
 #include "SpotLightComponent.h"
 #include "SceneComponent.h"
+#include "ScriptComponent.h"
 #include "Color.h"
 #include "RenderManager.h"
 
@@ -527,6 +528,98 @@ void UTargetActorTransformWidget::RenderSelectedActorDetails(AActor* SelectedAct
 	{
 		SelectedActor->SetActorHiddenInGame(bActorHiddenInGame);
 	}
+
+	// ======== Lua Script UI ======== 
+	ImGui::Spacing();
+	ImGui::Separator();
+	
+	// Actor의 모든 ScriptComponent 찾기
+	TArray<UScriptComponent*> ScriptComponents;
+	for (UActorComponent* Comp : SelectedActor->GetOwnedComponents())
+	{
+		if (UScriptComponent* Script = Cast<UScriptComponent>(Comp))
+		{
+			ScriptComponents.push_back(Script);
+		}
+	}
+	
+	if (!ScriptComponents.IsEmpty())
+	{
+		ImGui::Text("[Lua Scripts]");
+		ImGui::Spacing();
+	
+		int ScriptIndex = 0;
+		for (UScriptComponent* ScriptComp : ScriptComponents)
+		{
+			ImGui::PushID(ScriptComp); // 각 컴포넌트 UI에 고유 ID 부여
+	
+			bool bFileExists = !ScriptComp->ScriptFilePath.empty() && std::filesystem::exists(ScriptComp->ScriptFilePath.c_str());
+	
+			ImGui::Text("Script File:");
+			ImGui::SameLine();
+	
+			FString DisplayPath;
+			if (bFileExists)
+			{
+				DisplayPath = ScriptComp->ScriptFilePath;
+				ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), "%s", DisplayPath.c_str());
+			}
+			else
+			{
+				// 파일이 없으면 제안 경로를 생성
+				FString SceneName = SelectedActor->GetWorld() ? SelectedActor->GetWorld()->GetName() : "Scene";
+				FString ActorName = SelectedActor->GetName().ToString();
+				DisplayPath = "Scripts/" + SceneName + "_" + ActorName + "_" + std::to_string(ScriptIndex) + ".lua";
+				ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1.0f), "%s (proposed)", DisplayPath.c_str());
+			}
+	
+			ImGui::Spacing();
+	
+			if (bFileExists)
+			{
+				// Edit Script 버튼 (스크립트가 존재할 때만 표시)
+				if (ImGui::Button("Edit Script", ImVec2(120, 0)))
+				{
+					ScriptComp->EditScript();
+				}
+				if (ImGui::IsItemHovered())
+				{
+					ImGui::SetTooltip("Open the script file in your default text editor");
+				}
+	
+				ImGui::SameLine();
+	
+				// Reload Script 버튼 (Hot Reload)
+				if (ImGui::Button("Reload Script", ImVec2(120, 0)))
+				{
+					ScriptComp->ReloadScript();
+					UE_LOG("[UI] Script reloaded: %s", ScriptComp->ScriptFilePath.c_str());
+				}
+				if (ImGui::IsItemHovered())
+				{
+					ImGui::SetTooltip("Hot reload the script without restarting the game");
+				}
+			}
+			else
+			{
+				// Create Script 버튼
+				if (ImGui::Button("Create Script", ImVec2(150, 0)))
+				{
+					// 제안된 경로로 스크립트 생성
+					ScriptComp->CreateScript(DisplayPath);
+					UE_LOG("[UI] Script created: %s", ScriptComp->ScriptFilePath.c_str());
+				}
+				if (ImGui::IsItemHovered())
+				{
+					ImGui::SetTooltip("Create a new Lua script from template.lua");
+				}
+			}
+	
+			ImGui::Separator();
+			ImGui::PopID();
+			ScriptIndex++;
+		}
+	}
 }
 
 void UTargetActorTransformWidget::RenderSelectedComponentDetails(UActorComponent* SelectedComponent)
@@ -690,7 +783,7 @@ void UTargetActorTransformWidget::RenderSelectedComponentDetails(UActorComponent
 			ImGui::Text("No shadow cast by this light (ShadowIndex: %d)", ShadowIndex);
 		}
 	}
-	
+
 }
 
 void UTargetActorTransformWidget::UpdateTransformFromComponent(USceneComponent* SelectedComponent)

@@ -3,8 +3,15 @@
 #include "Actor.h"
 #include "World.h"
 #include <filesystem>
+#include "tchar.h"
 
 IMPLEMENT_CLASS(UScriptComponent)
+
+BEGIN_PROPERTIES(UScriptComponent)
+	MARK_AS_COMPONENT("스크립트 컴포넌트", "액터에 Lua 스크립트를 연결하여 실행합니다.")
+END_PROPERTIES()
+
+
 
 UScriptComponent::UScriptComponent()
 {
@@ -134,36 +141,22 @@ void UScriptComponent::ReloadScript()
 	}
 }
 
-void UScriptComponent::CreateScript()
+void UScriptComponent::CreateScript(const FString& FilePath)
 {
-	if (!ScriptFilePath.empty())
+	if (FilePath.empty())
 	{
-		UE_LOG("[ScriptComponent] Script already exists: %s", ScriptFilePath.c_str());
+		UE_LOG("[ScriptComponent] CreateScript failed: FilePath is empty.");
 		return;
 	}
-
-	AActor* Owner = GetOwner();
-	if (!Owner) return;
-
-	UWorld* World = Owner->GetWorld();
-	if (!World) return;
 
 	// Scripts 디렉터리 생성 (없으면)
 	std::filesystem::create_directories("Scripts");
 
-	// 파일명 생성: SceneName_ActorName_UUID.lua
-	FString SceneName = "Scene"; // TODO: World에서 씬 이름 가져오기
-	FString ActorName = Owner->GetName().ToString();
-
-	// UUID 대신 고유 번호 생성
-	static int ScriptCounter = 0;
-	FString UniqueId = std::to_string(ScriptCounter++);
-
-	ScriptFilePath = "Scripts/" + SceneName + "_" + ActorName + "_" + UniqueId + ".lua";
+	ScriptFilePath = FilePath;
 
 	// template.lua 복사
 	std::filesystem::path TemplatePath = "Scripts/template.lua";
-	std::filesystem::path NewScriptPath = ScriptFilePath;
+	std::filesystem::path NewScriptPath = ScriptFilePath.c_str();
 
 	if (std::filesystem::exists(TemplatePath))
 	{
@@ -175,7 +168,7 @@ void UScriptComponent::CreateScript()
 		UE_LOG("[ScriptComponent] Warning: template.lua not found, creating empty script");
 		// template.lua가 없으면 기본 스크립트 생성
 		std::ofstream ofs(ScriptFilePath);
-		ofs << "-- Auto-generated script for " << ActorName << "\n\n";
+		ofs << "-- Auto-generated script for " << GetOwner()->GetName().ToString() << "\n\n";
 		ofs << "function BeginPlay()\n";
 		ofs << "    print(\"[BeginPlay] \" .. tostring(obj))\n";
 		ofs << "end\n\n";
@@ -187,6 +180,9 @@ void UScriptComponent::CreateScript()
 		ofs << "end\n";
 		ofs.close();
 	}
+
+	// 생성 후 바로 로드
+	LoadScript(ScriptFilePath);
 }
 
 void UScriptComponent::EditScript()
@@ -199,19 +195,23 @@ void UScriptComponent::EditScript()
 
 	// Windows 기본 프로그램으로 스크립트 파일 열기
 #ifdef _WIN32
-	std::wstring wpath(ScriptFilePath.begin(), ScriptFilePath.end());
+	// ShellExecute는 상대 경로보다 절대 경로에서 더 안정적으로 동작합니다.
+	std::filesystem::path absolutePath = std::filesystem::absolute(ScriptFilePath.c_str());
+
 	HINSTANCE hInst = ShellExecute(
 		NULL,
-		L"open",
-		wpath.c_str(),
+		_T("open"),
+		absolutePath.c_str(), // 절대 경로 사용
 		NULL,
 		NULL,
 		SW_SHOWNORMAL
 	);
 
+	// ShellExecute는 성공 시 32보다 큰 값을 반환합니다.
+	// 실패 시 32 이하의 값이 반환되므로 간단히 체크 가능
 	if ((INT_PTR)hInst <= 32)
 	{
-		UE_LOG("[ScriptComponent] Failed to open script file: %s", ScriptFilePath.c_str());
+		MessageBox(NULL, _T("파일 열기에 실패했습니다."), _T("Error"), MB_OK | MB_ICONERROR);
 	}
 #else
 	UE_LOG("[ScriptComponent] EditScript is only supported on Windows");
