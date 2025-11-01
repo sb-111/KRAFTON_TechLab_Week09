@@ -335,6 +335,12 @@ FAABB UStaticMeshComponent::GetWorldAABB() const
 //	}
 //}
 
+void UStaticMeshComponent::OnTransformUpdated()
+{
+	Super_t::OnTransformUpdated();
+	MarkWorldPartitionDirty();
+}
+
 void UStaticMeshComponent::MarkWorldPartitionDirty()
 {
 	if (UWorld* World = GetWorld())

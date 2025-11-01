@@ -95,6 +95,8 @@ public:
     void Serialize(const bool bInIsLoading, JSON& InOutHandle) override;
     void OnRegister(UWorld* InWorld) override;
     void OnSerialized() override;
+    virtual void OnTransformUpdated();
+
 
     // SceneId
     uint32 GetSceneId() const { return SceneId; }

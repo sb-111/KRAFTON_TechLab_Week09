@@ -28,6 +28,7 @@ USceneComponent::USceneComponent()
     , AttachParent(nullptr)
 {
     UpdateRelativeTransform();
+    OnTransformUpdated();
 }
 
 USceneComponent::~USceneComponent()
@@ -62,6 +63,7 @@ void USceneComponent::SetRelativeLocation(const FVector& NewLocation)
 {
     RelativeLocation = NewLocation;
     UpdateRelativeTransform();
+    OnTransformUpdated();
 }
 FVector USceneComponent::GetRelativeLocation() const { return RelativeLocation; }
 
@@ -70,6 +72,7 @@ void USceneComponent::SetRelativeRotation(const FQuat& NewRotation)
     RelativeRotation = NewRotation;
     RelativeRotationEuler = NewRotation.ToEulerZYXDeg(); // Euler 동기화
     UpdateRelativeTransform();
+    OnTransformUpdated();
 }
 FQuat USceneComponent::GetRelativeRotation() const { return RelativeRotation; }
 
@@ -83,6 +86,7 @@ void USceneComponent::SetRelativeRotationEuler(const FVector& EulerDegrees)
 
     // Euler 재계산 하지 않음 - UI에서 입력한 값을 그대로 유지
     UpdateRelativeTransform();
+    OnTransformUpdated();
      
 }
 
@@ -96,6 +100,7 @@ void USceneComponent::SetRelativeScale(const FVector& NewScale)
 {
     RelativeScale = NewScale;
     UpdateRelativeTransform();
+    OnTransformUpdated();
      
 }
 FVector USceneComponent::GetRelativeScale() const { return RelativeScale; }
@@ -104,6 +109,7 @@ void USceneComponent::AddRelativeLocation(const FVector& DeltaLocation)
 {
     RelativeLocation = RelativeLocation + DeltaLocation;
     UpdateRelativeTransform();
+    OnTransformUpdated();
      
 }
 
@@ -112,6 +118,7 @@ void USceneComponent::AddRelativeRotation(const FQuat& DeltaRotation)
     RelativeRotation = DeltaRotation * RelativeRotation;
     RelativeRotationEuler = RelativeRotation.ToEulerZYXDeg(); // Euler 동기화
     UpdateRelativeTransform();
+    OnTransformUpdated();
      
 }
 
@@ -121,7 +128,7 @@ void USceneComponent::AddRelativeScale3D(const FVector& DeltaScale)
         RelativeScale.Y * DeltaScale.Y,
         RelativeScale.Z * DeltaScale.Z);
     UpdateRelativeTransform();
-     
+    OnTransformUpdated();
 }
 
 // ──────────────────────────────
@@ -155,7 +162,7 @@ void USceneComponent::SetWorldTransform(const FTransform& W)
     RelativeRotation = RelativeTransform.Rotation;
     RelativeRotationEuler = RelativeRotation.ToEulerZYXDeg(); // Euler 동기화
     RelativeScale = RelativeTransform.Scale3D;
-     
+    OnTransformUpdated();
 }
  
 void USceneComponent::SetWorldLocation(const FVector& L)
@@ -212,6 +219,7 @@ void USceneComponent::SetWorldLocationAndRotation(const FVector& L, const FQuat&
     W.Translation = L;
     W.Rotation = R;
     SetWorldTransform(W);
+    OnTransformUpdated();
 }
 
 void USceneComponent::AddLocalOffset(const FVector& Delta)
@@ -219,7 +227,7 @@ void USceneComponent::AddLocalOffset(const FVector& Delta)
     const FVector parentDelta = RelativeRotation.RotateVector(Delta);
     RelativeLocation = RelativeLocation + parentDelta;
     UpdateRelativeTransform();
-     
+    OnTransformUpdated();
 }
 
 void USceneComponent::AddLocalRotation(const FQuat& DeltaRot)
@@ -227,7 +235,7 @@ void USceneComponent::AddLocalRotation(const FQuat& DeltaRot)
     RelativeRotation = (RelativeRotation * DeltaRot).GetNormalized(); // 로컬: 우측곱
     RelativeRotationEuler = RelativeRotation.ToEulerZYXDeg(); // Euler 동기화
     UpdateRelativeTransform();
-     
+    OnTransformUpdated();
 }
 
 void USceneComponent::SetLocalLocationAndRotation(const FVector& L, const FQuat& R)
@@ -370,6 +378,14 @@ void USceneComponent::OnRegister(UWorld* InWorld)
 void USceneComponent::OnSerialized()
 {
 	Super::OnSerialized();
+}
+
+void USceneComponent::OnTransformUpdated()
+{
+    for (USceneComponent* Child : GetAttachChildren())
+    {
+        Child->OnTransformUpdated();
+    }
 }
 
 UWorld* USceneComponent::GetWorld()

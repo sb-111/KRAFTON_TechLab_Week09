@@ -55,18 +55,23 @@ bool UCapsuleComponent::Intersects(const UShapeComponent* Other) const
 {
 	switch (Other->GetShapeType())
 	{
-	case EShapeType::Box:
+	case EShapeType::Box: {
 		const UBoxComponent* OtherBox = Cast<UBoxComponent>(Other);
 		return Collision::Intersects(OtherBox->GetOBB(), CachedBound);
-	case EShapeType::Sphere:
+	}
+	case EShapeType::Sphere: {
 		const USphereComponent* OtherSphere = Cast<USphereComponent>(Other);
 		return Collision::Intersects(OtherSphere->GetBoundingSphere(), CachedBound);
-	case EShapeType::Capsule:
+	}
+	case EShapeType::Capsule: {
 		const UCapsuleComponent* OtherCapsule = Cast<UCapsuleComponent>(Other);
 		return CachedBound.Intersects(OtherCapsule->GetBoundingCapsule());
+	}
 	default:
+	{
 		UE_LOG("UCapsuleComponent::Intersects: Unsupported shape type for collision detection.");
 		return false;
+	}
 	}
 }
 
