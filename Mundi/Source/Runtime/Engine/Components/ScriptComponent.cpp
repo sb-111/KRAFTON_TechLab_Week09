@@ -85,6 +85,20 @@ void UScriptComponent::OnSerialized()
 	}
 }
 
+void UScriptComponent::PostDuplicate()
+{
+	Super::PostDuplicate();
+
+	// PIE 복제 시 EditorWorld의 Lua 상태가 복사되므로 초기화
+	// 이렇게 하면 PIEWorld의 새 LuaState를 사용하게 됨
+	CleanupEnvironment();
+
+	UE_LOG("[ScriptComponent] PostDuplicate: Lua environment reset for PIE");
+
+	// 스크립트 파일이 있으면 PIEWorld에서 다시 로드
+	// (BeginPlay에서 자동으로 로드되므로 여기서는 초기화만 수행)
+}
+
 void UScriptComponent::InitializeEnvironment()
 {
 	if (bEnvironmentInitialized) return;
@@ -104,11 +118,46 @@ void UScriptComponent::InitializeEnvironment()
 	Env["obj"] = Owner;
 
 	// 전역 print 함수를 UE_LOG로 리다이렉트
-	Env["print"] = [&LuaState](sol::variadic_args va) {
+	// Owner를 캡처하여 실행 시점에 LuaState를 얻어옴 (댕글링 참조 방지)
+	Env["print"] = [Owner](sol::variadic_args va) {
+		if (!Owner)
+		{
+			UE_LOG("[Lua Print] Error: Owner is null");
+			return;
+		}
+
+		UWorld* World = Owner->GetWorld();
+		if (!World)
+		{
+			UE_LOG("[Lua Print] Error: World is null");
+			return;
+		}
+
+		sol::state& LuaState = World->GetLuaState();
 		std::string output;
+		int i = 1;
 		for (auto v : va)
 		{
-			output += LuaState.globals()["tostring"](v).get<std::string>() + "\t";
+			sol::protected_function_result tostring_result = LuaState.globals()["tostring"](v);
+			if (tostring_result.valid() && tostring_result.get_type() == sol::type::string)
+			{
+				output += tostring_result.get<std::string>() + "\t";
+			}
+			else
+			{
+				std::string type_name = sol::type_name(LuaState, v.get_type());
+				if (!tostring_result.valid())
+				{
+					sol::error err = tostring_result;
+					UE_LOG("[Lua Print Error] 'tostring' call failed for arg %d (%s). Reason: %s", i, type_name.c_str(), err.what());
+				}
+				else
+				{
+					UE_LOG("[Lua Print Error] Failed to convert arg %d to string. Type was '%s' but tostring returned %s.", i, type_name.c_str(), sol::type_name(LuaState, tostring_result.get_type()));
+				}
+				output += "[CONV_ERROR] ";
+			}
+			i++;
 		}
 
 		// 마지막 탭 제거

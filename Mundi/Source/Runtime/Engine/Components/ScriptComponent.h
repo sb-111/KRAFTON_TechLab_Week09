@@ -89,6 +89,12 @@ protected:
 	 */
 	void OnSerialized() override;
 
+	/**
+	 * @brief 복제 후 호출됩니다 (PIE 시작 시).
+	 * @details Lua 환경 상태를 초기화하여 PIEWorld의 LuaState를 사용하도록 합니다.
+	 */
+	void PostDuplicate() override;
+
 public:
 	// Lua 함수 호출 헬퍼
 	/**

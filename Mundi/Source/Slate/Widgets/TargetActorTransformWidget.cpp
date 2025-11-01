@@ -684,6 +684,18 @@ void UTargetActorTransformWidget::RenderSelectedComponentDetails(UActorComponent
 		ImGui::Separator();
 		ImGui::Text("[Reflected Properties]");
 		UPropertyRenderer::RenderAllPropertiesWithInheritance(SelectedComponent);
+
+		// TODO: 이 부분은 PIE에서 루아스크립트가 안정적으로 돌아가는게 확인하면 지우면 됩니다.
+		if (UScriptComponent* ScriptComp = Cast<UScriptComponent>(SelectedComponent))
+		{
+			ImGui::Spacing();
+			ImGui::Separator();
+			ImGui::Text("[Debug]");
+			if (ImGui::Button("Force BeginPlay"))
+			{
+				ScriptComp->BeginPlay();
+			}
+		}
 	}
 
 	if(ULightComponent* LightComp = Cast<ULightComponent>(SelectedComponent))

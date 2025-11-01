@@ -88,7 +88,7 @@ void UWorld::InitializeGizmo()
 void UWorld::InitializeLuaState()
 {
 	// Lua 표준 라이브러리 로드
-	LuaState.open_libraries(sol::lib::base, sol::lib::math, sol::lib::string, sol::lib::table, sol::lib::coroutine);
+	LuaState.open_libraries(sol::lib::base);
 
 	// FVector 바인딩 (설계도 등록)
 	LuaState.new_usertype<FVector>("Vector", // Lua에서 사용할 타입 이름
@@ -147,6 +147,15 @@ void UWorld::InitializeLuaState()
 		"GetActorUp", &AActor::GetActorUp,
 		"AddActorWorldLocation", &AActor::AddActorWorldLocation,
 		"AddActorLocalLocation", &AActor::AddActorLocalLocation,
+		// 회전 함수들 (FVector, FQuat 오버로드)
+		"AddActorWorldRotation", sol::overload(
+			static_cast<void(AActor::*)(const FVector&)>(&AActor::AddActorWorldRotation),
+			static_cast<void(AActor::*)(const FQuat&)>(&AActor::AddActorWorldRotation)
+		),
+		"AddActorLocalRotation", sol::overload(
+			static_cast<void(AActor::*)(const FVector&)>(&AActor::AddActorLocalRotation),
+			static_cast<void(AActor::*)(const FQuat&)>(&AActor::AddActorLocalRotation)
+		),
 		// Lua에서 C++ 액터를 소멸시킬 수 있게 함(주의)
 		"Destroy", &AActor::Destroy,
 		// Lua에서 액터 이름을 가져올 수 있게 함(디버깅 유용)
