@@ -38,6 +38,19 @@
 
 using namespace std;
 
+// UTF-8 string을 Wide string으로 변환 (Windows 한글 경로 지원)
+static std::wstring Utf8ToWide(const std::string& utf8str)
+{
+	if (utf8str.empty()) return std::wstring();
+
+	int size_needed = MultiByteToWideChar(CP_UTF8, 0, utf8str.c_str(), (int)utf8str.size(), NULL, 0);
+	if (size_needed <= 0) return std::wstring();
+
+	std::wstring wstrTo(size_needed, 0);
+	MultiByteToWideChar(CP_UTF8, 0, utf8str.c_str(), (int)utf8str.size(), &wstrTo[0], size_needed);
+	return wstrTo;
+}
+
 IMPLEMENT_CLASS(UTargetActorTransformWidget)
 
 namespace
@@ -559,8 +572,8 @@ void UTargetActorTransformWidget::RenderSelectedActorDetails(AActor* SelectedAct
 
 			if (bHasScriptPath)
 			{
-				// 절대 경로로 변환해서 파일 존재 확인
-				std::filesystem::path AbsPath = std::filesystem::absolute(ScriptComp->ScriptFilePath.c_str());
+				// 절대 경로로 변환해서 파일 존재 확인 (한글 경로 지원)
+				std::filesystem::path AbsPath = std::filesystem::absolute(Utf8ToWide(ScriptComp->ScriptFilePath));
 				bFileExists = std::filesystem::exists(AbsPath);
 
 				// 디버깅용 로그

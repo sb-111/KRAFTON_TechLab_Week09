@@ -3,7 +3,21 @@
 #include "Actor.h"
 #include "World.h"
 #include <filesystem>
+#include <fstream>
 #include "tchar.h"
+
+// UTF-8 string을 Wide string으로 변환 (Windows 한글 경로 지원)
+static std::wstring Utf8ToWide(const std::string& utf8str)
+{
+	if (utf8str.empty()) return std::wstring();
+
+	int size_needed = MultiByteToWideChar(CP_UTF8, 0, utf8str.c_str(), (int)utf8str.size(), NULL, 0);
+	if (size_needed <= 0) return std::wstring();
+
+	std::wstring wstrTo(size_needed, 0);
+	MultiByteToWideChar(CP_UTF8, 0, utf8str.c_str(), (int)utf8str.size(), &wstrTo[0], size_needed);
+	return wstrTo;
+}
 
 IMPLEMENT_CLASS(UScriptComponent)
 
@@ -120,9 +134,27 @@ void UScriptComponent::LoadScript(const FString& FilePath)
 	// 환경 초기화
 	InitializeEnvironment();
 
-	// 스크립트 파일 로드
+	// 스크립트 파일 로드 (한글 경로 지원을 위해 직접 읽기)
 	sol::state& LuaState = World->GetLuaState();
-	auto result = LuaState.safe_script_file(FilePath, Env);
+
+	// Wide string으로 파일 열기
+	std::wstring wFilePath = Utf8ToWide(FilePath);
+	std::ifstream file(wFilePath, std::ios::binary);
+
+	if (!file.is_open())
+	{
+		UE_LOG("[Lua Script Load Error] Cannot open file: %s", FilePath.c_str());
+		bScriptLoaded = false;
+		return;
+	}
+
+	// 파일 내용을 문자열로 읽기
+	std::string script_content((std::istreambuf_iterator<char>(file)),
+	                            std::istreambuf_iterator<char>());
+	file.close();
+
+	// 스크립트 실행
+	auto result = LuaState.safe_script(script_content, Env, FilePath);
 
 	if (!result.valid())
 	{
@@ -163,13 +195,13 @@ void UScriptComponent::CreateScript(const FString& FilePath)
 	}
 
 	// Scripts 디렉터리 생성 (없으면)
-	std::filesystem::create_directories("Scripts");
+	std::filesystem::create_directories(L"Scripts");
 
 	ScriptFilePath = FilePath;
 
-	// template.lua 복사
-	std::filesystem::path TemplatePath = "Scripts/template.lua";
-	std::filesystem::path NewScriptPath = ScriptFilePath.c_str();
+	// template.lua 복사 (한글 경로 지원을 위해 wstring 사용)
+	std::filesystem::path TemplatePath = L"Scripts/template.lua";
+	std::filesystem::path NewScriptPath = Utf8ToWide(ScriptFilePath);
 
 	if (std::filesystem::exists(TemplatePath))
 	{
@@ -179,8 +211,9 @@ void UScriptComponent::CreateScript(const FString& FilePath)
 	else
 	{
 		UE_LOG("[ScriptComponent] Warning: template.lua not found, creating empty script");
-		// template.lua가 없으면 기본 스크립트 생성
-		std::ofstream ofs(ScriptFilePath);
+		// template.lua가 없으면 기본 스크립트 생성 (한글 경로 지원)
+		std::wstring wScriptPath = Utf8ToWide(ScriptFilePath);
+		std::ofstream ofs(wScriptPath);
 		ofs << "-- Auto-generated script for " << GetOwner()->GetName().ToString() << "\n\n";
 		ofs << "function BeginPlay()\n";
 		ofs << "    print(\"[BeginPlay] \" .. tostring(obj))\n";
@@ -209,7 +242,7 @@ void UScriptComponent::EditScript()
 	// Windows 기본 프로그램으로 스크립트 파일 열기
 #ifdef _WIN32
 	// ShellExecute는 상대 경로보다 절대 경로에서 더 안정적으로 동작합니다.
-	std::filesystem::path absolutePath = std::filesystem::absolute(ScriptFilePath.c_str());
+	std::filesystem::path absolutePath = std::filesystem::absolute(Utf8ToWide(ScriptFilePath));
 
 	HINSTANCE hInst = ShellExecute(
 		NULL,
