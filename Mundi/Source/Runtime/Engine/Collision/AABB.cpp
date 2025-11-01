@@ -100,11 +100,11 @@ FAABB FAABB::CreateOctant(int i) const
 	return FAABB(NewMin, NewMax);
 }
 
-bool FAABB::IntersectsRay(const FRay& InRay, float& OutEnterDistance, float& OutExitDistance)
+bool FAABB::IntersectsRay(const FRay& InRay, float& OutEnterDistance, float& OutExitDistance) const
 {
 	// 레이가 박스를 통과할 수 있는 [Enter, Exit] 구간
-	float ClosestEnter = -FLT_MAX;
-	float FarthestExit = FLT_MAX;
+	float TEnterMax = -FLT_MAX;
+	float TExitMin = FLT_MAX;
 
 	for (int32 AxisIndex = 0; AxisIndex < 3; ++AxisIndex)
 	{
@@ -134,24 +134,27 @@ bool FAABB::IntersectsRay(const FRay& InRay, float& OutEnterDistance, float& Out
 			{
 				std::swap(DistanceToMinPlane, DistanceToMaxPlane);
 			}
-			// ClosestEnter : AABB 안에 들어가는 시점
+			
 			// 더 늦게 들어오는 값으로 갱신
-			if (DistanceToMinPlane > ClosestEnter)  ClosestEnter = DistanceToMinPlane;
+			if (DistanceToMinPlane > TEnterMax)  TEnterMax = DistanceToMinPlane;
 
-			// FarthestExit : AABB에서 나가는 시점
+			
 			// 더 빨리 나가는 값으로 갱신 
-			if (DistanceToMaxPlane < FarthestExit) FarthestExit = DistanceToMaxPlane;
+			if (DistanceToMaxPlane < TExitMin) TExitMin = DistanceToMaxPlane;
 
 			// 가장 늦게 들어오는 시점이 빠르게 나가는 시점보다 늦다는 것은 교차하지 않음을 의미한다. 
-			if (ClosestEnter > FarthestExit)
+			if (TEnterMax > TExitMin)
 			{
 				return false; // 레이가 박스를 관통하지 않음
 			}
 		}
 	}
+	if (TExitMin < 0.0f)
+		return false;
+
 	// 레이가 박스와 실제로 만나는 구간이다. 
-	OutEnterDistance = (ClosestEnter < 0.0f) ? 0.0f : ClosestEnter;
-	OutExitDistance = FarthestExit;
+	OutEnterDistance = (TEnterMax < 0.0f) ? 0.0f : TEnterMax;
+	OutExitDistance = TExitMin;
 	return true;
 }
 
