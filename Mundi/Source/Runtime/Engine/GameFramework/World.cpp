@@ -156,6 +156,8 @@ void UWorld::InitializeLuaState()
 		"GetActorUp", &AActor::GetActorUp,
 		"AddActorWorldLocation", &AActor::AddActorWorldLocation,
 		"AddActorLocalLocation", &AActor::AddActorLocalLocation,
+		"SetActorHiddenInGame", &AActor::SetActorHiddenInGame,
+		"GetActorHiddenInGame", &AActor::GetActorHiddenInGame,
 		// 회전 함수들 (FVector, FQuat 오버로드)
 		"AddActorWorldRotation", sol::overload(
 			static_cast<void(AActor::*)(const FVector&)>(&AActor::AddActorWorldRotation),
