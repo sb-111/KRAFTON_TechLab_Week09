@@ -64,6 +64,9 @@ void UWorld::Initialize()
 	InitializeGrid();
 	InitializeGizmo();
 	InitializeLuaState();
+
+	// Coroutine Manager 초기화
+	CoroutineManager.Initialize(&LuaState);
 }
 
 void UWorld::InitializeGrid()
@@ -168,12 +171,103 @@ void UWorld::InitializeLuaState()
 		"GetName", &AActor::GetName
 	);
 
+	// ═══════════════════════════════════════════════════════
+	// 전역 print 함수 (코루틴용)
+	// ═══════════════════════════════════════════════════════
+	LuaState.set_function("print", [](sol::variadic_args va, sol::this_state s) {
+		sol::state_view lua(s);
+		std::string output;
+
+		for (auto v : va)
+		{
+			sol::type t = v.get_type();
+
+			switch (t)
+			{
+			case sol::type::string:
+				output += v.as<std::string>() + "\t";
+				break;
+
+			case sol::type::number:
+				// Lua의 number는 항상 double
+				output += std::to_string(v.as<double>()) + "\t";
+				break;
+
+			case sol::type::boolean:
+				output += (v.as<bool>() ? "true" : "false") + std::string("\t");
+				break;
+
+			case sol::type::lua_nil:
+				output += "nil\t";
+				break;
+
+			default:
+				// 기타 타입 (table, function, userdata 등)
+				sol::protected_function tostring = lua["tostring"];
+				auto result = tostring(v);
+
+				if (result.valid() && result.get_type() == sol::type::string)
+				{
+					output += result.get<std::string>() + "\t";
+				}
+				else
+				{
+					// tostring 실패 시 타입 이름 출력
+					output += "[" + std::string(sol::type_name(lua, t)) + "]\t";
+				}
+				break;
+			}
+		}
+
+		// 마지막 탭 제거
+		if (!output.empty() && output.back() == '\t') {
+			output.pop_back();
+		}
+
+		UE_LOG("[Lua Print] %s", output.c_str());
+	});
+
+	// ═══════════════════════════════════════════════════════
+	// Coroutine 관련 함수 바인딩
+	// ═══════════════════════════════════════════════════════
+
+	// start_coroutine: Lua 함수를 코루틴으로 시작
+	LuaState.set_function("start_coroutine", [this](sol::function func) {
+		return CoroutineManager.StartCoroutine(func);
+	});
+
+	// stop_coroutine: 특정 코루틴 중지
+	LuaState.set_function("stop_coroutine", [this](int32 id) {
+		CoroutineManager.StopCoroutine(id);
+	});
+
+	// is_coroutine_running: 코루틴 실행 여부 확인
+	LuaState.set_function("is_coroutine_running", [this](int32 id) {
+		return CoroutineManager.IsRunning(id);
+	});
+
+	// wait, wait_until 헬퍼 함수 (Lua 스크립트에서 사용)
+	LuaState.script(R"(
+		-- wait(seconds): 지정된 시간만큼 대기
+		function wait(seconds)
+			coroutine.yield("wait", seconds)
+		end
+
+		-- wait_until(condition): 조건이 true가 될 때까지 대기
+		function wait_until(condition)
+			coroutine.yield("wait_until", condition)
+		end
+	)");
+
 	UE_LOG("Lua State initialized successfully");
 }
 
 void UWorld::Tick(float DeltaSeconds)
 {
 	Partition->Update(DeltaSeconds, /*budget*/256);
+
+	// Coroutine Manager 업데이트
+	CoroutineManager.Update(DeltaSeconds);
 
 //순서 바꾸면 안댐
 	if (Level)
@@ -206,6 +300,9 @@ UWorld* UWorld::DuplicateWorldForPIE(UWorld* InEditorWorld)
 
 	// PIE World의 Lua State 초기화 (스크립트 실행을 위해 필수)
 	PIEWorld->InitializeLuaState();
+
+	// PIE World의 Coroutine Manager 초기화
+	PIEWorld->CoroutineManager.Initialize(&PIEWorld->LuaState);
 
 	FWorldContext PIEWorldContext = FWorldContext(PIEWorld, EWorldType::Game);
 	GEngine.AddWorldContext(PIEWorldContext);

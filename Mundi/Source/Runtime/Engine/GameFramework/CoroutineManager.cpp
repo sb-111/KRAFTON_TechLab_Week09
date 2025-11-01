@@ -1,5 +1,5 @@
 ﻿#include "CoroutineManager.h"
-
+#include "pch.h"
 void FCoroutineManager::Initialize(sol::state* InLuaState)
 {
 	LuaStatePtr = InLuaState;
@@ -33,9 +33,9 @@ int32 FCoroutineManager::StartCoroutine(sol::function Func)
 
 	// thread의 lua state 가져오기
 	sol::state_view ThreadState = NewThread.state();
-	
-	// coroutine 생성
-	sol::coroutine NewCoroutine(NewThread, Func);
+
+	// coroutine 생성 (state_view를 전달해야 함!)
+	sol::coroutine NewCoroutine(ThreadState, Func);
 	// coroutine 유효성 확인
 	if (!NewCoroutine.valid())
 	{
@@ -77,14 +77,13 @@ int32 FCoroutineManager::StartCoroutine(sol::function Func)
 	}
 
 	// === 즉시 완료 확인 ===
-	// Coroutine 상태 확인 
+	// Coroutine 상태 확인
+	// call_status::ok = 완료, call_status::yielded = 일시 중지
 	sol::call_status Status = NewCoroutine.status();
-	// 이미 완료되었는지 확인
-	if (Status != sol::call_status::ok)
+	if (Status == sol::call_status::ok)
 	{
 		// 첫 resume에서 바로 완료된 경우
-        // 예: function() print("Done") end (yield 없이 즉시 종료)
-
+		// 예: function() print("Done") end (yield 없이 즉시 종료)
 		UE_LOG("[FCoroutineManager] Completed immediately (ID=%d)", NewHandle.ID);
 
 		// 목록에 추가하지 않고 ID만 반환
@@ -198,8 +197,9 @@ void FCoroutineManager::Update(float DeltaTime)
 			}
 
 			// 코루틴 완료 확인
+			// call_status::ok = 완료, call_status::yielded = 일시 중지
 			sol::call_status Status = Handle.Coroutine.status();
-			if (Status != sol::call_status::ok)
+			if (Status == sol::call_status::ok)
 			{
 				UE_LOG("[FCoroutineManager] Coroutine finished (ID=%d)", Handle.ID);
 				It = ActiveCoroutines.erase(It);

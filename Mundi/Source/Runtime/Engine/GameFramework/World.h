@@ -6,6 +6,7 @@
 #include "Gizmo/GizmoActor.h"
 #include "LightManager.h"
 #include "sol/sol.hpp"
+#include "CoroutineManager.h"
 
 // Forward Declarations
 class UResourceManager;
@@ -104,6 +105,9 @@ public:
     // Lua State accessor
     sol::state& GetLuaState() { return LuaState; }
 
+    // Coroutine Manager accessor
+    FCoroutineManager* GetCoroutineManager() { return &CoroutineManager; }
+
     // Scene name tracking
     void SetSceneName(const FString& InSceneName) { CurrentSceneName = InSceneName; }
     const FString& GetSceneName() const { return CurrentSceneName; }
@@ -147,6 +151,9 @@ private:
 
     // Scene name (set when saving/loading)
     FString CurrentSceneName = "Untitled";
+
+    // Lua Coroutine Manager
+    FCoroutineManager CoroutineManager;
 };
 
 template<class T>

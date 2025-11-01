@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include "sol/sol.hpp"
-#include "pch.h"
 /**
  * @class FCoroutineManager
  * @brief World 레벨에서 모든 Lua 코루틴을 관리하는 매니저
