@@ -24,6 +24,8 @@
 #include "Frustum.h"
 #include "Level.h"
 #include "LightManager.h"
+#include "LightComponent.h"
+#include "HeightFogComponent.h"
 
 IMPLEMENT_CLASS(UWorld)
 
@@ -118,6 +120,31 @@ void UWorld::InitializeLuaState()
 		}
 	);
 
+	// FLinearColor 바인딩 (색상)
+	LuaState.new_usertype<FLinearColor>("Color",
+		sol::call_constructor,
+		sol::factories(
+			[]() { return FLinearColor(); },
+			[](float r, float g, float b) { return FLinearColor(r, g, b, 1.0f); },
+			[](float r, float g, float b, float a) { return FLinearColor(r, g, b, a); }
+		),
+		// 멤버 변수 바인딩
+		"r", &FLinearColor::R,
+		"g", &FLinearColor::G,
+		"b", &FLinearColor::B,
+		"a", &FLinearColor::A,
+		// 연산자 오버로딩
+		sol::meta_function::addition, [](const FLinearColor& a, const FLinearColor& b) {
+			return a + b;
+		},
+		sol::meta_function::subtraction, [](const FLinearColor& a, const FLinearColor& b) {
+			return a - b;
+		},
+		sol::meta_function::multiplication, [](const FLinearColor& a, const FLinearColor& b) {
+			return a * b;
+		}
+	);
+
 	// FTransform 바인딩
 	LuaState.new_usertype<FTransform>("FTransform",
 		sol::call_constructor,
@@ -162,10 +189,45 @@ void UWorld::InitializeLuaState()
 			static_cast<void(AActor::*)(const FVector&)>(&AActor::AddActorLocalRotation),
 			static_cast<void(AActor::*)(const FQuat&)>(&AActor::AddActorLocalRotation)
 		),
+
+		"GetComponentByClassName", &AActor::GetComponentByClassName,
+
+		// 타입별 컴포넌트 가져오기 (올바른 타입 반환)
+		"GetLightComponent", [](AActor* actor) -> ULightComponentBase* {
+			return actor->GetComponentByClass<ULightComponentBase>();
+		},
+		"GetStaticMeshComponent", [](AActor* Actor) -> UStaticMeshComponent* {
+			return Actor->GetComponentByClass<UStaticMeshComponent>();
+		},
+		"GetHeightFogComponent", [](AActor* Actor) -> UHeightFogComponent* {
+			return Actor->GetComponentByClass<UHeightFogComponent>();
+		},
+
 		// Lua에서 C++ 액터를 소멸시킬 수 있게 함(주의)
 		"Destroy", &AActor::Destroy,
 		// Lua에서 액터 이름을 가져올 수 있게 함(디버깅 유용)
 		"GetName", &AActor::GetName
+	);
+	// UActorComponent 바인딩 (기본 컴포넌트)
+	LuaState.new_usertype<UActorComponent>("UActorComponent",
+		sol::base_classes, sol::bases<>()
+	);
+
+	LuaState.new_usertype<UHeightFogComponent>("UHeightFogComponent",
+		sol::base_classes, sol::bases<UActorComponent>(),
+		"SetFogDensity", &UHeightFogComponent::SetFogDensity);
+	// ULightComponentBase 바인딩 (라이트 컴포넌트)
+	LuaState.new_usertype<ULightComponentBase>("ULightComponentBase",
+		sol::base_classes, sol::bases<UActorComponent>(),
+		// Intensity (강도) 관련 함수
+		"SetIntensity", &ULightComponentBase::SetIntensity,
+		"GetIntensity", &ULightComponentBase::GetIntensity,
+		// Light Color (색상) 관련 함수
+		"SetLightColor", &ULightComponentBase::SetLightColor,
+		"GetLightColor", &ULightComponentBase::GetLightColor,
+		// Cast Shadow (그림자) 관련 함수
+		"SetCastShadow", &ULightComponentBase::SetCastShadow,
+		"GetCastShadow", &ULightComponentBase::GetCastShadow
 	);
 
 	UE_LOG("Lua State initialized successfully");

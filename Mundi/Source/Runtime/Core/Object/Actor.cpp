@@ -162,6 +162,22 @@ void AActor::RemoveOwnedComponent(UActorComponent* Component)
 	Component->DestroyComponent();
 }
 
+UActorComponent* AActor::GetComponentByClassName(const std::string& ClassName)
+{
+	for (UActorComponent* Component : OwnedComponents)
+	{
+		// PendingDestroy를 이용해서 동적 삭제 대비해야함
+		if (Component)
+		{
+			if (Component->IsA(UClass::FindClass(ClassName)))
+			{
+				return Component;
+			}
+		}
+	}
+	return nullptr;
+}
+
 void AActor::RegisterAllComponents(UWorld* InWorld)
 {
 

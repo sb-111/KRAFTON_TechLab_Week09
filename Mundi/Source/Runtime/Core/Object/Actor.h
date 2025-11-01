@@ -48,6 +48,25 @@ public:
     // 씬 컴포넌트(트리/렌더용)
     const TArray<USceneComponent*>& GetSceneComponents() const { return SceneComponents; }
     const TSet<UActorComponent*>& GetOwnedComponents() const { return OwnedComponents; }
+
+    // Lua를 위한 범용 컴포넌트 서치 함수
+    UActorComponent* GetComponentByClassName(const std::string& ClassName);
+
+    // Lua를 위한 타입별 컴포넌트 서치 함수
+    template<typename T>
+    T* GetComponentByClass()
+    {
+        for (UActorComponent* Component : OwnedComponents)
+        {
+            if (Component)
+            {
+                T* CastedComp = Cast<T>(Component);
+                if (CastedComp)
+                    return CastedComp;
+            }
+        }
+        return nullptr;
+    }
     
     // 컴포넌트 생성 (템플릿)
     template<typename T>

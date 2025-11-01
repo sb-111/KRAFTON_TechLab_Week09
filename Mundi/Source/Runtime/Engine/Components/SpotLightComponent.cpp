@@ -108,27 +108,31 @@ FSpotLightInfo USpotLightComponent::GetLightInfo() const
 void USpotLightComponent::OnRegister(UWorld* InWorld)
 {
 	Super_t::OnRegister(InWorld);
-	SpriteComponent->SetTextureName(GDataDir + "/UI/Icons/SpotLight_64x.png");
-
-	// Create Direction Gizmo if not already created
-	if (!DirectionGizmo && !InWorld->bPie)
+	if (!InWorld->bPie)
 	{
-		CREATE_EDITOR_COMPONENT(DirectionGizmo, UGizmoArrowComponent);
+		if (SpriteComponent)
+			SpriteComponent->SetTextureName(GDataDir + "/UI/Icons/SpotLight_64x.png");
 
-		// DirectionGizmo->SetCanEverPick(false);
+		// Create Direction Gizmo if not already created
+		if (!DirectionGizmo)
+		{
+			CREATE_EDITOR_COMPONENT(DirectionGizmo, UGizmoArrowComponent);
 
-		// Set gizmo mesh (using the same mesh as GizmoActor's arrow)
-		DirectionGizmo->SetStaticMesh(GDataDir + "/Gizmo/TranslationHandle.obj");
-		DirectionGizmo->SetMaterialByName(0, "Shaders/UI/Gizmo.hlsl");
+			// DirectionGizmo->SetCanEverPick(false);
 
-		// Use world-space scale (not screen-constant scale like typical gizmos)
-		DirectionGizmo->SetUseScreenConstantScale(false);
+			// Set gizmo mesh (using the same mesh as GizmoActor's arrow)
+			DirectionGizmo->SetStaticMesh(GDataDir + "/Gizmo/TranslationHandle.obj");
+			DirectionGizmo->SetMaterialByName(0, "Shaders/UI/Gizmo.hlsl");
 
-		// Set default scale
-		DirectionGizmo->SetDefaultScale(FVector(0.5f, 0.3f, 0.3f));
+			// Use world-space scale (not screen-constant scale like typical gizmos)
+			DirectionGizmo->SetUseScreenConstantScale(false);
 
-		// Update gizmo properties to match light
-		UpdateDirectionGizmo();
+			// Set default scale
+			DirectionGizmo->SetDefaultScale(FVector(0.5f, 0.3f, 0.3f));
+
+			// Update gizmo properties to match light
+			UpdateDirectionGizmo();
+		}
 	}
 	InWorld->GetLightManager()->RegisterLight(this);
 }
