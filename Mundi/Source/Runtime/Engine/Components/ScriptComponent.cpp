@@ -118,8 +118,9 @@ void UScriptComponent::InitializeEnvironment()
 	Env["obj"] = Owner;
 
 	// 전역 print 함수를 UE_LOG로 리다이렉트
-	// Owner를 캡처하여 실행 시점에 LuaState를 얻어옴 (댕글링 참조 방지)
-	Env["print"] = [Owner](sol::variadic_args va) {
+	// UScriptComponent 인스턴스를 캡처하고 GetOwner()를 호출하여 댕글링 참조 방지
+	Env["print"] = [this](sol::variadic_args va) {
+		AActor* Owner = GetOwner(); // 현재 Owner를 가져옴
 		if (!Owner)
 		{
 			UE_LOG("[Lua Print] Error: Owner is null");
