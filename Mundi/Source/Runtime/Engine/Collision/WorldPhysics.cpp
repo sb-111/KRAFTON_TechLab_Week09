@@ -1,16 +1,16 @@
 ﻿#include "pch.h"
-#include "PhysicsManager.h"
+#include "WorldPhysics.h"
 #include "CollisionBVH.h"
 #include "ShapeComponent.h"
 
-IMPLEMENT_CLASS(UPhysicsManager)
+IMPLEMENT_CLASS(UWorldPhysics)
 
-UPhysicsManager::UPhysicsManager()
+UWorldPhysics::UWorldPhysics()
 {
 	BVH = new FCollisionBVH();
 }
 
-UPhysicsManager::~UPhysicsManager()
+UWorldPhysics::~UWorldPhysics()
 {
 	if (BVH)
 	{
@@ -19,7 +19,7 @@ UPhysicsManager::~UPhysicsManager()
 	}
 }
 
-void UPhysicsManager::Clear()
+void UWorldPhysics::Clear()
 {
 	if (BVH)
 	{
@@ -30,7 +30,7 @@ void UPhysicsManager::Clear()
 	CollisionDirtySet.Empty();
 }
 
-void UPhysicsManager::RegisterCollision(UShapeComponent* InShape)
+void UWorldPhysics::RegisterCollision(UShapeComponent* InShape)
 {
 	if (!InShape || InShape->GetShapeType() == EShapeType::None)
 	{
@@ -40,7 +40,7 @@ void UPhysicsManager::RegisterCollision(UShapeComponent* InShape)
 	MarkCollisionDirty(InShape);
 }
 
-void UPhysicsManager::BulkRegisterCollision(const TArray<UShapeComponent*>& InShapes)
+void UWorldPhysics::BulkRegisterCollision(const TArray<UShapeComponent*>& InShapes)
 {
 	if (InShapes.empty())
 	{
@@ -62,7 +62,7 @@ void UPhysicsManager::BulkRegisterCollision(const TArray<UShapeComponent*>& InSh
 	}
 }
 
-void UPhysicsManager::UnregisterCollision(UShapeComponent* InShape)
+void UWorldPhysics::UnregisterCollision(UShapeComponent* InShape)
 {
 	if (!InShape || InShape->GetShapeType() == EShapeType::None)
 	{
@@ -77,7 +77,7 @@ void UPhysicsManager::UnregisterCollision(UShapeComponent* InShape)
 	CollisionDirtySet.erase(InShape);
 }
 
-void UPhysicsManager::MarkCollisionDirty(UShapeComponent* PhysicsObject)
+void UWorldPhysics::MarkCollisionDirty(UShapeComponent* PhysicsObject)
 {
 	if (!PhysicsObject || PhysicsObject->GetShapeType() == EShapeType::None)
 	{
@@ -90,7 +90,7 @@ void UPhysicsManager::MarkCollisionDirty(UShapeComponent* PhysicsObject)
 	}
 }
 
-void UPhysicsManager::Update(float DeltaTime)
+void UWorldPhysics::Update(float DeltaTime)
 {
 	(void)DeltaTime;
 	while (true)
@@ -123,7 +123,7 @@ void UPhysicsManager::Update(float DeltaTime)
 	}
 }
 
-TArray<UShapeComponent*> UPhysicsManager::CollisionQuery(const UShapeComponent* PhysicsObject) const
+TArray<UShapeComponent*> UWorldPhysics::CollisionQuery(const UShapeComponent* PhysicsObject) const
 {
 	TArray<UShapeComponent*> Collisions;
 	if (BVH)
