@@ -15,7 +15,7 @@ function Tick(dt)
     -- dt: Delta Time (초 단위)
 
     -- 예시: Actor를 위로 이동
-    local velocity = Vector(0, 0, 10) -- 10 units/sec
+    local velocity = Vector(0, 5, 0) -- 10 units/sec
     obj:AddActorWorldLocation(velocity * dt)
 end
 

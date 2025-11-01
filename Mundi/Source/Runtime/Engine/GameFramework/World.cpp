@@ -91,9 +91,12 @@ void UWorld::InitializeLuaState()
 	LuaState.open_libraries();
 
 	// FVector 바인딩 (설계도 등록)
-	LuaState.new_usertype<FVector>("FVector", // Lua에서 사용할 타입 이름
-		// 생성자 바인딩: Lua에서 Vector(1, 2, 3) 처럼 호출 가능
-		sol::constructors<FVector(), FVector(float, float, float)>(),
+	LuaState.new_usertype<FVector>("Vector", // Lua에서 사용할 타입 이름
+		sol::call_constructor,
+		sol::factories(
+			[]() { return FVector(); },
+			[](float x, float y, float z) { return FVector(x, y, z); }
+		),
 		// 멤버 변수 바인딩: Lua에서 vec.x = 10처럼 접근 가능
 		"x", &FVector::X,
 		"y", &FVector::Y,
@@ -116,8 +119,11 @@ void UWorld::InitializeLuaState()
 	);
 
 	// FTransform 바인딩
-	LuaState.new_usertype<FTransform>("Transform",
-		sol::constructors<FTransform()>(),
+	LuaState.new_usertype<FTransform>("FTransform",
+		sol::call_constructor,
+		sol::factories(
+			[]() { return FTransform(); }
+		),
 		// 멤버 변수 바인딩 (간단한 구조체라 Get/Set 대신 직접 접근)
 		"Location", &FTransform::Translation,
 		"Rotation", &FTransform::Rotation,
