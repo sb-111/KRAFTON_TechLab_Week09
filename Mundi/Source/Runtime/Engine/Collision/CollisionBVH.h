@@ -21,7 +21,9 @@ public:
 
 	void FlushRebuild();
 
+	/**@brief AABB를 이용한 간이 충돌검사로 충돌한 shape들을 반환합니다. 다소 부정확할 수 있습니다.*/
 	TArray<UShapeComponent*> Query(const FAABB& InBounds) const;
+	/**@brief UShapeComponent끼리 정확한 충돌 검사를 진행하여 충돌한 shape들을 반환합니다.*/
 	TArray<UShapeComponent*> Query(const UShapeComponent* InShape) const;
 
 	int32 TotalShapeCount() const { return static_cast<int32>(ShapeArray.Num()); }

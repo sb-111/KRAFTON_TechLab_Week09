@@ -18,7 +18,7 @@ public:
 
 	// ───── Sphere Component 속성 ─────────────────────────
 	void SetRadius(const float InRadius);
-	FVector GetRadius() const { return Radius; }
+	float GetRadius() const { return Radius; }
 	const FBoundingSphere& GetBoundingSphere() const { return CachedBound; }
 
 	// ───── Transform 업데이트 ────────────────────────────

@@ -136,14 +136,23 @@ TArray<UShapeComponent*> FCollisionBVH::Query(const UShapeComponent* InShape) co
 	const FAABB* Cached = CachedBounds.Find(NonConstShape);
 	FAABB QueryBound = Cached ? *Cached : NonConstShape->GetWorldAABB();
 
-	TArray<UShapeComponent*> Result = Query(QueryBound);
-
-	// 자기 자신 제외
-	if (!Result.empty())
+	TArray<UShapeComponent*> Candidates = Query(QueryBound);
+	if (Candidates.empty())
 	{
-		Result.erase(std::remove(Result.begin(), Result.end(), NonConstShape), Result.end());
+		return TArray<UShapeComponent*>();
 	}
-
+	// 자기 자신 제외
+	Candidates.erase(std::remove(Candidates.begin(), Candidates.end(), NonConstShape), Candidates.end());
+	
+	TArray<UShapeComponent*> Result;
+	for (UShapeComponent* Candidate : Candidates)
+	{
+		if (!Candidate)
+			continue;
+		if (Candidate->Intersects(NonConstShape))
+			Result.push_back(Candidate);
+	}
+	
 	return Result;
 }
 

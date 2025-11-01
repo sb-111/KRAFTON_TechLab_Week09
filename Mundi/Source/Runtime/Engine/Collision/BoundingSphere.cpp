@@ -16,8 +16,11 @@ bool FBoundingSphere::Contains(const FVector& Point) const
 
 bool FBoundingSphere::Contains(const FBoundingSphere& Other) const
 {
-	const float DistSquared = (Other.Center - Center).SizeSquared();
 	const float RadiusDiff = Radius - Other.Radius;
+	if (RadiusDiff < 0.0f)
+		return false;
+	
+	const float DistSquared = (Other.Center - Center).SizeSquared();
 	return DistSquared <= (RadiusDiff * RadiusDiff);
 }
 
