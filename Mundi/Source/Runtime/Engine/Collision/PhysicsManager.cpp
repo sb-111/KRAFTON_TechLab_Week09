@@ -32,6 +32,11 @@ void UPhysicsManager::Clear()
 
 void UPhysicsManager::RegisterCollision(UShapeComponent* InShape)
 {
+	if (!InShape || InShape->GetShapeType() == EShapeType::None)
+	{
+		return;
+	}
+
 	MarkCollisionDirty(InShape);
 }
 
@@ -44,7 +49,7 @@ void UPhysicsManager::BulkRegisterCollision(const TArray<UShapeComponent*>& InSh
 
 	for (UShapeComponent* Shape : InShapes)
 	{
-		if (!Shape)
+		if (!Shape || Shape->GetShapeType() == EShapeType::None)
 		{
 			continue;
 		}
@@ -59,7 +64,7 @@ void UPhysicsManager::BulkRegisterCollision(const TArray<UShapeComponent*>& InSh
 
 void UPhysicsManager::UnregisterCollision(UShapeComponent* InShape)
 {
-	if (!InShape)
+	if (!InShape || InShape->GetShapeType() == EShapeType::None)
 	{
 		return;
 	}
@@ -74,7 +79,7 @@ void UPhysicsManager::UnregisterCollision(UShapeComponent* InShape)
 
 void UPhysicsManager::MarkCollisionDirty(UShapeComponent* PhysicsObject)
 {
-	if (!PhysicsObject)
+	if (!PhysicsObject || PhysicsObject->GetShapeType() == EShapeType::None)
 	{
 		return;
 	}
@@ -101,7 +106,7 @@ void UPhysicsManager::Update(float DeltaTime)
 			continue;
 		}
 
-		if (!Shape)
+		if (!Shape || Shape->GetShapeType() == EShapeType::None)
 		{
 			continue;
 		}
@@ -116,4 +121,19 @@ void UPhysicsManager::Update(float DeltaTime)
 	{
 		BVH->FlushRebuild();
 	}
+}
+
+TArray<UShapeComponent*> UPhysicsManager::CollisionQuery(const UShapeComponent* PhysicsObject) const
+{
+	TArray<UShapeComponent*> Collisions;
+	if (BVH)
+	{
+		if (!PhysicsObject || PhysicsObject->GetShapeType() == EShapeType::None)
+		{
+			return Collisions;
+		}
+
+		Collisions = BVH->Query(PhysicsObject);
+	}
+	return Collisions;
 }
