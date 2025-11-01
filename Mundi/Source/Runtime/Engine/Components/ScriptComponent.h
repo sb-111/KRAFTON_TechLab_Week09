@@ -79,7 +79,7 @@ public:
 	 * 게임이 실행 중이라면 'BeginPlay' 함수를 다시 호출하여 변경 사항을 즉시 적용합니다.
 	 */
 	void ReloadScript();
-
+	void DuplicateSubObjects() override;
 	DECLARE_DUPLICATE(UScriptComponent)
 
 protected:

@@ -363,3 +363,11 @@ void UScriptComponent::EditScript()
 #endif
 }
 
+void UScriptComponent::DuplicateSubObjects()
+{
+	Super::DuplicateSubObjects();
+
+	// ScriptComponent는 별도의 서브 오브젝트가 없음
+	// ScriptFilePath는 자동으로 복사되며, Lua 환경은 PostDuplicate()에서 초기화됨
+}
+

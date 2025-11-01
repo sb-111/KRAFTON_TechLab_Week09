@@ -88,10 +88,10 @@ void UWorld::InitializeGizmo()
 void UWorld::InitializeLuaState()
 {
 	// Lua 표준 라이브러리 로드
-	LuaState.open_libraries(sol::lib::base);
+	LuaState.open_libraries();
 
 	// FVector 바인딩 (설계도 등록)
-	LuaState.new_usertype<FVector>("Vector", // Lua에서 사용할 타입 이름
+	LuaState.new_usertype<FVector>("FVector", // Lua에서 사용할 타입 이름
 		// 생성자 바인딩: Lua에서 Vector(1, 2, 3) 처럼 호출 가능
 		sol::constructors<FVector(), FVector(float, float, float)>(),
 		// 멤버 변수 바인딩: Lua에서 vec.x = 10처럼 접근 가능
@@ -197,7 +197,10 @@ UWorld* UWorld::DuplicateWorldForPIE(UWorld* InEditorWorld)
 	//ULevel* NewLevel = ULevelService::CreateNewLevel();
 	UWorld* PIEWorld = NewObject<UWorld>(); // 레벨도 새로 생성됨
 	PIEWorld->bPie = true;
-	
+
+	// PIE World의 Lua State 초기화 (스크립트 실행을 위해 필수)
+	PIEWorld->InitializeLuaState();
+
 	FWorldContext PIEWorldContext = FWorldContext(PIEWorld, EWorldType::Game);
 	GEngine.AddWorldContext(PIEWorldContext);
 	
