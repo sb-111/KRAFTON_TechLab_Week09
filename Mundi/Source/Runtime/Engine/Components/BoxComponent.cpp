@@ -61,24 +61,26 @@ bool UBoxComponent::Intersects(const UShapeComponent* Other) const
 {
 	switch (Other->GetShapeType())
 	{
-	case EShapeType::Box: {
-		const UBoxComponent* OtherBox = Cast<UBoxComponent>(Other);
-		return this->CachedBound.Intersects(OtherBox->CachedBound);
-	}
-	case EShapeType::Sphere: {
-		const USphereComponent* OtherSphere = Cast<USphereComponent>(Other);
-		return Collision::Intersects(this->CachedBound, OtherSphere->GetBoundingSphere());
-	}
-	case EShapeType::Capsule: {
-		// OBB vs Capsule 충돌 검사
-		const UCapsuleComponent* OtherCapsule = Cast<UCapsuleComponent>(Other);
-		return Collision::Intersects(this->CachedBound, OtherCapsule->GetBoundingCapsule());
-	}
-	default:
-	{
-		UE_LOG("UBoxComponent::Intersects: Unsupported shape type for collision detection.");
-		return false;
-	}
+		case EShapeType::Box:
+		{
+			const UBoxComponent* OtherBox = Cast<UBoxComponent>(Other);
+			return this->CachedBound.Intersects(OtherBox->CachedBound);
+		}
+		case EShapeType::Sphere:
+		{
+			const USphereComponent* OtherSphere = Cast<USphereComponent>(Other);
+			return Collision::Intersects(this->CachedBound, OtherSphere->GetBoundingSphere());
+		}
+		case EShapeType::Capsule:
+		{
+			const UCapsuleComponent* OtherCapsule = Cast<UCapsuleComponent>(Other);
+			return Collision::Intersects(this->CachedBound, OtherCapsule->GetBoundingCapsule());
+		}
+		default:
+		{
+			UE_LOG("UBoxComponent::Intersects: Unsupported shape type for collision detection.");
+			return false;
+		}
 	}
 }
 

@@ -204,6 +204,8 @@ xcopy /Y /D "$(ProjectDir)Scripts\*.*" "$(OutDir)Scripts\"</Command>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Source\Editor\Clipboard\ClipboardManager.cpp" />
     <ClCompile Include="Source\Runtime\Engine\Collision\BoundingCapsule.cpp" />
+    <ClCompile Include="Source\Runtime\Engine\Collision\CollisionBVH.cpp" />
+    <ClCompile Include="Source\Runtime\Engine\Collision\PhysicsManager.cpp" />
     <ClCompile Include="Source\Runtime\Engine\Components\AmbientLightComponent.cpp" />
     <ClCompile Include="Source\Runtime\Engine\Components\BoxComponent.cpp" />
     <ClCompile Include="Source\Runtime\Engine\Components\CapsuleComponent.cpp" />
@@ -226,6 +228,7 @@ xcopy /Y /D "$(ProjectDir)Scripts\*.*" "$(OutDir)Scripts\"</Command>
     <ClCompile Include="Source\Runtime\Engine\GameFramework\Info.cpp" />
     <ClCompile Include="Source\Runtime\Engine\GameFramework\PointLightActor.cpp" />
     <ClCompile Include="Source\Runtime\Engine\GameFramework\SpotLightActor.cpp" />
+    <ClCompile Include="Source\Runtime\Engine\Spatial\WorldPartitionManager.cpp" />
     <ClCompile Include="Source\Runtime\Renderer\CSM.cpp" />
     <ClCompile Include="Source\Runtime\Renderer\LightManager.cpp" />
     <ClCompile Include="Source\Runtime\Renderer\SceneView.cpp" />
@@ -326,7 +329,6 @@ xcopy /Y /D "$(ProjectDir)Scripts\*.*" "$(OutDir)Scripts\"</Command>
     <ClCompile Include="Source\Runtime\Engine\GameFramework\Level.cpp" />
     <ClCompile Include="Source\Runtime\Engine\GameFramework\StaticMeshActor.cpp" />
     <ClCompile Include="Source\Runtime\Engine\GameFramework\World.cpp" />
-    <ClCompile Include="Source\Runtime\Engine\GameFramework\WorldPartitionManager.cpp" />
     <ClCompile Include="Source\Runtime\Engine\Spatial\BVHierarchy.cpp" />
     <ClCompile Include="Source\Runtime\Engine\Spatial\MeshBVH.cpp" />
     <ClCompile Include="Source\Runtime\Engine\Spatial\Occlusion.cpp" />
@@ -486,6 +488,8 @@ xcopy /Y /D "$(ProjectDir)Scripts\*.*" "$(OutDir)Scripts\"</Command>
     <ClInclude Include="Source\Runtime\Core\Misc\PathUtils.h" />
     <ClInclude Include="Source\Runtime\Core\Object\Property.h" />
     <ClInclude Include="Source\Runtime\Engine\Collision\BoundingCapsule.h" />
+    <ClInclude Include="Source\Runtime\Engine\Collision\CollisionBVH.h" />
+    <ClInclude Include="Source\Runtime\Engine\Collision\PhysicsManager.h" />
     <ClInclude Include="Source\Runtime\Engine\Components\BoxComponent.h" />
     <ClInclude Include="Source\Runtime\Engine\Components\CapsuleComponent.h" />
     <ClInclude Include="Source\Runtime\Engine\Components\MovementComponent.h" />

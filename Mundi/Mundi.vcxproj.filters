@@ -189,9 +189,6 @@
     <ClCompile Include="Source\Runtime\Engine\GameFramework\World.cpp">
       <Filter>Source\Runtime\Engine\GameFramework</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Runtime\Engine\GameFramework\WorldPartitionManager.cpp">
-      <Filter>Source\Runtime\Engine\GameFramework</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Runtime\Engine\Collision\AABB.cpp">
       <Filter>Source\Runtime\Engine\Collision</Filter>
     </ClCompile>
@@ -441,6 +438,16 @@
     <ClCompile Include="Source\Runtime\Engine\Collision\BoundingCapsule.cpp" />
     <ClCompile Include="Source\Runtime\Engine\Components\CapsuleComponent.cpp">
       <Filter>Source\Runtime\Engine\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Runtime\Engine\Components\ScriptComponent.cpp" />
+    <ClCompile Include="Source\Runtime\Engine\Spatial\WorldPartitionManager.cpp">
+      <Filter>Source\Runtime\Engine\Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Runtime\Engine\Collision\PhysicsManager.cpp">
+      <Filter>Source\Runtime\Engine\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Runtime\Engine\Collision\CollisionBVH.cpp">
+      <Filter>Source\Runtime\Engine\Collision</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -916,6 +923,13 @@
       <Filter>Source\Runtime\Engine\Components</Filter>
     </ClInclude>
     <ClInclude Include="Source\Runtime\Engine\Collision\BoundingCapsule.h" />
+    <ClInclude Include="Source\Runtime\Engine\Components\ScriptComponent.h" />
+    <ClInclude Include="Source\Runtime\Engine\Collision\PhysicsManager.h">
+      <Filter>Source\Runtime\Engine\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\Engine\Collision\CollisionBVH.h">
+      <Filter>Source\Runtime\Engine\Collision</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source">
