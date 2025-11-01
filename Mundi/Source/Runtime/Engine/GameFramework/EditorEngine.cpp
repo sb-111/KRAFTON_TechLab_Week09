@@ -322,7 +322,10 @@ void UEditorEngine::Shutdown()
 {
     // Release ImGui first (it may hold D3D11 resources)
     UUIManager::GetInstance().Release();
-
+    for (FWorldContext Context : WorldContexts)
+    {
+        DeleteObject(Context.World);
+    }
     // Delete all UObjects (Components, Actors, Resources)
     // Resource destructors will properly release D3D resources
     ObjectFactory::DeleteAll(true);
