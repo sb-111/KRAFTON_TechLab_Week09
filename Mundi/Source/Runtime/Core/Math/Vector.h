@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <cmath>        // ← 추가 (std::sin, std::cos, std::atan2, std::copysign 등)
 #include <algorithm>
 #include <string>
@@ -198,7 +198,7 @@ struct FVector
 	}
 	bool operator!=(const FVector& V) const { return !(*this == V); }
 
-	FVector ComponentMin(const FVector& B)
+	FVector ComponentMin(const FVector& B) const
 	{
 		return FVector(
 			(X < B.X) ? X : B.X,
@@ -206,7 +206,7 @@ struct FVector
 			(Z < B.Z) ? Z : B.Z
 		);
 	}
-	FVector ComponentMax(const FVector& B)
+	FVector ComponentMax(const FVector& B) const
 	{
 		return FVector(
 			(X > B.X) ? X : B.X,

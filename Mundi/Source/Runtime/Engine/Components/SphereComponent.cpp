@@ -12,9 +12,8 @@ BEGIN_PROPERTIES(USphereComponent)
     ADD_PROPERTY(bool, bDrawOnlyIfSelected, "Shape", true, "선택되었을 때만 디버그 드로우")
 END_PROPERTIES()
 
-USphereComponent::USphereComponent()
+USphereComponent::USphereComponent() : Radius(5.0f)
 {
-    Radius = 5.0f;
     ShapeColor = FLinearColor(1.0f, 0.34f, 0.28f);
     bDrawOnlyIfSelected = false;
     UpdateBoundingSphere();

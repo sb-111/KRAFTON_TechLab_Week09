@@ -39,7 +39,7 @@ struct FAABB
 	// i번째 옥탄트 Bounds 반환
 	FAABB CreateOctant(int i) const;
 	
-	bool IntersectsRay(const FRay& InRay, float& OutEnterDistance, float& OutExitDistance);
+	bool IntersectsRay(const FRay& InRay, float& OutEnterDistance, float& OutExitDistance) const;
 
 	static FAABB Union(const FAABB& A, const FAABB& B);
 	void Union(const FAABB& Other);
