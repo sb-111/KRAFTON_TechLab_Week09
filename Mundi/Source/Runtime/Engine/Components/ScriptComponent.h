@@ -117,7 +117,7 @@ public:
 		sol::protected_function LuaFunc = Env[FuncName];
 		if (LuaFunc.valid())
 		{
-			UE_LOG("[ScriptComponent] Calling Lua function: %s", FuncName);
+			//UE_LOG("[ScriptComponent] Calling Lua function: %s", FuncName);
 			auto Result = LuaFunc(args...);
 			if (!Result.valid())
 			{
@@ -126,7 +126,7 @@ public:
 			}
 			else
 			{
-				UE_LOG("[ScriptComponent] Lua function %s executed successfully", FuncName);
+				//UE_LOG("[ScriptComponent] Lua function %s executed successfully", FuncName);
 			}
 		}
 		else

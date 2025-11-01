@@ -118,8 +118,9 @@ void UScriptComponent::InitializeEnvironment()
 	Env["obj"] = Owner;
 
 	// 전역 print 함수를 UE_LOG로 리다이렉트
-	// Owner를 캡처하여 실행 시점에 LuaState를 얻어옴 (댕글링 참조 방지)
-	Env["print"] = [Owner](sol::variadic_args va) {
+	// 타입별로 직접 처리하여 환경 불일치 문제 방지 (코루틴 지원)
+	Env["print"] = [this](sol::variadic_args va, sol::this_state s) {
+		AActor* Owner = GetOwner();
 		if (!Owner)
 		{
 			UE_LOG("[Lua Print] Error: Owner is null");
@@ -133,31 +134,52 @@ void UScriptComponent::InitializeEnvironment()
 			return;
 		}
 
-		sol::state& LuaState = World->GetLuaState();
+		sol::state_view lua(s);
 		std::string output;
-		int i = 1;
+
 		for (auto v : va)
 		{
-			sol::protected_function_result tostring_result = LuaState.globals()["tostring"](v);
-			if (tostring_result.valid() && tostring_result.get_type() == sol::type::string)
+			sol::type t = v.get_type();
+
+			switch (t)
 			{
-				output += tostring_result.get<std::string>() + "\t";
-			}
-			else
-			{
-				std::string type_name = sol::type_name(LuaState, v.get_type());
-				if (!tostring_result.valid())
+			case sol::type::string:
+				output += v.as<std::string>() + "\t";
+				break;
+
+			case sol::type::number:
+				output += std::to_string(v.as<double>()) + "\t";
+				break;
+
+			case sol::type::boolean:
+				output += (v.as<bool>() ? "true" : "false") + std::string("\t");
+				break;
+
+			case sol::type::lua_nil:
+				output += "nil\t";
+				break;
+
+			default:
+				// 기타 타입 (table, function, userdata 등) - 환경의 tostring 사용
+				sol::protected_function tostring = Env["tostring"];
+				if (!tostring.valid())
 				{
-					sol::error err = tostring_result;
-					UE_LOG("[Lua Print Error] 'tostring' call failed for arg %d (%s). Reason: %s", i, type_name.c_str(), err.what());
+					// 환경에 tostring이 없으면 전역 것 사용
+					tostring = lua["tostring"];
+				}
+
+				auto result = tostring(v);
+				if (result.valid() && result.get_type() == sol::type::string)
+				{
+					output += result.get<std::string>() + "\t";
 				}
 				else
 				{
-					UE_LOG("[Lua Print Error] Failed to convert arg %d to string. Type was '%s' but tostring returned %s.", i, type_name.c_str(), sol::type_name(LuaState, tostring_result.get_type()));
+					// tostring 실패 시 타입 이름 출력
+					output += "[" + std::string(sol::type_name(lua, t)) + "]\t";
 				}
-				output += "[CONV_ERROR] ";
+				break;
 			}
-			i++;
 		}
 
 		// 마지막 탭 제거
