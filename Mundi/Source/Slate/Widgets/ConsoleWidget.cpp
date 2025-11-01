@@ -347,7 +347,7 @@ void UConsoleWidget::ExecCommand(const char* command_line)
             else
             {
                 bool bHandled = false;
-                UWorld* World = UUIManager::GetInstance().GetWorld();
+                UWorld* World = GWorld;
                 if (World)
                 {
                     if (Stricmp(arg, "NONE") == 0)

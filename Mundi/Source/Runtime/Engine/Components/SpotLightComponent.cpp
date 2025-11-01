@@ -129,7 +129,7 @@ void USpotLightComponent::OnRegister(UWorld* InWorld)
 	SpriteComponent->SetTextureName(GDataDir + "/UI/Icons/SpotLight_64x.png");
 
 	// Create Direction Gizmo if not already created
-	if (!DirectionGizmo)
+	if (!DirectionGizmo && !InWorld->bPie)
 	{
 		CREATE_EDITOR_COMPONENT(DirectionGizmo, UGizmoArrowComponent);
 

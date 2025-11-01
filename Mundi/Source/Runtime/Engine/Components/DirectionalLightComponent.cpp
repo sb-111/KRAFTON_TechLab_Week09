@@ -50,7 +50,7 @@ void UDirectionalLightComponent::OnRegister(UWorld* InWorld)
 	}
 
 	// Create Direction Gizmo if not already created
-	if (!DirectionGizmo)
+	if (!DirectionGizmo && !InWorld->bPie)
 	{
 		UE_LOG("Creating DirectionGizmo...");
 		CREATE_EDITOR_COMPONENT(DirectionGizmo, UGizmoArrowComponent);
