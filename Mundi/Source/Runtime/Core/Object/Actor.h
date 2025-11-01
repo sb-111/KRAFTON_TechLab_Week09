@@ -91,7 +91,7 @@ public:
 
     // ===== 파괴 재진입 가드 =====
     bool IsPendingDestroy() const { return bPendingDestroy; }
-    void MarkPendingDestroy() { bPendingDestroy = true; }
+    void MarkPendingDestroy();
 
     // ───────────────
     // Transform API

@@ -36,7 +36,8 @@ public:
     void UnregisterComponent();                        // 외부에서 호출 (AActor)
     virtual void OnRegister(UWorld* InWorld);                         // 내부 훅 (오버라이드 지점)
     virtual void OnUnregister();                       // 내부 훅 (오버라이드 지점)
-    void DestroyComponent();                           // 소멸(EndPlay 포함)
+    void MarkPendingDestroy();
+    void Destroy();                           // 소멸(EndPlay 포함)
 
     // ─────────────── 활성화/틱
     void SetActive(bool bNewActive) { bIsActive = bNewActive; }
@@ -93,6 +94,6 @@ protected:
 
     bool bRegistered = false;    // RegisterComponent가 호출됐는가
     bool bHasBegunPlay = false;  // BeginPlay가 호출됐는가
-    bool bPendingDestroy = false;// DestroyComponent 의도 플래그
+    bool bPendingDestroy = false;// Destroy 의도 플래그
     bool bIsEditable = true;    //UI에서 Edit이 가능한가
 };

@@ -58,6 +58,9 @@ public:
     AActor* SpawnActor(UClass* Class);
 
     bool DestroyActor(AActor* Actor);
+    void MarkPendingDestroy(AActor* Actor) { ActorsToDestroy.Add(Actor); }
+    void MarkPendingDestroy(UActorComponent* Component) { ComponentsToDestroy.Add(Component); }
+    void PendingDestroy();
 
     // Partial hooks
     void OnActorSpawned(AActor* Actor);
@@ -154,6 +157,11 @@ private:
 
     // Lua Coroutine Manager
     FCoroutineManager CoroutineManager;
+
+    // Pending Destory List
+    TArray<AActor*> ActorsToDestroy;
+    TArray<UActorComponent*> ComponentsToDestroy;
+
 };
 
 template<class T>

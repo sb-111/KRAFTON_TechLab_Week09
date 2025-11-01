@@ -311,6 +311,8 @@ void UEditorEngine::MainLoop()
 
         Tick(DeltaSeconds);
         Render();
+
+        GWorld->PendingDestroy();
         
         // Shader Hot Reloading - Call AFTER render to avoid mid-frame resource conflicts
         // This ensures all GPU commands are submitted before we check for shader updates

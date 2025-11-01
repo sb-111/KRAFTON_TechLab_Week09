@@ -41,8 +41,8 @@ USceneComponent::~USceneComponent()
     {
         if (Child && !Child->IsPendingDestroy())
         {
-            // DestroyComponent를 통한 적절한 정리
-            Child->DestroyComponent();
+            // Destroy를 통한 적절한 정리
+            Child->Destroy();
         }
     }
 

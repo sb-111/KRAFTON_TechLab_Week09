@@ -77,17 +77,22 @@ void UActorComponent::OnUnregister()
     // 리소스/핸들 반납
 }
 
-void UActorComponent::DestroyComponent()
+void UActorComponent::Destroy()
 {
-    if (bPendingDestroy) return;
-    bPendingDestroy = true;
+    MarkPendingDestroy();
 
     // 등록 중이면 우선 해제(EndPlay 포함)
     if (bRegistered) UnregisterComponent();
 
-    DeleteObject(this);
+   // DeleteObject(this);
     // Owner 참조 끊기
     //Owner = nullptr;
+}
+
+void UActorComponent::MarkPendingDestroy()
+{
+    bPendingDestroy = true; 
+    GWorld->MarkPendingDestroy(this);
 }
 
 // ─────────────── Lifecycle (게임 수명)

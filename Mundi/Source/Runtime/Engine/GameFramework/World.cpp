@@ -413,8 +413,7 @@ bool UWorld::DestroyActor(AActor* Actor)
 	if (!Actor) return false;
 
 	// 재진입 가드
-	if (Actor->IsPendingDestroy()) return false;
-	Actor->MarkPendingDestroy();
+	if (!Actor->IsPendingDestroy()) return false;
 
 	// 선택/UI 해제
 	if (SelectionMgr) SelectionMgr->DeselectActor(Actor);
@@ -459,6 +458,21 @@ bool UWorld::DestroyActor(AActor* Actor)
 	}
 
 	return false; // 레벨에 없는 액터
+}
+
+void UWorld::PendingDestroy()
+{
+	for (UActorComponent* Component : ComponentsToDestroy)
+	{
+		DeleteObject(Component);
+	}
+	for (AActor* Actor : ActorsToDestroy)
+	{
+		DestroyActor(Actor);
+	}
+	
+	ActorsToDestroy.clear();
+	ComponentsToDestroy.clear();
 }
 
 void UWorld::OnActorSpawned(AActor* Actor)

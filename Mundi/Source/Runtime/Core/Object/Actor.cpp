@@ -19,9 +19,9 @@ AActor::AActor()
 
 AActor::~AActor()
 {
-	// UE처럼 역순/안전 소멸: 모든 컴포넌트 DestroyComponent
+	// UE처럼 역순/안전 소멸: 모든 컴포넌트 Destroy
 	for (UActorComponent* Comp : OwnedComponents)
-		if (Comp) Comp->DestroyComponent();  // 안에서 Unregister/Detach 처리한다고 가정
+		if (Comp) Comp->Destroy();  // 안에서 Unregister/Detach 처리한다고 가정
 	OwnedComponents.clear();
 	SceneComponents.Empty();
 	RootComponent = nullptr;
@@ -54,22 +54,26 @@ void AActor::EndPlay(EEndPlayReason Reason)
 	for (UActorComponent* Comp : OwnedComponents)
 		if (Comp) Comp->EndPlay(Reason);
 }
+// 실제 삭제는 World가 진행하고 Actor를 씬으로부터 고립시킴(OwnedComponent에도 전파)
 void AActor::Destroy()
 {
-	// 재진입/중복 방지
 	if (IsPendingDestroy())
 	{
 		return;
 	}
+
 	MarkPendingDestroy();
-	// 월드가 있으면 월드에 위임 (여기서 더 이상 this 만지지 않기)
+	for (UActorComponent* Component : OwnedComponents)
+	{
+		Component->Destroy();
+	}
 	if (World) 
 	{ 
-		World->DestroyActor(this); 
+		//World->DestroyActor(this); 
 		return; 
 	}
 
-	// 월드가 없을 때만 자체 정리
+	// 월드가 없을 때 자체적으로 삭제. 월드 등록에 실패하거나, 종료 순서가 무너졌을 경우를 대비
 	EndPlay(EEndPlayReason::Destroyed);
 	UnregisterAllComponents(true);
 	DestroyAllComponents();
@@ -78,6 +82,11 @@ void AActor::Destroy()
 	ObjectFactory::DeleteObject(this);
 }
 
+void AActor::MarkPendingDestroy()
+{ 
+	bPendingDestroy = true;  
+	GWorld->MarkPendingDestroy(this); 
+}
 
 
 void AActor::SetRootComponent(USceneComponent* InRoot)
@@ -159,7 +168,7 @@ void AActor::RemoveOwnedComponent(UActorComponent* Component)
 	OwnedComponents.erase(Component);
 
 	Component->UnregisterComponent();
-	Component->DestroyComponent();
+	Component->Destroy();
 }
 
 UActorComponent* AActor::GetComponentByClassName(const std::string& ClassName)
@@ -223,7 +232,7 @@ void AActor::DestroyAllComponents()
 	for (UActorComponent* C : Temp)
 	{
 		if (!C) continue;
-		C->DestroyComponent(); // 내부에서 Owner=nullptr 등도 처리
+		C->Destroy(); // 내부에서 Owner=nullptr 등도 처리
 	}
 	OwnedComponents.clear();
 }
