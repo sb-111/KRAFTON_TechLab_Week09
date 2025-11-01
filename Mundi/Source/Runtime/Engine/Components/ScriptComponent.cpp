@@ -38,12 +38,20 @@ void UScriptComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	UE_LOG("[ScriptComponent] BeginPlay called for %s", GetOwner() ? GetOwner()->GetName().ToString().c_str() : "Unknown");
+
 	if (!ScriptFilePath.empty())
 	{
+		UE_LOG("[ScriptComponent] Loading script from BeginPlay: %s", ScriptFilePath.c_str());
 		LoadScript(ScriptFilePath);
+	}
+	else
+	{
+		UE_LOG("[ScriptComponent] No script file path set");
 	}
 
 	// Lua BeginPlay 호출
+	UE_LOG("[ScriptComponent] Calling Lua BeginPlay...");
 	CallLuaFunction("BeginPlay");
 }
 
@@ -102,10 +110,17 @@ void UScriptComponent::InitializeEnvironment()
 		{
 			output += LuaState.globals()["tostring"](v).get<std::string>() + "\t";
 		}
-		UE_LOG("%s", output.c_str());
+
+		// 마지막 탭 제거
+		if (!output.empty() && output.back() == '\t') {
+			output.pop_back();
+		}
+
+		UE_LOG("[Lua Print] %s", output.c_str());
 	};
 
 	bEnvironmentInitialized = true;
+	UE_LOG("[ScriptComponent] Environment initialized for %s", Owner->GetName().ToString().c_str());
 }
 
 void UScriptComponent::CleanupEnvironment()
@@ -153,6 +168,24 @@ void UScriptComponent::LoadScript(const FString& FilePath)
 	                            std::istreambuf_iterator<char>());
 	file.close();
 
+	// UTF-8 BOM 제거 (EF BB BF)
+	if (script_content.size() >= 3 &&
+	    static_cast<unsigned char>(script_content[0]) == 0xEF &&
+	    static_cast<unsigned char>(script_content[1]) == 0xBB &&
+	    static_cast<unsigned char>(script_content[2]) == 0xBF)
+	{
+		script_content.erase(0, 3);
+		UE_LOG("[ScriptComponent] UTF-8 BOM removed from script");
+	}
+
+	// 디버깅: 스크립트 첫 100자 출력
+	UE_LOG("[ScriptComponent] Executing script, size: %d bytes", (int)script_content.size());
+	if (script_content.size() > 0)
+	{
+		std::string preview = script_content.substr(0, std::min<size_t>(100, script_content.size()));
+		UE_LOG("[ScriptComponent] Script preview: %s...", preview.c_str());
+	}
+
 	// 스크립트 실행
 	auto result = LuaState.safe_script(script_content, Env, FilePath);
 
@@ -166,7 +199,18 @@ void UScriptComponent::LoadScript(const FString& FilePath)
 
 	ScriptFilePath = FilePath;
 	bScriptLoaded = true;
-	UE_LOG("[Lua Script Loaded] %s", FilePath.c_str());
+	UE_LOG("[Lua Script Loaded] %s (bScriptLoaded=true)", FilePath.c_str());
+
+	// 환경에 BeginPlay 함수가 있는지 확인
+	sol::object beginPlayObj = Env["BeginPlay"];
+	if (beginPlayObj.valid() && beginPlayObj.is<sol::function>())
+	{
+		UE_LOG("[ScriptComponent] BeginPlay function found in script");
+	}
+	else
+	{
+		UE_LOG("[ScriptComponent] WARNING: BeginPlay function NOT found in script!");
+	}
 }
 
 void UScriptComponent::ReloadScript()
@@ -229,6 +273,12 @@ void UScriptComponent::CreateScript(const FString& FilePath)
 
 	// 생성 후 바로 로드
 	LoadScript(ScriptFilePath);
+
+	// C++의 BeginPlay가 이미 호출된 후 스크립트를 생성했다면, Lua의 BeginPlay를 명시적으로 호출
+	if (HasBegunPlay())
+	{
+		CallLuaFunction("BeginPlay");
+	}
 }
 
 void UScriptComponent::EditScript()
@@ -263,3 +313,4 @@ void UScriptComponent::EditScript()
 	UE_LOG("[ScriptComponent] EditScript is only supported on Windows");
 #endif
 }
+

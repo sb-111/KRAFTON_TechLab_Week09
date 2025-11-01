@@ -80,6 +80,8 @@ public:
 	 */
 	void ReloadScript();
 
+	DECLARE_DUPLICATE(UScriptComponent)
+
 protected:
 	/**
 	 * @brief 직렬화가 완료된 후 호출됩니다.
@@ -100,17 +102,30 @@ public:
 	template<typename... Args>
 	void CallLuaFunction(const char* FuncName, Args... args)
 	{
-		if (!bScriptLoaded) return;
+		if (!bScriptLoaded)
+		{
+			UE_LOG("[ScriptComponent] Cannot call %s: Script not loaded", FuncName);
+			return;
+		}
 
 		sol::protected_function LuaFunc = Env[FuncName];
 		if (LuaFunc.valid())
 		{
+			UE_LOG("[ScriptComponent] Calling Lua function: %s", FuncName);
 			auto Result = LuaFunc(args...);
 			if (!Result.valid())
 			{
 				sol::error Err = Result;
 				UE_LOG("[Lua Error] %s: %s", FuncName, Err.what());
 			}
+			else
+			{
+				UE_LOG("[ScriptComponent] Lua function %s executed successfully", FuncName);
+			}
+		}
+		else
+		{
+			UE_LOG("[ScriptComponent] Lua function '%s' not found in script", FuncName);
 		}
 	}
 
