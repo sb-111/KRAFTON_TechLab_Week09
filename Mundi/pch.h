@@ -54,6 +54,7 @@
 #include "Object.h"
 #include "ObjectFactory.h"
 #include "ObjectMacros.h"
+#include "WeakPtr.h"
 #include "Enums.h"
 #include "GlobalConsole.h"
 #include "D3D11RHI.h"

@@ -93,7 +93,7 @@ void ULevel::Serialize(const bool bInIsLoading, JSON& InOutHandle)
         if (FJsonSerializer::ReadObject(InOutHandle, "PerspectiveCamera", PerspectiveCameraData))
         {
             // 카메라 정보
-            ACameraActor* CamActor = UUIManager::GetInstance().GetWorld()->GetCameraActor();
+            ACameraActor* CamActor = GWorld->GetCameraActor();
             FPerspectiveCameraData CamData;
             if (CamActor)
             {
@@ -133,7 +133,7 @@ void ULevel::Serialize(const bool bInIsLoading, JSON& InOutHandle)
                 //UClass* NewClass = FActorTypeMapper::TypeToActor(TypeString);
                 UClass* NewClass = UClass::FindClass(TypeString);
 
-                UWorld* World = UUIManager::GetInstance().GetWorld();
+                UWorld* World = GWorld;
 
                 // 유효성 검사: Class가 유효하고 AActor를 상속했는지 확인
                 if (!NewClass || !NewClass->IsChildOf(AActor::StaticClass()))
@@ -166,7 +166,7 @@ void ULevel::Serialize(const bool bInIsLoading, JSON& InOutHandle)
         InOutHandle["NextUUID"] = UObject::PeekNextUUID();
 
         // 카메라 정보
-        const ACameraActor* Camera = UUIManager::GetInstance().GetWorld()->GetCameraActor();
+        const ACameraActor* Camera = GWorld->GetCameraActor();
         FPerspectiveCameraData CamData;
         if (Camera && Camera->GetCameraComponent())
         {

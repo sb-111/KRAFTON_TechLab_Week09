@@ -26,8 +26,6 @@ public:
 	// Virtual Interface
 	void OnRegister(UWorld* InWorld) override;
 	void OnUnregister() override;
-	virtual void UpdateLightData() override;
-	void OnTransformUpdated() override;
 
 	// Serialization & Duplication
 	virtual void OnSerialized() override;

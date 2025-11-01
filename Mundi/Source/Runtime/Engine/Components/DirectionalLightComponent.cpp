@@ -50,7 +50,7 @@ void UDirectionalLightComponent::OnRegister(UWorld* InWorld)
 	}
 
 	// Create Direction Gizmo if not already created
-	if (!DirectionGizmo)
+	if (!DirectionGizmo && !InWorld->bPie)
 	{
 		UE_LOG("Creating DirectionGizmo...");
 		CREATE_EDITOR_COMPONENT(DirectionGizmo, UGizmoArrowComponent);
@@ -79,19 +79,6 @@ void UDirectionalLightComponent::OnRegister(UWorld* InWorld)
 void UDirectionalLightComponent::OnUnregister()
 {
 	GWorld->GetLightManager()->DeRegisterLight(this);
-}
-
-void UDirectionalLightComponent::UpdateLightData()
-{
-	Super::UpdateLightData();
-	// 방향성 라이트 특화 업데이트 로직
-	// Update direction gizmo to reflect any changes
-	UpdateDirectionGizmo();
-}
-
-void UDirectionalLightComponent::OnTransformUpdated()
-{
-	Super::OnTransformUpdated();
 }
 
 void UDirectionalLightComponent::OnSerialized()

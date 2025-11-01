@@ -683,7 +683,7 @@ void FShadowSystem::SelectCandidates()
     SpotLightCandidates.clear();
     
     FMatrix ViewMatrix;
-    ACameraActor* CamActor = UUIManager::GetInstance().GetWorld()->GetCameraActor();
+    ACameraActor* CamActor = GWorld->GetCameraActor();
     if (CamActor) 
     {
         UCameraComponent* CamComp = CamActor->GetCameraComponent();

@@ -326,11 +326,14 @@ FAABB UStaticMeshComponent::GetWorldAABB() const
 	FVector WorldMax = FVector(WorldMax4.X, WorldMax4.Y, WorldMax4.Z);
 	return FAABB(WorldMin, WorldMax);
 }
-void UStaticMeshComponent::OnTransformUpdated()
-{
-	Super_t::OnTransformUpdated();
-	MarkWorldPartitionDirty();
-}
+// 델리게이트 테스트
+//void UStaticMeshComponent::TickComponent(float DeltaTime)
+//{
+//	if (GetWorldLocation().Y > 0)
+//	{
+//		OnRight.Broadcast(DeltaTime);
+//	}
+//}
 
 void UStaticMeshComponent::MarkWorldPartitionDirty()
 {

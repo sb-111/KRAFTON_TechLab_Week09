@@ -122,27 +122,6 @@ bool UPropertyRenderer::RenderProperty(const FProperty& Property, void* ObjectIn
 				SceneComponent->SetRelativeScale(*ScaleValue);
 			}
 		}
-
-		// LightComponent는 Light 프로퍼티가 변경되면 UpdateLightData를 호출하여 동기화
-		// 캐싱을 안 해서 의미가 없어짐
-		//if (ULightComponentBase* LightComponent = Cast<ULightComponentBase>(Obj))
-		//{
-		//	// Light 관련 프로퍼티가 변경되면 UpdateLightData 호출
-		//	if (strcmp(Property.Name, "LightColor") == 0 ||
-		//		strcmp(Property.Name, "Intensity") == 0 ||
-		//		strcmp(Property.Name, "Temperature") == 0 ||
-		//		strcmp(Property.Name, "bIsVisible") == 0 ||
-		//		strcmp(Property.Name, "bIsActive") == 0 ||
-		//		strcmp(Property.Name, "AttenuationRadius") == 0 ||
-		//		strcmp(Property.Name, "bUseInverseSquareFalloff") == 0 ||
-		//		strcmp(Property.Name, "FalloffExponent") == 0 ||
-		//		strcmp(Property.Name, "InnerConeAngle") == 0 ||
-		//		strcmp(Property.Name, "OuterConeAngle") == 0)
-
-		//	{
-		//		LightComponent->UpdateLightData();
-		//	}
-		//}
 	}
 
 	return bChanged;

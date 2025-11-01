@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <algorithm>
 
 /** UE5 스타일 기본 타입 정의 */
 typedef int int32;
@@ -71,6 +72,11 @@ public:
     }
 
     /** 제거 */
+    void SwapAndPop(int32 Index)
+    {
+        std::swap((*this)[Index], this->back());
+        this->pop_back();
+    }
     void RemoveAt(int32 Index)
     {
         this->erase(this->begin() + Index);

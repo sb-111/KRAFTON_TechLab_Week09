@@ -50,8 +50,6 @@ public:
 	FSpotLightInfo GetLightInfo() const;
 
 	// Virtual Interface
-	virtual void UpdateLightData() override;
-	void OnTransformUpdated() override;
 	void OnRegister(UWorld* InWorld) override;
 	void OnUnregister() override;
 

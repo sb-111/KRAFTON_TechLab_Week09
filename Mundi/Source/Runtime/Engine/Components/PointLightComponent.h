@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "LocalLightComponent.h"
 #include "LightManager.h"
+#include "DelegateBinding.h"
 
 // 점광원 (모든 방향으로 균등하게 빛 방출)
 class UPointLightComponent : public ULocalLightComponent
@@ -21,8 +22,6 @@ public:
 	FPointLightInfo GetLightInfo() const;
 
 	// Virtual Interface
-	virtual void UpdateLightData() override;
-	void OnTransformUpdated() override;
 	void OnRegister(UWorld* InWorld) override;
 	void OnUnregister()	override;
 
@@ -34,6 +33,15 @@ public:
 	virtual void DuplicateSubObjects() override;
 	DECLARE_DUPLICATE(UPointLightComponent)
 
+	// 델리게이트 테스트
+	//void BeginPlay() override;
+	//void EndPlay(EEndPlayReason Reason) override;
+	//void MoveUp(float Delta);
+	
+
 protected:
 	float SourceRadius = 0.0f; // 광원 반경
+	// 델리게이트 테스트
+	//TArray<UStaticMeshComponent*> BroadCasters;
+	//TArray<FBindingHandle> BindingHandles;
 };

@@ -21,11 +21,6 @@ ULightComponentBase::~ULightComponentBase()
 {
 }
 
-void ULightComponentBase::UpdateLightData()
-{
-	// 자식 클래스에서 오버라이드
-}
-
 void ULightComponentBase::OnSerialized()
 {
 	Super::OnSerialized();

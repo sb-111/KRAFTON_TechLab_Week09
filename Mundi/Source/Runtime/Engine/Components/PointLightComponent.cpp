@@ -1,6 +1,10 @@
 ﻿#include "pch.h"
 #include "PointLightComponent.h"
 #include "BillboardComponent.h"
+#include "Delegate.h"
+#include "MultiCastDelegate.h"
+#include "ObjectIterator.h"
+#include "StaticMeshComponent.h"
 
 IMPLEMENT_CLASS(UPointLightComponent)
 
@@ -32,22 +36,13 @@ FPointLightInfo UPointLightComponent::GetLightInfo() const
 	return Info;
 }
 
-void UPointLightComponent::UpdateLightData()
-{
-	Super::UpdateLightData();
-	// 점광원 특화 업데이트 로직
-}
-
-void UPointLightComponent::OnTransformUpdated()
-{
-	Super::OnTransformUpdated();
-}
-
-
 void UPointLightComponent::OnRegister(UWorld* InWorld)
 {
 	Super_t::OnRegister(InWorld);
-	SpriteComponent->SetTextureName(GDataDir + "/UI/Icons/PointLight_64x.png");
+	if (SpriteComponent)
+	{
+		SpriteComponent->SetTextureName(GDataDir + "/UI/Icons/PointLight_64x.png");
+	}
 
 	InWorld->GetLightManager()->RegisterLight(this);
 }
@@ -158,3 +153,35 @@ void UPointLightComponent::DuplicateSubObjects()
 {
 	Super::DuplicateSubObjects();
 }
+
+// 델리게이트 테스트
+//void UPointLightComponent::BeginPlay()
+//{
+//	bHasBegunPlay = true;
+//	for (TObjectIterator<UStaticMeshComponent> It; It; ++It)
+//	{
+//		UStaticMeshComponent* StaticMeshComponent = *It;
+//		
+//		if (StaticMeshComponent && StaticMeshComponent->GetOwner() && StaticMeshComponent->GetOwner()->GetWorld()->bPie)
+//		{
+//			BroadCasters.Add(StaticMeshComponent);
+//			BindingHandles.Add(StaticMeshComponent->OnRight.AddDynamic(this, &UPointLightComponent::MoveUp));
+//		}
+//	}
+//}
+//
+//void UPointLightComponent::EndPlay(EEndPlayReason Reason)
+//{
+//	/*for (UStaticMeshComponent* BroadCaster : BroadCasters)
+//	{
+//		int Index = 0;
+//		BroadCaster->OnRight.Remove(BindingHandles[Index++]);
+//	}*/
+//}
+//
+//void UPointLightComponent::MoveUp(float Delta)
+//{
+//	FVector Location = GetRelativeLocation();
+//	Location.Y += Delta * 1;
+//	SetRelativeLocation(Location);
+//}

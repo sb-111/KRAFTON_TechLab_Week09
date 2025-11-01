@@ -867,9 +867,27 @@
     <ClInclude Include="ThirdParty\ImGui\imstb_truetype.h">
       <Filter>ThirdParty\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Runtime\Core\Misc\MultiCastDelegate.h" />
-    <ClInclude Include="Source\Runtime\Core\Misc\DelegateBinding.h" />
-    <ClInclude Include="Source\Runtime\Core\Misc\DynamicBinding.h" />
+    <ClInclude Include="Source\Runtime\Core\Misc\Delegate.h">
+      <Filter>Source\Runtime\Core\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\Core\Misc\DelegateBinding.h">
+      <Filter>Source\Runtime\Core\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\Core\Misc\DynamicBinding.h">
+      <Filter>Source\Runtime\Core\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\Core\Memory\WeakPtr.h">
+      <Filter>Source\Runtime\Core\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\Core\Misc\MultiCastDelegate.h">
+      <Filter>Source\Runtime\Core\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\Core\Misc\LambdaBinding.h">
+      <Filter>Source\Runtime\Core\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\Core\Misc\StaticBinding.h">
+      <Filter>Source\Runtime\Core\Misc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source">
