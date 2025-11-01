@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "BoxComponent.h"
 #include "SphereComponent.h"
+#include "CapsuleComponent.h"
 #include "Collision.h"
 
 IMPLEMENT_CLASS(USphereComponent)
@@ -37,21 +38,21 @@ FAABB USphereComponent::GetWorldAABB()
 
 bool USphereComponent::Intersects(const UShapeComponent* Other) const
 {
-	EShapeType OtherType = Other->GetShapeType();
-
-    if (OtherType == EShapeType::Box)
+    switch (Other->GetShapeType())
     {
+    case EShapeType::Box:
         const UBoxComponent* OtherBox = Cast<UBoxComponent>(Other);
         return Collision::Intersects(OtherBox->GetOBB(), CachedBound);
-	}
-    if (OtherType == EShapeType::Sphere)
-    {
+    case EShapeType::Sphere:
         const USphereComponent* OtherSphere = Cast<USphereComponent>(Other);
         return CachedBound.Intersects(OtherSphere->GetBoundingSphere());
+    case EShapeType::Capsule:
+        const UCapsuleComponent* OtherCapsule = Cast<UCapsuleComponent>(Other);
+        return Collision::Intersects(CachedBound, OtherCapsule->GetBoundingCapsule());
+    default:
+        UE_LOG("USphereComponent::Intersects: Unsupported shape type for collision detection.");
+        return false;
     }
-    
-    UE_LOG("USphereComponent::Intersects: Unsupported shape type for collision detection.");
-    return false;
 }
 
 void USphereComponent::OnTransformUpdated()
