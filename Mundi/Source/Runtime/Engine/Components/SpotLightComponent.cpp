@@ -105,24 +105,6 @@ FSpotLightInfo USpotLightComponent::GetLightInfo() const
     return Info;
 }
 
-void USpotLightComponent::UpdateLightData()
-{
-	Super::UpdateLightData();
-	// 스포트라이트 특화 업데이트 로직
-
-	// Cone 각도 유효성 검사 (UI에서 변경된 경우를 대비)
-	ValidateConeAngles();
-    // 라이트 매니저는 렌더링 시 매 프레임 최신 값을 수집하므로 즉시 호출 불필요
-	// Update direction gizmo to reflect any changes
-	UpdateDirectionGizmo();
-}
-
-void USpotLightComponent::OnTransformUpdated()
-{
-	Super::OnTransformUpdated();
-    // 라이트 매니저는 렌더링 시 매 프레임 최신 값을 수집하므로 즉시 호출 불필요
-}
-
 void USpotLightComponent::OnRegister(UWorld* InWorld)
 {
 	Super_t::OnRegister(InWorld);

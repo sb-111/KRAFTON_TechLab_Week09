@@ -96,8 +96,6 @@ public:
     void OnRegister(UWorld* InWorld) override;
     void OnSerialized() override;
 
-    virtual void OnTransformUpdated();
-
     // SceneId
     uint32 GetSceneId() const { return SceneId; }
     void SetSceneId(uint32 InId) { SceneId = InId; }

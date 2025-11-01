@@ -25,16 +25,6 @@ FAmbientLightInfo UAmbientLightComponent::GetLightInfo() const
 	return Info;
 }
 
-void UAmbientLightComponent::UpdateLightData()
-{
-	Super::UpdateLightData();
-}
-
-void UAmbientLightComponent::OnTransformUpdated()
-{
-	//Ambient는 방향이나 위치가 바꾸지 않으므로 처리 X
-}
-
 void UAmbientLightComponent::OnRegister(UWorld* InWorld)
 {
 	Super_t::OnRegister(InWorld);
@@ -47,7 +37,10 @@ void UAmbientLightComponent::OnRegister(UWorld* InWorld)
 
 void UAmbientLightComponent::OnUnregister()
 {
-	GWorld->GetLightManager()->DeRegisterLight(this);
+	if (FLightManager* LightManager = GWorld->GetLightManager())
+	{
+		LightManager->DeRegisterLight(this);
+	}
 }
 
 void UAmbientLightComponent::OnSerialized()

@@ -334,11 +334,6 @@ FAABB UStaticMeshComponent::GetWorldAABB() const
 //		OnRight.Broadcast(DeltaTime);
 //	}
 //}
-void UStaticMeshComponent::OnTransformUpdated()
-{
-	Super_t::OnTransformUpdated();
-	MarkWorldPartitionDirty();
-}
 
 void UStaticMeshComponent::MarkWorldPartitionDirty()
 {

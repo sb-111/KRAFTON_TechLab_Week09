@@ -28,9 +28,6 @@ public:
 	int32 GetShadowIndex() const { return ShadowIndex; }
 	const FLinearColor& GetLightColor() const { return LightColor; }
 
-	// Virtual Interface
-	virtual void UpdateLightData();
-
 	// Serialization & Duplication
 	virtual void OnSerialized() override;
 	virtual void DuplicateSubObjects() override;

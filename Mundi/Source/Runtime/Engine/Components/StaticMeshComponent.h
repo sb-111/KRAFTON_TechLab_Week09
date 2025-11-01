@@ -53,7 +53,6 @@ public:
 	void TickComponent(float DeltaTime) override;*/
 
 protected:
-	void OnTransformUpdated() override;
 	void MarkWorldPartitionDirty();
 
 protected:

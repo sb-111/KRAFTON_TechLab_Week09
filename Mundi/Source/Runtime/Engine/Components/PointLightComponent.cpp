@@ -36,18 +36,6 @@ FPointLightInfo UPointLightComponent::GetLightInfo() const
 	return Info;
 }
 
-void UPointLightComponent::UpdateLightData()
-{
-	Super::UpdateLightData();
-	// 점광원 특화 업데이트 로직
-}
-
-void UPointLightComponent::OnTransformUpdated()
-{
-	Super::OnTransformUpdated();
-}
-
-
 void UPointLightComponent::OnRegister(UWorld* InWorld)
 {
 	Super_t::OnRegister(InWorld);
