@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Actor.h"
 #include "SceneComponent.h"
 #include "ObjectFactory.h"
@@ -8,8 +8,10 @@
 #include "BillboardComponent.h"
 #include "AABB.h"
 #include "JsonSerializer.h"
+#include "ShapeComponent.h"
 #include "World.h"
 #include "SelectionManager.h"
+#include "WorldPhysics.h"
 
 IMPLEMENT_CLASS(AActor)
 
@@ -109,6 +111,34 @@ void AActor::Destroy()
 	ObjectFactory::DeleteObject(this);
 }
 
+void AActor::SetWorld(UWorld* InWorld)
+{
+	World = InWorld;
+	this->RegisterAllComponents(InWorld);
+
+	if (!World)
+		return;
+	
+	// PendingWorldRegistration 순회 돌며 UShapeComponent면 WorldPhysics에 넣어주기
+	TArray<UActorComponent*> UnregisteredComponents;
+	for (UActorComponent* Comp : PendingWorldRegistration)
+	{
+		bool bRegistered = false;
+		if (UShapeComponent* SHC = Cast<UShapeComponent>(Comp))
+		{
+			if (UWorldPhysics* WorldPhysics = World->GetWorldPhysics())
+			{
+				WorldPhysics->RegisterCollision(SHC);
+				bRegistered = true;
+			}
+		}
+
+		if (!bRegistered)
+			UnregisteredComponents.push_back(Comp);
+	}
+	PendingWorldRegistration = UnregisteredComponents;
+}
+
 void AActor::MarkPendingDestroy()
 {
 	bPendingDestroy = true;
@@ -118,7 +148,6 @@ void AActor::MarkPendingDestroy()
 		GWorld->MarkPendingDestroy(this);
 	}
 }
-
 
 void AActor::SetRootComponent(USceneComponent* InRoot)
 {
@@ -159,6 +188,21 @@ void AActor::AddOwnedComponent(UActorComponent* Component)
 		if (!RootComponent)
 		{
 			SetRootComponent(SC);
+		}
+	}
+
+	if (UShapeComponent* SHC = Cast<UShapeComponent>(Component))
+	{
+		if (World)
+		{
+			if (World->GetWorldPhysics())
+			{
+				World->GetWorldPhysics()->RegisterCollision(SHC);
+			}
+		}
+		else
+		{
+			PendingWorldRegistration.AddUnique(SHC);
 		}
 	}
 }
