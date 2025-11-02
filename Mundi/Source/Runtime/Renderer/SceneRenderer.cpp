@@ -41,6 +41,7 @@
 #include "TileLightCuller.h"
 #include "LineComponent.h"
 #include "ShadowSystem.h"
+#include "WorldPhysics.h"
 
 FSceneRenderer::FSceneRenderer(UWorld* InWorld, FSceneView* InView, URenderer* InOwnerRenderer)
 	: World(InWorld)
@@ -1321,6 +1322,14 @@ void FSceneRenderer::RenderDebugPass()
 			// 모든 컴포넌트에서 RenderDebugVolume 호출
 			// 각 컴포넌트는 필요한 경우 override하여 디버그 시각화 제공
 			Component->RenderDebugVolume(OwnerRenderer);
+		}
+	}
+
+	if (World->GetRenderSettings().IsShowFlagEnabled(EEngineShowFlags::SF_BoundingBoxes))
+	{
+		if (UWorldPhysics* WorldPhysics = World->GetWorldPhysics())
+		{
+			WorldPhysics->DebugDrawCollision(OwnerRenderer, World->GetSelectionManager());
 		}
 	}
 
