@@ -258,12 +258,14 @@ void UScriptComponent::LoadScript(const FString& FilePath)
 	}
 
 	// 스크립트 실행
-	auto result = LuaState.safe_script(script_content, Env, FilePath);
-
-	if (!result.valid())
+	try
 	{
-		sol::error Err = result;
+		auto result = LuaState.safe_script(script_content, Env, FilePath);
+	}
+	catch (const sol::error& Err)
+	{
 		UE_LOG("[Lua Script Load Error] %s: %s", FilePath.c_str(), Err.what());
+
 		bScriptLoaded = false;
 		return;
 	}
