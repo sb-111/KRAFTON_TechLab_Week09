@@ -6,7 +6,12 @@ end
 
 function Tick(dt)
     -- Update logic here
-    GWorld:GetCameraActor():SetActorLocation(obj:GetActorLocation() + Vector(40, 0, 30))
+    local CameraActor = GWorld:GetCameraActor()
+
+    local Forward = CameraActor:GetActorRight() * (-60)
+    local RelativeLocation = Forward
+
+    CameraActor:SetActorLocation(obj:GetActorLocation() + RelativeLocation)
 end
 
 function EndPlay()
