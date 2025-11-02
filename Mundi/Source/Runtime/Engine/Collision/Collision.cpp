@@ -161,38 +161,23 @@ namespace Collision
 
     bool Intersects(const FOBB& Obb, const FBoundingSphere& Sphere)
     {
-        // Real Time Rendering 4th, 22.13.2 Sphere/Box Intersection
-        float Dist2 = 0.0f;
-        // OBB의 로컬 좌표계로 구 중심점 변환
-        FVector LocalCenter = Obb.Center;
-        for (int32 i = 0; i < 3; ++i)
+        // 구 중심에서 OBB까지의 최근접점을 구한 뒤 거리 비교
+        const FVector CenterToSphere = Sphere.Center - Obb.Center;
+
+        FVector ClosestPoint = Obb.Center;
+        for (int32 AxisIndex = 0; AxisIndex < 3; ++AxisIndex)
         {
-            FVector Axis = Obb.Axes[i];
-            float Offset = FVector::Dot(Sphere.Center - Obb.Center, Axis);
-            if (Offset > Obb.HalfExtent[i])
-                Offset = Obb.HalfExtent[i];
-            else if (Offset < -Obb.HalfExtent[i])
-                Offset = -Obb.HalfExtent[i];
-            LocalCenter += Axis * Offset;
+            const FVector& Axis = Obb.Axes[AxisIndex];
+            const float HalfExtent = Obb.HalfExtent[AxisIndex];
+
+            const float Projection = FVector::Dot(CenterToSphere, Axis);
+            const float ClampedProjection = FMath::Clamp(Projection, -HalfExtent, HalfExtent);
+
+            ClosestPoint += Axis * ClampedProjection;
         }
-        for (int i = 0; i < 3; ++i)
-        {
-            if (LocalCenter[i] < -Obb.HalfExtent[i])
-            {
-                float Delta = LocalCenter[i] + Obb.HalfExtent[i];
-                if (Delta < -Sphere.GetRadius())
-                    return false;
-                Dist2 += Delta * Delta;
-            }
-            else if (LocalCenter[i] > Obb.HalfExtent[i])
-            {
-                float Delta = LocalCenter[i] - Obb.HalfExtent[i];
-                if (Delta > Sphere.GetRadius())
-                    return false;
-                Dist2 += Delta * Delta;
-            }
-        }
-        return Dist2 <= (Sphere.Radius * Sphere.Radius);
+
+        const FVector Delta = Sphere.Center - ClosestPoint;
+        return Delta.SizeSquared() <= Sphere.Radius * Sphere.Radius;
 	}
 
     bool Intersects(const FOBB& Obb, const FBoundingCapsule& Capsule)
