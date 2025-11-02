@@ -443,12 +443,11 @@
     <ClCompile Include="Source\Runtime\Engine\Spatial\WorldPartitionManager.cpp">
       <Filter>Source\Runtime\Engine\Spatial</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Runtime\Engine\Collision\PhysicsManager.cpp">
-      <Filter>Source\Runtime\Engine\Collision</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Runtime\Engine\Collision\CollisionBVH.cpp">
       <Filter>Source\Runtime\Engine\Collision</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Runtime\Engine\Collision\WorldPhysics.cpp" />
+    <ClCompile Include="Source\Runtime\Engine\GameFramework\CoroutineManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -924,12 +923,11 @@
     </ClInclude>
     <ClInclude Include="Source\Runtime\Engine\Collision\BoundingCapsule.h" />
     <ClInclude Include="Source\Runtime\Engine\Components\ScriptComponent.h" />
-    <ClInclude Include="Source\Runtime\Engine\Collision\PhysicsManager.h">
-      <Filter>Source\Runtime\Engine\Collision</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Runtime\Engine\Collision\CollisionBVH.h">
       <Filter>Source\Runtime\Engine\Collision</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Runtime\Engine\Collision\WorldPhysics.h" />
+    <ClInclude Include="Source\Runtime\Engine\GameFramework\CoroutineManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source">
