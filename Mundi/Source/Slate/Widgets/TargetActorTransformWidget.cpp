@@ -25,6 +25,9 @@
 #include "HeightFogComponent.h"
 #include "DirectionalLightComponent.h"
 #include "AmbientLightComponent.h"
+#include "BoxComponent.h"
+#include "SphereComponent.h"
+#include "CapsuleComponent.h"
 #include "PointLightComponent.h"
 #include "SpotLightComponent.h"
 #include "SceneComponent.h"
@@ -35,6 +38,7 @@
 #include "ShadowSystem.h"
 
 #include "CameraActor.h"
+#include "ShapeComponent.h"
 
 using namespace std;
 
@@ -202,6 +206,7 @@ namespace
 			ImGui::PopID();
 		}
 	}
+	
 	void RenderSceneComponentTree(
 		USceneComponent* Component,
 		AActor& Actor,
@@ -280,6 +285,79 @@ namespace
 		}
 		// 항목 처리가 끝나면 반드시 PopID
 		ImGui::PopID();
+	}
+
+	// Custom UI Rendering
+	void RenderShapeComponentDetail(UShapeComponent* ShapeComp)
+	{
+		FLinearColor Color = ShapeComp->GetShapeColor();
+		float ColorArray[4] = { Color.R, Color.G, Color.B, Color.A };
+		if (ImGui::ColorEdit4("Color", ColorArray))
+		{
+			ShapeComp->SetShapeColor(FLinearColor(ColorArray[0], ColorArray[1], ColorArray[2], ColorArray[3]));
+		}
+
+		bool bDrawOnlyIfSelected = ShapeComp->IsDrawOnlyWhenSelected();
+		if (ImGui::Checkbox("Draw Only When Selected", &bDrawOnlyIfSelected))
+		{
+			ShapeComp->SetDrawOnlyWhenSelected(bDrawOnlyIfSelected);
+		}
+
+		switch(ShapeComp->GetShapeType())
+		{
+			case EShapeType::Box:
+			{
+				UBoxComponent* BoxComp = Cast<UBoxComponent>(ShapeComp);
+				FVector BoxExtentVec = BoxComp->GetExtent();
+				float BoxExtent[3] = { BoxExtentVec.X, BoxExtentVec.Y, BoxExtentVec.Z };
+				if (ImGui::DragFloat3("Box Extent", BoxExtent, 0.1f, 0.1f))
+				{
+					const float ClampedX = FMath::Max(0.1f, BoxExtent[0]);
+					const float ClampedY = FMath::Max(0.1f, BoxExtent[1]);
+					const float ClampedZ = FMath::Max(0.1f, BoxExtent[2]);
+
+					BoxComp->SetExtent(FVector(ClampedX, ClampedY, ClampedZ));
+					BoxComp->UpdateBound();
+				}
+				break;
+			}
+			case EShapeType::Sphere:
+			{
+				if (USphereComponent* SphereComp = Cast<USphereComponent>(ShapeComp))
+				{
+					float Radius = SphereComp->GetRadius();
+					if (ImGui::DragFloat("Radius", &Radius, 0.1f, 0.1f))
+					{
+						SphereComp->SetRadius(FMath::Max(0.1f, Radius));
+						SphereComp->UpdateBound();
+					}
+				}
+				break;
+			}
+			case EShapeType::Capsule:
+			{
+				if (UCapsuleComponent* CapsuleComp = Cast<UCapsuleComponent>(ShapeComp))
+				{
+					float HalfHeight = CapsuleComp->GetBoundingCapsule().GetHalfHeight();
+					float Radius = CapsuleComp->GetBoundingCapsule().GetRadius();
+
+					if (ImGui::DragFloat("Half Height", &HalfHeight, 0.1f, 0.1f))
+					{
+						CapsuleComp->SetCapsuleHalfHeight(FMath::Max(0.1f, HalfHeight));
+						CapsuleComp->UpdateBound();
+					}
+
+					if (ImGui::DragFloat("Radius", &Radius, 0.1f, 0.1f))
+					{
+						CapsuleComp->SetCapsuleRadius(FMath::Max(0.1f, Radius));
+						CapsuleComp->UpdateBound();
+					}
+				}
+				break;
+			}
+			case EShapeType::None:
+				break;
+		}
 	}
 }
 
@@ -702,6 +780,12 @@ void UTargetActorTransformWidget::RenderSelectedComponentDetails(UActorComponent
 		}
 	}
 
+	if(UShapeComponent* ShapeComp = Cast<UShapeComponent>(SelectedComponent))
+	{
+		ImGui::Separator();
+		RenderShapeComponentDetail(ShapeComp);
+	}
+	
 	if(ULightComponent* LightComp = Cast<ULightComponent>(SelectedComponent))
 	{
 		if(ImGui::Button("Reset Shadow Values To Default Values"))
