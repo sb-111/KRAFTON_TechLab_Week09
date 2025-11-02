@@ -1,9 +1,9 @@
 {
   "Actors" : {
-    "172" : {
+    "781" : {
       "Name" : "Directional Light Actor",
       "OwnedComponents" : [{
-          "Id" : 173,
+          "Id" : 783,
           "Intensity" : 1.000000,
           "LightColor" : [1.000000, 1.000000, 1.000000, 1.000000],
           "MaxSlopeDepthBias" : 1.000000,
@@ -24,13 +24,13 @@
           "bSceneAABB" : false,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 173,
+      "RootComponentId" : 783,
       "Type" : "ADirectionalLightActor"
     },
-    "174" : {
+    "784" : {
       "Name" : "Ambient Light Actor",
       "OwnedComponents" : [{
-          "Id" : 175,
+          "Id" : 786,
           "Intensity" : 0.100000,
           "LightColor" : [1.000000, 1.000000, 1.000000, 1.000000],
           "MaxSlopeDepthBias" : 1.000000,
@@ -49,10 +49,10 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 175,
+      "RootComponentId" : 786,
       "Type" : "AAmbientLightActor"
     },
-    "780" : {
+    "787" : {
       "Name" : "스태틱 메시_0",
       "OwnedComponents" : [{
           "ScriptFilePath" : "Scripts/Bus_스태틱 메시_0_0.lua",
@@ -61,8 +61,8 @@
           "bTickEnabled" : true
         }, {
           "BoxExtent" : [5.000000, 5.000000, 5.000000],
-          "Id" : 782,
-          "ParentId" : 781,
+          "Id" : 790,
+          "ParentId" : 791,
           "RelativeLocation" : [0.000000, 0.000000, 8.299999],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
           "RelativeScale" : [4.100000, 1.300000, 1.500000],
@@ -74,7 +74,7 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }, {
-          "Id" : 781,
+          "Id" : 791,
           "MaterialSlots" : [{
               "AssetPath" : "bus_ussr1",
               "Type" : "UMaterial"
@@ -90,21 +90,21 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 781,
+      "RootComponentId" : 791,
       "Type" : "AStaticMeshActor"
     },
-    "810" : {
+    "792" : {
       "Name" : "스태틱 메시_1",
       "OwnedComponents" : [{
-          "Id" : 811,
+          "Id" : 794,
           "MaterialSlots" : [{
               "AssetPath" : "texture",
               "Type" : "UMaterial"
             }],
           "ParentId" : 0,
-          "RelativeLocation" : [-35.097343, 22.920849, 17.464275],
+          "RelativeLocation" : [20.129507, 19.323706, 17.464275],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
-          "RelativeScale" : [1.000000, 1.000000, 1.000000],
+          "RelativeScale" : [1.000000, 95.352333, 54.893562],
           "StaticMesh" : "Data/cube-tex.obj",
           "Type" : "UStaticMeshComponent",
           "bHiddenInGame" : false,
@@ -112,17 +112,39 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 811,
+      "RootComponentId" : 794,
+      "Type" : "AStaticMeshActor"
+    },
+    "813" : {
+      "Name" : "스태틱 메시_0",
+      "OwnedComponents" : [{
+          "Id" : 814,
+          "MaterialSlots" : [{
+              "AssetPath" : "Shaders/Materials/UberLit.hlsl_LIGHTING_MODEL_PHONG=1",
+              "Type" : "UMaterial"
+            }],
+          "ParentId" : 0,
+          "RelativeLocation" : [-50.308918, -7.776989, 0.723801],
+          "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
+          "RelativeScale" : [67.486938, 81.893982, 1.000000],
+          "StaticMesh" : "Data/Model/Plane.obj",
+          "Type" : "UStaticMeshComponent",
+          "bHiddenInGame" : false,
+          "bIsActive" : true,
+          "bIsVisible" : true,
+          "bTickEnabled" : true
+        }],
+      "RootComponentId" : 814,
       "Type" : "AStaticMeshActor"
     }
   },
-  "NextUUID" : 842,
+  "NextUUID" : 816,
   "PerspectiveCamera" : {
     "FOV" : [60.000000],
     "FarClip" : [1000.000000],
-    "Location" : [-51.284218, -21.557846, 22.290882],
+    "Location" : [-80.172050, 6.393509, 30.186466],
     "NearClip" : [0.100000],
-    "Rotation" : [0.000000, 21.999996, 22.799946]
+    "Rotation" : [0.000000, 17.399988, -3.600122]
   },
   "Version" : 1
 }

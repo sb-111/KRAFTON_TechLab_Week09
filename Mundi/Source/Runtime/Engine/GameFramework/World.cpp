@@ -126,6 +126,10 @@ void UWorld::InitializeLuaState()
 		"x", &FVector::X,
 		"y", &FVector::Y,
 		"z", &FVector::Z,
+		"Size", &FVector::Size,
+		"SizeSquared", &FVector::SizeSquared,
+		"GetNormalized", &FVector::GetNormalized,
+		"Dot", &FVector::Dot,
 		// 연산자 오버로딩: Lua에서 vec1 +- vec2 가능
 		sol::meta_function::addition, [](const FVector& a, const FVector& b) {
 			return FVector(a.X + b.X, a.Y + b.Y, a.Z + b.Z);

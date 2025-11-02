@@ -434,11 +434,11 @@ void AActor::AddActorWorldRotation(const FQuat& DeltaRotation)
 
 void AActor::AddActorWorldRotation(const FVector& DeltaEuler)
 {
-	/* if (RootComponent)
+	 if (RootComponent)
 	 {
-		 FQuat DeltaQuat = FQuat::FromEuler(DeltaEuler.X, DeltaEuler.Y, DeltaEuler.Z);
+		 FQuat DeltaQuat = FQuat::MakeFromEulerZYX(DeltaEuler);
 		 RootComponent->AddWorldRotation(DeltaQuat);
-	 }*/
+	 }
 }
 
 void AActor::AddActorWorldLocation(const FVector& DeltaLocation)
