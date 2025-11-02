@@ -447,6 +447,7 @@ ClassDiagram.cd
 editor.ini
 
 Mundi/Scene/*
+!Mundi/Scene/Bus.Scene
 
 !Mundi/ThirdParty/DirectXTK/Bin**
 
