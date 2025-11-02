@@ -143,6 +143,17 @@ void UWorld::InitializeLuaState()
 		}
 	);
 
+	// FVector2D 바인딩 (마우스 좌표용)
+	LuaState.new_usertype<FVector2D>("FVector2D",
+		sol::call_constructor,
+		sol::factories(
+			[]() { return FVector2D(); },
+			[](float x, float y) { return FVector2D(x, y); }
+		),
+		"x", &FVector2D::X,
+		"y", &FVector2D::Y
+	);
+
 	// FLinearColor 바인딩 (색상)
 	LuaState.new_usertype<FLinearColor>("Color",
 		sol::call_constructor,
@@ -367,42 +378,42 @@ void UWorld::InitializeLuaState()
 	// Lua 전역 공간에 Keys라는 이름의 테이블 생성
 	// Lua에서 직관적인 이름으로 Lua 코드 작성 가능
 	sol::table Keys = LuaState.create_named_table("Keys");
-	Keys["A"] = 'A';
-	Keys["B"] = 'B';
-	Keys["C"] = 'C';
-	Keys["D"] = 'D';
-	Keys["E"] = 'E';
-	Keys["F"] = 'F';
-	Keys["G"] = 'G';
-	Keys["H"] = 'H';
-	Keys["I"] = 'I';
-	Keys["J"] = 'J';
-	Keys["K"] = 'K';
-	Keys["L"] = 'L';
-	Keys["M"] = 'M';
-	Keys["N"] = 'N';
-	Keys["O"] = 'O';
-	Keys["P"] = 'P';
-	Keys["Q"] = 'Q';
-	Keys["R"] = 'R';
-	Keys["S"] = 'S';
-	Keys["T"] = 'T';
-	Keys["U"] = 'U';
-	Keys["V"] = 'V';
-	Keys["W"] = 'W';
-	Keys["X"] = 'X';
-	Keys["Y"] = 'Y';
-	Keys["Z"] = 'Z';
-	Keys["Num0"] = '0';
-	Keys["Num1"] = '1';
-	Keys["Num2"] = '2';
-	Keys["Num3"] = '3';
-	Keys["Num4"] = '4';
-	Keys["Num5"] = '5';
-	Keys["Num6"] = '6';
-	Keys["Num7"] = '7';
-	Keys["Num8"] = '8';
-	Keys["Num9"] = '9';
+	Keys["A"] = (int)'A';
+	Keys["B"] = (int)'B';
+	Keys["C"] = (int)'C';
+	Keys["D"] = (int)'D';
+	Keys["E"] = (int)'E';
+	Keys["F"] = (int)'F';
+	Keys["G"] = (int)'G';
+	Keys["H"] = (int)'H';
+	Keys["I"] = (int)'I';
+	Keys["J"] = (int)'J';
+	Keys["K"] = (int)'K';
+	Keys["L"] = (int)'L';
+	Keys["M"] = (int)'M';
+	Keys["N"] = (int)'N';
+	Keys["O"] = (int)'O';
+	Keys["P"] = (int)'P';
+	Keys["Q"] = (int)'Q';
+	Keys["R"] = (int)'R';
+	Keys["S"] = (int)'S';
+	Keys["T"] = (int)'T';
+	Keys["U"] = (int)'U';
+	Keys["V"] = (int)'V';
+	Keys["W"] = (int)'W';
+	Keys["X"] = (int)'X';
+	Keys["Y"] = (int)'Y';
+	Keys["Z"] = (int)'Z';
+	Keys["Num0"] = (int)'0';
+	Keys["Num1"] = (int)'1';
+	Keys["Num2"] = (int)'2';
+	Keys["Num3"] = (int)'3';
+	Keys["Num4"] = (int)'4';
+	Keys["Num5"] = (int)'5';
+	Keys["Num6"] = (int)'6';
+	Keys["Num7"] = (int)'7';
+	Keys["Num8"] = (int)'8';
+	Keys["Num9"] = (int)'9';
 	Keys["Escape"] = VK_ESCAPE;
 	Keys["Space"] = VK_SPACE;
 	Keys["Enter"] = VK_RETURN;
