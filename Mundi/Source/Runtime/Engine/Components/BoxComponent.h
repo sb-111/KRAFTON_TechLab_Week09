@@ -21,8 +21,10 @@ public:
 	FVector GetExtent() const { return BoxExtent; }
 	const FOBB& GetOBB() const { return CachedBound; }
 
-	// ───── Transform ────────────────────────────────────
+	// ───── Update ───────────────────────────────────────
 	void OnTransformUpdated() override;
+	void UpdateBound() override;
+	void Serialize(const bool bInIsLoading, JSON& InOutHandle) override;
 
 	// ───── 복사 관련 ─────────────────────────────────────
 	void DuplicateSubObjects() override;
@@ -32,8 +34,6 @@ public:
 	void OnSerialized() override;
 
 private:
-	void UpdateOBB();
-
 	FVector BoxExtent = FVector(5.0f, 5.0f, 5.0f); // Half Extent
 	FOBB CachedBound; // World OBB (충돌 검사용. Transform과 Extent에 의해 갱신)
 };

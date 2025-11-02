@@ -2,6 +2,7 @@
 #include "ShapeComponent.h"
 #include "World.h"
 #include "WorldPhysics.h"
+#include "JsonSerializer.h"
 
 IMPLEMENT_CLASS(UShapeComponent)
 
@@ -22,6 +23,27 @@ void UShapeComponent::Destroy()
 void UShapeComponent::DuplicateSubObjects()
 {
     Super::DuplicateSubObjects();
+}
+
+void UShapeComponent::Serialize(const bool bInIsLoading, JSON& InOutHandle)
+{
+	Super::Serialize(bInIsLoading, InOutHandle);
+
+	if (bInIsLoading)
+	{
+		FVector4 ColorVec = ShapeColor.ToFVector4();
+		if (FJsonSerializer::ReadVector4(InOutHandle, "ShapeColor", ColorVec, ColorVec, false))
+		{
+			ShapeColor = FLinearColor(ColorVec);
+		}
+
+		FJsonSerializer::ReadBool(InOutHandle, "bDrawOnlyIfSelected", bDrawOnlyIfSelected, bDrawOnlyIfSelected, false);
+	}
+	else
+	{
+		InOutHandle["ShapeColor"] = FJsonSerializer::Vector4ToJson(ShapeColor.ToFVector4());
+		InOutHandle["bDrawOnlyIfSelected"] = bDrawOnlyIfSelected;
+	}
 }
 
 void UShapeComponent::OnSerialized()

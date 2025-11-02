@@ -28,6 +28,10 @@ public:
 	
     virtual FAABB GetWorldAABB() { return FAABB(); } // World Partition System에서 사용하기 위한 AABB
 	virtual EShapeType GetShapeType() const { return EShapeType::None; }
+	void Serialize(const bool bInIsLoading, JSON& InOutHandle) override;
+
+	virtual void UpdateBound() {};
+	
     // ───── 복사 관련 ────────────────────────────
     void DuplicateSubObjects() override;
     DECLARE_DUPLICATE(UShapeComponent)

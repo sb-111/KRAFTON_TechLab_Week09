@@ -22,6 +22,8 @@ public:
 
 	// ───── Transform 업데이트 ────────────────────────────
 	void OnTransformUpdated() override;
+	void Serialize(const bool bInIsLoading, JSON& InOutHandle) override;
+	void UpdateBound() override;
 
 	// ───── 복사 관련 ─────────────────────────────────────
 	void DuplicateSubObjects() override;
@@ -29,9 +31,6 @@ public:
 
 	// ───── 직렬화 ────────────────────────────────────────
 	void OnSerialized() override;
-
-private:
-	void UpdateBoundingCapsule();
 
     float CapsuleHalfHeight = 1.0f;
     float CapsuleRadius = 5.0f;

@@ -200,6 +200,7 @@ void AActor::AddOwnedComponent(UActorComponent* Component)
 		{
 			if (World->GetWorldPhysics())
 			{
+				SHC->OnTransformUpdated(); // 최초 등록 전 트랜스폼, 내부 bounding volume 상태 최신화 보장
 				World->GetWorldPhysics()->RegisterCollision(SHC);
 			}
 		}
