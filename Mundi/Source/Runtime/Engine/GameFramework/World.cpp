@@ -41,41 +41,43 @@ UWorld::UWorld()
 
 UWorld::~UWorld()
 {
-	// World 소멸 중 플래그 설정: Actor/Component들이 PendingDestroy 시스템을 사용하지 않도록 함
-	bIsBeingDestroyed = true;
-
-	// Level의 모든 Actor들 Destroy 호출 (PendingDestroy 시스템은 사용하지 않음)
+	// 1. Level의 모든 Actor들을 수집
+	TArray<AActor*> AllActorsToDelete;
 	if (Level)
 	{
-		TArray<AActor*> ActorsCopied = Level->GetActors();
-		for (AActor* Actor : ActorsCopied)
-		{
-			if (Actor)
-			{
-				Actor->Destroy();
-			}
-		}
+		AllActorsToDelete = Level->GetActors();
 		Level->Clear();
 	}
 
-	// 에디터 전용 Actor들 정리 (GridActor, GizmoActor 등)
-	TArray<AActor*> EditorActorsCopied = EditorActors;
-	for (AActor* EditorActor : EditorActorsCopied)
+	// 2. 에디터 전용 Actor들 추가 (GridActor, GizmoActor 등)
+	for (AActor* EditorActor : EditorActors)
 	{
 		if (EditorActor)
 		{
-			EditorActor->Destroy();
+			AllActorsToDelete.AddUnique(EditorActor);
 		}
 	}
 	EditorActors.clear();
 
-	// MainCameraActor는 EditorActors에 포함되지 않을 수 있으므로 별도 처리
+	// 3. MainCameraActor 추가
 	if (MainCameraActor)
 	{
-		MainCameraActor->Destroy();
+		AllActorsToDelete.AddUnique(MainCameraActor);
 	}
 
-	// 이미 bIsBeingDestroyed = true이므로 PendingDestroy()는 빈 리스트만 정리
+	// 4. 모든 Actor의 Destroy() 호출 (ActorsToDestroy/ComponentsToDestroy에 추가)
+	for (AActor* Actor : AllActorsToDelete)
+	{
+		if (Actor)
+		{
+			Actor->Destroy(); // 내부적으로 Component->Destroy() 호출, EndPlay 등 정리
+		}
+	}
+
+	// 5. World 소멸 중 플래그 설정 (이후 추가 방지)
+	bIsBeingDestroyed = true;
+
+	// 6. PendingDestroy 시스템으로 정리 (Component 먼저, Actor 나중에)
 	PendingDestroy();
 
 	GridActor = nullptr;
