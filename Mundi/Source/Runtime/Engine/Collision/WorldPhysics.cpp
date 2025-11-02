@@ -349,6 +349,7 @@ namespace
 
 void UWorldPhysics::DebugDrawCollision(URenderer* Renderer, USelectionManager* SelectionManager) const
 {
+	// Renderer, BVH가 없거나 ShapeArray가 비었으면 즉시 종료
 	if (!Renderer || !BVH)
 	{
 		return;
@@ -360,6 +361,7 @@ void UWorldPhysics::DebugDrawCollision(URenderer* Renderer, USelectionManager* S
 		return;
 	}
 
+	// Shape Component 순회하며 Bounding Volume 가져와 그리기
 	for (UShapeComponent* Shape : Shapes)
 	{
 		if (!Shape || Shape->GetShapeType() == EShapeType::None)

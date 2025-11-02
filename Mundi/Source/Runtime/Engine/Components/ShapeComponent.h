@@ -19,6 +19,8 @@ public:
 	UShapeComponent() = default;
 	~UShapeComponent() override = default;
 
+	void Destroy() override;
+	
 	void SetShapeColor(FLinearColor InColor) { ShapeColor = InColor; }
 	FLinearColor GetShapeColor() const { return ShapeColor; }
 	void SetDrawOnlyWhenSelected(bool bInDrawOnlyWhenSelected) { bDrawOnlyIfSelected = bInDrawOnlyWhenSelected; }
@@ -26,7 +28,6 @@ public:
 	
     virtual FAABB GetWorldAABB() { return FAABB(); } // World Partition System에서 사용하기 위한 AABB
 	virtual EShapeType GetShapeType() const { return EShapeType::None; }
-
     // ───── 복사 관련 ────────────────────────────
     void DuplicateSubObjects() override;
     DECLARE_DUPLICATE(UShapeComponent)

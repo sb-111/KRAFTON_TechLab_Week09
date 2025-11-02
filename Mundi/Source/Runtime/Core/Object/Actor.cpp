@@ -242,6 +242,9 @@ void AActor::RemoveOwnedComponent(UActorComponent* Component)
 	// OwnedComponents에서 제거
 	OwnedComponents.erase(Component);
 
+	// World 등록 대기열에서도 제거 (이미 Destroy된 ShapeComponent가 재등록되는 것을 방지)
+	PendingWorldRegistration.Remove(Component);
+
 	//Component->UnregisterComponent();
 	//Component->Destroy();
 }
