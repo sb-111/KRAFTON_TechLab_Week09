@@ -21,8 +21,10 @@ public:
 	float GetRadius() const { return Radius; }
 	const FBoundingSphere& GetBoundingSphere() const { return CachedBound; }
 
-	// ───── Transform 업데이트 ────────────────────────────
+	// ───── Update ───────────────────────────────────────
 	void OnTransformUpdated() override;
+	void Serialize(const bool bInIsLoading, JSON& InOutHandle) override;
+	void UpdateBound() override;
 
 	// ───── 복사 관련 ─────────────────────────────────────
 	void DuplicateSubObjects() override;
@@ -30,9 +32,6 @@ public:
 
 	// ───── 직렬화 ────────────────────────────────────────
 	void OnSerialized() override;
-
-private:
-	void UpdateBoundingSphere();
 
 private:
 	float Radius = 5.0f;

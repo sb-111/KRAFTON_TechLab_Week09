@@ -3,15 +3,13 @@
 #include "BoxComponent.h"
 #include "SphereComponent.h"
 #include "Collision.h"
+#include "WorldPhysics.h"
+#include "JsonSerializer.h"
 
 IMPLEMENT_CLASS(UCapsuleComponent)
 
 BEGIN_PROPERTIES(UCapsuleComponent)
 	MARK_AS_COMPONENT("캡슐 컴포넌트", "캡슐 형태의 충돌 컴포넌트입니다.")
-	ADD_PROPERTY(float, CapsuleHalfHeight, "Shape", true, "캡슐의 반쪽 높이")
-	ADD_PROPERTY(float, CapsuleRadius, "Shape", true, "캡슐의 반지름")
-	ADD_PROPERTY(FLinearColor, ShapeColor, "Shape", true, "디버그 드로우 시 사용할 색상")
-	ADD_PROPERTY(bool, bDrawOnlyIfSelected, "Shape", true, "선택되었을 때만 디버그 드로우")
 END_PROPERTIES()
 
 UCapsuleComponent::UCapsuleComponent()
@@ -20,19 +18,19 @@ UCapsuleComponent::UCapsuleComponent()
 	CapsuleRadius = 5.0f;
 	ShapeColor = FLinearColor(1.0f, 0.34f, 0.28f);
 	bDrawOnlyIfSelected = false;
-	UpdateBoundingCapsule();
+	UpdateBound();
 }
 
 void UCapsuleComponent::SetCapsuleHalfHeight(const float InHalfHeight)
 {
 	CapsuleHalfHeight = FMath::Max(0.0f, InHalfHeight);
-	UpdateBoundingCapsule();
+	UpdateBound();
 }
 
 void UCapsuleComponent::SetCapsuleRadius(const float InRadius)
 {
 	CapsuleRadius = FMath::Max(0.0f, InRadius);
-	UpdateBoundingCapsule();
+	UpdateBound();
 }
 
 FAABB UCapsuleComponent::GetWorldAABB()
@@ -81,10 +79,10 @@ bool UCapsuleComponent::Intersects(const UShapeComponent* Other) const
 void UCapsuleComponent::OnTransformUpdated()
 {
 	Super::OnTransformUpdated();
-	UpdateBoundingCapsule();
+	UpdateBound();
 }
 
-void UCapsuleComponent::UpdateBoundingCapsule()
+void UCapsuleComponent::UpdateBound()
 {
 	const FVector WorldPos = GetWorldLocation();
 	const FQuat WorldRot = GetWorldRotation();
@@ -97,16 +95,51 @@ void UCapsuleComponent::UpdateBoundingCapsule()
 	}
 
 	CachedBound = FBoundingCapsule(WorldPos, Axis, CapsuleHalfHeight, CapsuleRadius);
+
+	if (UWorld* World = GetWorld())
+	{
+		if (UWorldPhysics* Physics = World->GetWorldPhysics())
+		{
+			Physics->MarkCollisionDirty(this);
+		}
+	}
+}
+
+void UCapsuleComponent::Serialize(const bool bInIsLoading, JSON& InOutHandle)
+{
+	Super::Serialize(bInIsLoading, InOutHandle);
+
+	if (bInIsLoading)
+	{
+		float LoadedHalfHeight = CapsuleHalfHeight;
+		if (FJsonSerializer::ReadFloat(InOutHandle, "CapsuleHalfHeight", LoadedHalfHeight, CapsuleHalfHeight, false))
+		{
+			CapsuleHalfHeight = FMath::Max(0.0f, LoadedHalfHeight);
+		}
+
+		float LoadedRadius = CapsuleRadius;
+		if (FJsonSerializer::ReadFloat(InOutHandle, "CapsuleRadius", LoadedRadius, CapsuleRadius, false))
+		{
+			CapsuleRadius = FMath::Max(0.0f, LoadedRadius);
+		}
+
+		UpdateBound();
+	}
+	else
+	{
+		InOutHandle["CapsuleHalfHeight"] = CapsuleHalfHeight;
+		InOutHandle["CapsuleRadius"] = CapsuleRadius;
+	}
 }
 
 void UCapsuleComponent::DuplicateSubObjects()
 {
 	Super::DuplicateSubObjects();
-	UpdateBoundingCapsule();
+	UpdateBound();
 }
 
 void UCapsuleComponent::OnSerialized()
 {
 	Super::OnSerialized();
-	UpdateBoundingCapsule();
+	UpdateBound();
 }

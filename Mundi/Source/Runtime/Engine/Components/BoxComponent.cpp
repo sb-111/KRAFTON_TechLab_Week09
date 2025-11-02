@@ -3,14 +3,13 @@
 #include "SphereComponent.h"
 #include "CapsuleComponent.h"
 #include "Collision.h"
+#include "WorldPhysics.h"
+#include "JsonSerializer.h"
 
 IMPLEMENT_CLASS(UBoxComponent)
 
 BEGIN_PROPERTIES(UBoxComponent)
 	MARK_AS_COMPONENT("박스 컴포넌트", "박스 형태의 충돌 컴포넌트입니다.")
-	ADD_PROPERTY(FVector, BoxExtent, "Shape", true, "박스의 Half Extent (중심에서 각 축 방향으로의 거리)")
-	ADD_PROPERTY(FLinearColor, ShapeColor, "Shape", true, "디버그 드로우 시 사용할 색상")
-	ADD_PROPERTY(bool, bDrawOnlyIfSelected, "Shape", true, "선택되었을 때만 디버그 드로우")
 END_PROPERTIES()
 
 UBoxComponent::UBoxComponent()
@@ -18,14 +17,14 @@ UBoxComponent::UBoxComponent()
 	BoxExtent = FVector(5.0f, 5.0f, 5.0f);
 	ShapeColor = FLinearColor(1.0f, 0.34f, 0.28f);
 	bDrawOnlyIfSelected = false;
-	UpdateOBB(); // OBB 초기화
+	UpdateBound();
 }
 
 // Set "HALF" extents and update OBB
 void UBoxComponent::SetExtent(const FVector& InExtent)
 {
 	BoxExtent = InExtent;
-	UpdateOBB();
+	UpdateBound();
 }
 
 // Create World AABB from 8 OBB corners
@@ -87,11 +86,11 @@ bool UBoxComponent::Intersects(const UShapeComponent* Other) const
 void UBoxComponent::OnTransformUpdated()
 {
 	Super::OnTransformUpdated();
-	UpdateOBB();
+	UpdateBound();
 }
 
 // Create Local AABB -> Transform to World OBB using Transform of the component
-void UBoxComponent::UpdateOBB()
+void UBoxComponent::UpdateBound()
 {
 	const FVector LocalMin = -BoxExtent;
 	const FVector LocalMax = BoxExtent;
@@ -100,6 +99,34 @@ void UBoxComponent::UpdateOBB()
 	// 주의: BoxComponent의 크기에는 자체 스케일도 반영됨!
 	const FMatrix WorldMatrix = GetWorldMatrix();
 	CachedBound = FOBB(LocalAABB, WorldMatrix);
+
+	if (UWorld* World = GetWorld())
+	{
+		if (World->GetWorldPhysics())
+		{
+			World->GetWorldPhysics()->MarkCollisionDirty(this);
+		}
+	}
+}
+
+void UBoxComponent::Serialize(const bool bInIsLoading, JSON& InOutHandle)
+{
+	Super::Serialize(bInIsLoading, InOutHandle);
+
+	if (bInIsLoading)
+	{
+		FVector LoadedExtent = BoxExtent;
+		if (FJsonSerializer::ReadVector(InOutHandle, "BoxExtent", LoadedExtent, BoxExtent, false))
+		{
+			BoxExtent = LoadedExtent;
+		}
+
+		UpdateBound();
+	}
+	else
+	{
+		InOutHandle["BoxExtent"] = FJsonSerializer::VectorToJson(BoxExtent);
+	}
 }
 
 void UBoxComponent::DuplicateSubObjects()
@@ -107,12 +134,12 @@ void UBoxComponent::DuplicateSubObjects()
 	// BoxExtent와 cached OBB는 POD 타입이므로 자동 복사됨
 	Super::DuplicateSubObjects();
 	// 혹시 모를 불일치 방지를 위해 복사 후 OBB 재계산
-	UpdateOBB(); 
+	UpdateBound(); 
 }
 
 void UBoxComponent::OnSerialized()
 {
 	Super::OnSerialized();
 	// 직렬화 후 OBB 재계산 (OBB 자체는 직렬화 대상이 아니기 때문)
-	UpdateOBB();
+	UpdateBound();
 }

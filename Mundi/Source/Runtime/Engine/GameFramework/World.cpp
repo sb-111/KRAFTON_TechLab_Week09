@@ -179,6 +179,12 @@ void UWorld::InitializeLuaState()
 		}
 	);
 
+	LuaState.new_usertype<UWorld>("UWorld",
+		"GetCameraActor", &UWorld::GetCameraActor);
+	LuaState.set("GWorld", GWorld);
+	LuaState.new_usertype<ACameraActor>("ACameraActor",
+		sol::base_classes,  sol::bases<AActor>());
+
 	// FTransform 바인딩
 	LuaState.new_usertype<FTransform>("FTransform",
 		sol::call_constructor,
