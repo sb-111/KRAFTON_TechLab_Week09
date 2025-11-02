@@ -93,8 +93,7 @@ void UActorComponent::Destroy()
 void UActorComponent::MarkPendingDestroy()
 {
     bPendingDestroy = true;
-    // World가 소멸 중이면 PendingDestroy 시스템을 사용하지 않음 (직접 소멸자에서 정리됨)
-    if (GWorld && !GWorld->bIsBeingDestroyed)
+    if (GWorld)
     {
         GWorld->MarkPendingDestroy(this);
     }

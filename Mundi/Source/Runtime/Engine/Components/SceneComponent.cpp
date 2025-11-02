@@ -46,7 +46,7 @@ void USceneComponent::Destroy()
     Super::Destroy();
 
     // World가 소멸 중이 아닐 때만 Partition에서 Unregister
-    if (GWorld && !GWorld->bIsBeingDestroyed)
+    if (GWorld)
     {
         GWorld->GetPartitionManager()->Unregister(this);
     }

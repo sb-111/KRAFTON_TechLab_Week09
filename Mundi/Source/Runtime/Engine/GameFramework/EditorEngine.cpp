@@ -328,6 +328,7 @@ void UEditorEngine::Shutdown()
     {
         DeleteObject(Context.World);
     }
+    GWorld = nullptr;
     // Delete all UObjects (Components, Actors, Resources)
     // Resource destructors will properly release D3D resources
     ObjectFactory::DeleteAll(true);

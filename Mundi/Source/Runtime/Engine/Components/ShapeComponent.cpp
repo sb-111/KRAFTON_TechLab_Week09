@@ -11,13 +11,11 @@ void UShapeComponent::Destroy()
 
     if (UWorld* World = GetWorld())
     {
-        if (!World->bIsBeingDestroyed)
+        if (UWorldPhysics* Physics = World->GetWorldPhysics())
         {
-            if (UWorldPhysics* Physics = World->GetWorldPhysics())
-            {
-                Physics->UnregisterCollision(this);
-            }
+            Physics->UnregisterCollision(this);
         }
+       
     }
 }
 
