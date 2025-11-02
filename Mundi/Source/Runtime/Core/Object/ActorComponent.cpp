@@ -25,7 +25,7 @@ UActorComponent::UActorComponent()
 UActorComponent::~UActorComponent()
 {
     // 안전장치: 등록 상태면 해제
-    if (bRegistered) UnregisterComponent();
+    //if (bRegistered) UnregisterComponent();
 }
 
 UWorld* UActorComponent::GetWorld() const
@@ -62,7 +62,7 @@ void UActorComponent::UnregisterComponent()
         EndPlay(EEndPlayReason::RemovedFromWorld);
         bHasBegunPlay = false;
     }
-
+    
     OnUnregister();
     bRegistered = false;
 }
@@ -84,6 +84,7 @@ void UActorComponent::Destroy()
     // 등록 중이면 우선 해제(EndPlay 포함)
     if (bRegistered) UnregisterComponent();
 
+
    // DeleteObject(this);
     // Owner 참조 끊기
     //Owner = nullptr;
@@ -91,8 +92,12 @@ void UActorComponent::Destroy()
 
 void UActorComponent::MarkPendingDestroy()
 {
-    bPendingDestroy = true; 
-    GWorld->MarkPendingDestroy(this);
+    bPendingDestroy = true;
+    // World가 소멸 중이면 PendingDestroy 시스템을 사용하지 않음 (직접 소멸자에서 정리됨)
+    if (GWorld)
+    {
+        GWorld->MarkPendingDestroy(this);
+    }
 }
 
 // ─────────────── Lifecycle (게임 수명)

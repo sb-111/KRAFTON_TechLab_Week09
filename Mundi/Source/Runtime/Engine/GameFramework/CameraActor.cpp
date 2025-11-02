@@ -114,11 +114,6 @@ void ACameraActor::SyncRotationCache()
 
 ACameraActor::~ACameraActor()
 {
-    if (CameraComponent)
-    {
-        ObjectFactory::DeleteObject(CameraComponent);
-    }
-    CameraComponent = nullptr;
 }
 
 FMatrix ACameraActor::GetViewMatrix() const

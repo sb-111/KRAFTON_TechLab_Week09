@@ -450,12 +450,13 @@ void USceneManagerWidget::HandleActorDelete(AActor* Actor)
 	if (!Actor)
 		return;
 
-	UWorld* World = GWorld;
+	Actor->Destroy();
+	/*UWorld* World = GWorld;
 	if (World)
 	{
 		World->DestroyActor(Actor);
 		UE_LOG("SceneManager: Deleted actor %s", Actor->GetName().ToString().c_str());
-	}
+	}*/
 }
 
 void USceneManagerWidget::HandleActorDuplicate(AActor* Actor)

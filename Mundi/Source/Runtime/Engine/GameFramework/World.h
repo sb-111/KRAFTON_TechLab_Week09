@@ -40,6 +40,7 @@ public:
     ~UWorld() override;
 
     bool bPie = false;
+    bool bIsBeingDestroyed = false;
 
 public:
     /** 초기화 */

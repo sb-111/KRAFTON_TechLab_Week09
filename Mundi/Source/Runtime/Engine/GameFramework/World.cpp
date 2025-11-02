@@ -41,19 +41,42 @@ UWorld::UWorld()
 
 UWorld::~UWorld()
 {
+	// World 소멸 중 플래그 설정: Actor/Component들이 PendingDestroy 시스템을 사용하지 않도록 함
+	bIsBeingDestroyed = true;
+
+	// Level의 모든 Actor들 Destroy 호출 (PendingDestroy 시스템은 사용하지 않음)
 	if (Level)
 	{
-		for (AActor* Actor : Level->GetActors())
+		TArray<AActor*> ActorsCopied = Level->GetActors();
+		for (AActor* Actor : ActorsCopied)
 		{
-			ObjectFactory::DeleteObject(Actor);
+			if (Actor)
+			{
+				Actor->Destroy();
+			}
 		}
 		Level->Clear();
 	}
-	for (AActor* Actor : EditorActors)
+
+	// 에디터 전용 Actor들 정리 (GridActor, GizmoActor 등)
+	TArray<AActor*> EditorActorsCopied = EditorActors;
+	for (AActor* EditorActor : EditorActorsCopied)
 	{
-		ObjectFactory::DeleteObject(Actor);
+		if (EditorActor)
+		{
+			EditorActor->Destroy();
+		}
 	}
 	EditorActors.clear();
+
+	// MainCameraActor는 EditorActors에 포함되지 않을 수 있으므로 별도 처리
+	if (MainCameraActor)
+	{
+		MainCameraActor->Destroy();
+	}
+
+	// 이미 bIsBeingDestroyed = true이므로 PendingDestroy()는 빈 리스트만 정리
+	PendingDestroy();
 
 	GridActor = nullptr;
 	GizmoActor = nullptr;
@@ -415,60 +438,61 @@ bool UWorld::DestroyActor(AActor* Actor)
 	// 재진입 가드
 	if (!Actor->IsPendingDestroy()) return false;
 
-	// 선택/UI 해제
-	if (SelectionMgr) SelectionMgr->DeselectActor(Actor);
+	//// 선택/UI 해제
+	//if (SelectionMgr) SelectionMgr->DeselectActor(Actor);
 
-	// 게임 수명 종료
-	Actor->EndPlay(EEndPlayReason::Destroyed);
+	//// 게임 수명 종료
+	//Actor->EndPlay(EEndPlayReason::Destroyed);
 
 	// 컴포넌트 정리 (등록 해제 → 파괴)
-	TArray<USceneComponent*> Components = Actor->GetSceneComponents();
-	for(USceneComponent* Comp : Components)
-	{
-		if (Comp)
-		{
-			Comp->SetOwner(nullptr); // 소유자 해제
-		}
-	}
+	//TArray<USceneComponent*> Components = Actor->GetSceneComponents();
+	//for(USceneComponent* Comp : Components)
+	//{
+	//	if (Comp)
+	//	{
+	//		Comp->SetOwner(nullptr); // 소유자 해제
+	//	}
+	//}
 
 	// 월드 자료구조에서 소유한 컴포넌트 내리기
-	OnActorDestroyed(Actor);
-
-	Actor->UnregisterAllComponents(/*bCallEndPlayOnBegun=*/true);
-	Actor->DestroyAllComponents();
-	Actor->ClearSceneComponentCaches();
-
-// 레벨에서 제거 시도
-	if (Level && Level->RemoveActor(Actor))
-	{
-		// 옥트리에서 제거
-		OnActorDestroyed(Actor);
-
-		// 메모리 해제
-		ObjectFactory::DeleteObject(Actor);
-
-		// 삭제된 액터 정리
-		if (SelectionMgr)
-		{
-			SelectionMgr->CleanupInvalidActors();
-			SelectionMgr->ClearSelection();
-		}
-
-		return true; // 성공적으로 삭제
-	}
-
-	return false; // 레벨에 없는 액터
+//	OnActorDestroyed(Actor);
+//
+//	Actor->UnregisterAllComponents(/*bCallEndPlayOnBegun=*/true);
+//	Actor->DestroyAllComponents();
+//	Actor->ClearSceneComponentCaches();
+//
+//// 레벨에서 제거 시도
+//	if (Level && Level->RemoveActor(Actor))
+//	{
+//		// 옥트리에서 제거
+//		OnActorDestroyed(Actor);
+//
+//		// 메모리 해제
+//		ObjectFactory::DeleteObject(Actor);
+//
+//		// 삭제된 액터 정리
+//		if (SelectionMgr)
+//		{
+//			SelectionMgr->CleanupInvalidActors();
+//			SelectionMgr->ClearSelection();
+//		}
+//
+//		return true; // 성공적으로 삭제
+//	}
+//
+//	return false; // 레벨에 없는 액터
 }
 
 void UWorld::PendingDestroy()
 {
+	// Destroy함수에서 이미 다 정리함. 이제 계층 신경쓰지 않고 삭제만 하면 됨.
 	for (UActorComponent* Component : ComponentsToDestroy)
 	{
 		DeleteObject(Component);
 	}
 	for (AActor* Actor : ActorsToDestroy)
 	{
-		DestroyActor(Actor);
+		DeleteObject(Actor);
 	}
 	
 	ActorsToDestroy.clear();

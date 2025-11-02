@@ -33,26 +33,44 @@ USceneComponent::USceneComponent()
 
 USceneComponent::~USceneComponent()
 {
-    // 자식 메모리 해제
-    // 복사본을 만들어 부모 리스트 무효화 문제를 피함
-    TArray<USceneComponent*> ChildrenCopy = AttachChildren;
-    AttachChildren.clear();
-    for (USceneComponent* Child : ChildrenCopy)
+   
+}
+
+void USceneComponent::Destroy()
+{
+    // 이미 정리했으니까 리턴
+    if (IsPendingDestroy())
+        return;
+
+    // markPending, Unregister
+    Super::Destroy();
+
+    // World가 소멸 중이 아닐 때만 Partition에서 Unregister
+    if (GWorld && !GWorld->bIsBeingDestroyed)
     {
-        if (Child && !Child->IsPendingDestroy())
+        GWorld->GetPartitionManager()->Unregister(this);
+    }
+
+    TArray<USceneComponent*> AttachChildrenCopied = AttachChildren;
+    for (USceneComponent* Child : AttachChildrenCopied)
+    {
+        if (Child)
         {
-            // Destroy를 통한 적절한 정리
+            // 자식들에게 곧 죽을 운명임을 전파
             Child->Destroy();
         }
     }
+    AttachChildren.clear();
 
-    // 부모에서 자신 제거
+    if (Owner)
+    {
+        Owner->RemoveOwnedComponent(this);
+    }
     if (AttachParent)
     {
-        TArray<USceneComponent*>& ParentChildren = AttachParent->AttachChildren;
-        ParentChildren.Remove(this);
-        AttachParent = nullptr;
+        AttachParent->AttachChildren.Remove(this);
     }
+    AttachParent = nullptr;
 }
 
 // ──────────────────────────────
@@ -305,12 +323,12 @@ void USceneComponent::DetachFromParent(bool bKeepWorld)
         AttachParent = nullptr;
     }
 
-    if (bKeepWorld)
-        RelativeTransform = OldWorld;
+    //if (bKeepWorld)
+    //    RelativeTransform = OldWorld;
 
-    RelativeLocation = RelativeTransform.Translation;
-    RelativeRotation = RelativeTransform.Rotation;
-    RelativeScale = RelativeTransform.Scale3D;
+    //RelativeLocation = RelativeTransform.Translation;
+    //RelativeRotation = RelativeTransform.Rotation;
+    //RelativeScale = RelativeTransform.Scale3D;
 }
 
 void USceneComponent::DuplicateSubObjects()

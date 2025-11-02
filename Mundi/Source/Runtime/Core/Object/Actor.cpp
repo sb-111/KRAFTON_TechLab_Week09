@@ -9,6 +9,7 @@
 #include "AABB.h"
 #include "JsonSerializer.h"
 #include "World.h"
+#include "SelectionManager.h"
 
 IMPLEMENT_CLASS(AActor)
 
@@ -19,12 +20,17 @@ AActor::AActor()
 
 AActor::~AActor()
 {
-	// UE처럼 역순/안전 소멸: 모든 컴포넌트 Destroy
-	for (UActorComponent* Comp : OwnedComponents)
-		if (Comp) Comp->Destroy();  // 안에서 Unregister/Detach 처리한다고 가정
-	OwnedComponents.clear();
-	SceneComponents.Empty();
-	RootComponent = nullptr;
+	// 예고 없는 삭제. 
+	if (!IsPendingDestroy())
+	{
+		// UE처럼 역순/안전 소멸: 모든 컴포넌트 Destroy
+		TSet<UActorComponent*> OwnedComponentsCopied = OwnedComponents;
+		for (UActorComponent* Comp : OwnedComponentsCopied)
+			if (Comp) Comp->Destroy();  // 안에서 Unregister/Detach 처리한다고 가정
+		OwnedComponents.clear();
+		SceneComponents.Empty();
+		RootComponent = nullptr;
+	}
 }
 
 void AActor::BeginPlay()
@@ -54,7 +60,7 @@ void AActor::EndPlay(EEndPlayReason Reason)
 	for (UActorComponent* Comp : OwnedComponents)
 		if (Comp) Comp->EndPlay(Reason);
 }
-// 실제 삭제는 World가 진행하고 Actor를 씬으로부터 고립시킴(OwnedComponent에도 전파)
+// 실제 삭제는 프레임이 끝난 후 World가 진행하고 Destroy는 Actor를 씬으로부터 고립시킴(OwnedComponent에도 전파)
 void AActor::Destroy()
 {
 	if (IsPendingDestroy())
@@ -63,12 +69,33 @@ void AActor::Destroy()
 	}
 
 	MarkPendingDestroy();
-	for (UActorComponent* Component : OwnedComponents)
+
+	TSet<UActorComponent*> OwnedComponentsCopied = OwnedComponents;
+	// 자식 컴포넌트 정리
+	for (UActorComponent* Component : OwnedComponentsCopied)
 	{
 		Component->Destroy();
 	}
-	if (World) 
+	OwnedComponents.clear();
+	ClearSceneComponentCaches();
+	
+	// 게임 수명 종료
+	EndPlay(EEndPlayReason::Destroyed);
+
+	if (GWorld) 
 	{ 
+		// 파티션 시스템에서 제거
+		GWorld->OnActorDestroyed(this);
+		// 컴포넌트 삭제, 언레지스터는 컴포넌트들이 알아서 해줄 거임
+		if (ULevel* Level = GWorld->GetLevel())
+		{
+			Level->RemoveActor(this);
+		}
+
+		if (USelectionManager* SelectionManager = GWorld->GetSelectionManager())
+		{
+			SelectionManager->ClearSelection();
+		}
 		//World->DestroyActor(this); 
 		return; 
 	}
@@ -83,9 +110,13 @@ void AActor::Destroy()
 }
 
 void AActor::MarkPendingDestroy()
-{ 
-	bPendingDestroy = true;  
-	GWorld->MarkPendingDestroy(this); 
+{
+	bPendingDestroy = true;
+	// World가 소멸 중이면 PendingDestroy 시스템을 사용하지 않음 (직접 소멸자에서 정리됨)
+	if (GWorld)
+	{
+		GWorld->MarkPendingDestroy(this);
+	}
 }
 
 
@@ -144,31 +175,31 @@ void AActor::RemoveOwnedComponent(UActorComponent* Component)
 		return;
 	}
 
-	if (USceneComponent* SceneComponent = Cast<USceneComponent>(Component))
-	{
-		// 자식 컴포넌트들을 먼저 재귀적으로 삭제
-		// (자식을 먼저 삭제하면 부모의 AttachChildren이 변경되므로 복사본으로 순회)
-		TArray<USceneComponent*> ChildrenCopy = SceneComponent->GetAttachChildren();
-		for (USceneComponent* Child : ChildrenCopy)
-		{
-			RemoveOwnedComponent(Child); // 재귀 호출로 자식들 먼저 삭제
-		}
+	//if (USceneComponent* SceneComponent = Cast<USceneComponent>(Component))
+	//{
+	//	// 자식 컴포넌트들을 먼저 재귀적으로 삭제
+	//	// (자식을 먼저 삭제하면 부모의 AttachChildren이 변경되므로 복사본으로 순회)
+	//	TArray<USceneComponent*> ChildrenCopy = SceneComponent->GetAttachChildren();
+	//	for (USceneComponent* Child : ChildrenCopy)
+	//	{
+	//		RemoveOwnedComponent(Child); // 재귀 호출로 자식들 먼저 삭제
+	//	}
 
-		if (SceneComponent == RootComponent)
-		{
-			RootComponent = nullptr;
-		}
+	//	if (SceneComponent == RootComponent)
+	//	{
+	//		RootComponent = nullptr;
+	//	}
 
-		SceneComponents.Remove(SceneComponent);
-		GWorld->GetPartitionManager()->Unregister(SceneComponent);
-		SceneComponent->DetachFromParent(true);
-	}
+	//	SceneComponents.Remove(SceneComponent);
+	//	GWorld->GetPartitionManager()->Unregister(SceneComponent);
+	//	SceneComponent->DetachFromParent(true);
+	//}
 
 	// OwnedComponents에서 제거
 	OwnedComponents.erase(Component);
 
-	Component->UnregisterComponent();
-	Component->Destroy();
+	//Component->UnregisterComponent();
+	//Component->Destroy();
 }
 
 UActorComponent* AActor::GetComponentByClassName(const std::string& ClassName)
@@ -224,17 +255,17 @@ void AActor::UnregisterAllComponents(bool bCallEndPlayOnBegun)
 
 void AActor::DestroyAllComponents()
 {
-	// Unregister 이후 최종 파괴
-	TArray<UActorComponent*> Temp;
-	Temp.reserve(OwnedComponents.size());
-	for (UActorComponent* C : OwnedComponents) Temp.push_back(C);
+	//// Unregister 이후 최종 파괴
+	//TArray<UActorComponent*> Temp;
+	//Temp.reserve(OwnedComponents.size());
+	//for (UActorComponent* C : OwnedComponents) Temp.push_back(C);
 
-	for (UActorComponent* C : Temp)
-	{
-		if (!C) continue;
-		C->Destroy(); // 내부에서 Owner=nullptr 등도 처리
-	}
-	OwnedComponents.clear();
+	//for (UActorComponent* C : Temp)
+	//{
+	//	if (!C) continue;
+	//	C->Destroy(); // 내부에서 Owner=nullptr 등도 처리
+	//}
+	//OwnedComponents.clear();
 }
 
 void AActor::ClearSceneComponentCaches()
