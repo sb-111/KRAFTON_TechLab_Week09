@@ -33,6 +33,6 @@ public:
 	void OnSerialized() override;
 
     float CapsuleHalfHeight = 1.0f;
-    float CapsuleRadius = 5.0f;
+    float CapsuleRadius = 1.0f;
 	FBoundingCapsule CachedBound; // World capsule volume (충돌 검사용)
 };

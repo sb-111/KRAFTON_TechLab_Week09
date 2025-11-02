@@ -14,7 +14,7 @@ END_PROPERTIES()
 
 UBoxComponent::UBoxComponent()
 {
-	BoxExtent = FVector(5.0f, 5.0f, 5.0f);
+	BoxExtent = FVector(1.0f, 1.0f, 1.0f);
 	ShapeColor = FLinearColor(1.0f, 0.34f, 0.28f);
 	bDrawOnlyIfSelected = false;
 	UpdateBound();
