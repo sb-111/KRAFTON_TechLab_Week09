@@ -83,6 +83,14 @@ void UWorldPhysics::UnregisterCollision(UShapeComponent* InShape)
 		BVH->Remove(InShape);
 	}
 
+	// Collision Map에서 제거
+	CollisionMap.Remove(InShape);
+	for (auto& Pair : CollisionMap)
+	{
+		Pair.second.Remove(InShape);
+	}
+
+	// Update 대기중이었을 수 있으므로 DirtySet에서도 제거
 	CollisionDirtySet.erase(InShape);
 }
 
