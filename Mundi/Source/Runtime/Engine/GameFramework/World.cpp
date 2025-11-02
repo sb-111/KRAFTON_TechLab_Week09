@@ -26,6 +26,7 @@
 #include "LightManager.h"
 #include "LightComponent.h"
 #include "HeightFogComponent.h"
+#include "InputManager.h"
 
 IMPLEMENT_CLASS(UWorld)
 
@@ -347,6 +348,75 @@ void UWorld::InitializeLuaState()
 			coroutine.yield("wait_until", condition)
 		end
 	)");
+
+	// =================================================================
+	// Input Manager 바인딩
+	// =================================================================
+	// Lua에 InputManager라는 새로운 타입을 정의하겠다고 선언 (멤버 함수 연결)
+	// Lua는 InputManager 타입 객체가 어떤 함수들을 호출할 수 있는지 알게 된다.
+	// 그러나 아직 Lua에서 접근할 수 있는 InputManager 객체는 없다.
+	LuaState.new_usertype<UInputManager>("InputManager",
+		"IsKeyDown", &UInputManager::IsKeyDown,
+		"IsKeyPressed", &UInputManager::IsKeyPressed,
+		"IsKeyReleased", &UInputManager::IsKeyReleased,
+		"IsMouseButtonDown", &UInputManager::IsMouseButtonDown,
+		"IsMouseButtonPressed", &UInputManager::IsMouseButtonPressed,
+		"IsMouseButtonReleased", &UInputManager::IsMouseButtonReleased,
+		"GetMousePosition", &UInputManager::GetMousePosition,
+		"GetMouseDelta", &UInputManager::GetMouseDelta
+	);
+
+	// Lua 스크립트 어디서나 접근할 수 있게전역 Input 객체 생성
+	LuaState["Input"] = &UInputManager::GetInstance();
+
+	// 키 코드 테이블 생성 (가독성 향상)
+	// Lua 전역 공간에 Keys라는 이름의 테이블 생성
+	// Lua에서 직관적인 이름으로 Lua 코드 작성 가능
+	sol::table Keys = LuaState.create_named_table("Keys");
+	Keys["A"] = 'A';
+	Keys["B"] = 'B';
+	Keys["C"] = 'C';
+	Keys["D"] = 'D';
+	Keys["E"] = 'E';
+	Keys["F"] = 'F';
+	Keys["G"] = 'G';
+	Keys["H"] = 'H';
+	Keys["I"] = 'I';
+	Keys["J"] = 'J';
+	Keys["K"] = 'K';
+	Keys["L"] = 'L';
+	Keys["M"] = 'M';
+	Keys["N"] = 'N';
+	Keys["O"] = 'O';
+	Keys["P"] = 'P';
+	Keys["Q"] = 'Q';
+	Keys["R"] = 'R';
+	Keys["S"] = 'S';
+	Keys["T"] = 'T';
+	Keys["U"] = 'U';
+	Keys["V"] = 'V';
+	Keys["W"] = 'W';
+	Keys["X"] = 'X';
+	Keys["Y"] = 'Y';
+	Keys["Z"] = 'Z';
+	Keys["Num0"] = '0';
+	Keys["Num1"] = '1';
+	Keys["Num2"] = '2';
+	Keys["Num3"] = '3';
+	Keys["Num4"] = '4';
+	Keys["Num5"] = '5';
+	Keys["Num6"] = '6';
+	Keys["Num7"] = '7';
+	Keys["Num8"] = '8';
+	Keys["Num9"] = '9';
+	Keys["Escape"] = VK_ESCAPE;
+	Keys["Space"] = VK_SPACE;
+	Keys["Enter"] = VK_RETURN;
+	Keys["LeftShift"] = VK_LSHIFT;
+	Keys["RightShift"] = VK_RSHIFT;
+	Keys["LeftControl"] = VK_LCONTROL;
+	Keys["RightControl"] = VK_RCONTROL;
+
 
 	UE_LOG("Lua State initialized successfully");
 }
