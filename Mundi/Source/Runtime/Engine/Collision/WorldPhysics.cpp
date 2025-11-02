@@ -137,3 +137,13 @@ TArray<UShapeComponent*> UWorldPhysics::CollisionQuery(const UShapeComponent* Ph
 	}
 	return Collisions;
 }
+
+int32 UWorldPhysics::GetCollisionShapeCount() const
+{
+	return BVH ? BVH->TotalShapeCount() : 0;
+}
+
+int32 UWorldPhysics::GetCollisionNodeCount() const
+{
+	return BVH ? BVH->TotalNodeCount() : 0;
+}

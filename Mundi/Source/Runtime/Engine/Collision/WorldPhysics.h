@@ -24,6 +24,9 @@ public:
 
 	TArray<UShapeComponent*> CollisionQuery(const UShapeComponent* PhysicsObject) const;
 
+	int32 GetCollisionShapeCount() const;
+	int32 GetCollisionNodeCount() const;
+
 private:
 	// 싱글톤 
 	UWorldPhysics(const UWorldPhysics&) = delete;
