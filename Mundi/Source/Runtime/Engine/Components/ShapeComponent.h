@@ -19,9 +19,15 @@ public:
 	UShapeComponent() = default;
 	~UShapeComponent() override = default;
 
+	void Destroy() override;
+	
+	void SetShapeColor(FLinearColor InColor) { ShapeColor = InColor; }
+	FLinearColor GetShapeColor() const { return ShapeColor; }
+	void SetDrawOnlyWhenSelected(bool bInDrawOnlyWhenSelected) { bDrawOnlyIfSelected = bInDrawOnlyWhenSelected; }
+	bool IsDrawOnlyWhenSelected() const { return bDrawOnlyIfSelected; }
+	
     virtual FAABB GetWorldAABB() { return FAABB(); } // World Partition System에서 사용하기 위한 AABB
 	virtual EShapeType GetShapeType() const { return EShapeType::None; }
-
     // ───── 복사 관련 ────────────────────────────
     void DuplicateSubObjects() override;
     DECLARE_DUPLICATE(UShapeComponent)
@@ -33,8 +39,8 @@ public:
     virtual bool Intersects(const UShapeComponent* Other) const { return false; }
 	static bool Intersects(const UShapeComponent* A, const UShapeComponent* B);
 
-public:
-    // ShapeComponent의 기본 속성들은 public
+protected:
+    // 기본 디버그 표시 속성
     FLinearColor ShapeColor = FLinearColor(1.0f, 0.34f, 0.28f);
     bool bDrawOnlyIfSelected = false;
 };

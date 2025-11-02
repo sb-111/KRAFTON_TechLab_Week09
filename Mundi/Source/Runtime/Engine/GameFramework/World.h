@@ -25,6 +25,7 @@ struct FTransform;
 struct FSceneCompData;
 class SViewportWindow;
 class UWorldPartitionManager;
+class UWorldPhysics;
 class AStaticMeshActor;
 class BVHierachy;
 class UStaticMesh;
@@ -40,7 +41,6 @@ public:
     ~UWorld() override;
 
     bool bPie = false;
-    bool bIsBeingDestroyed = false;
 
 public:
     /** 초기화 */
@@ -95,9 +95,10 @@ public:
     /** === 필요한 엑터 게터 === */
     const TArray<AActor*>& GetActors() { static TArray<AActor*> Empty; return Level ? Level->GetActors() : Empty; }
     const TArray<AActor*>& GetEditorActors() { return EditorActors; }
-    AGizmoActor* GetGizmoActor() { return GizmoActor; }
-    AGridActor* GetGridActor() { return GridActor; }
-    UWorldPartitionManager* GetPartitionManager() { return Partition.get(); }
+    AGizmoActor* GetGizmoActor() const { return GizmoActor; }
+    AGridActor* GetGridActor() const { return GridActor; }
+    UWorldPartitionManager* GetPartitionManager() const { return Partition.get(); }
+    UWorldPhysics* GetWorldPhysics() const { return Physics.get(); }
 
     // Per-world render settings
     URenderSettings& GetRenderSettings() { return RenderSettings; }
@@ -142,6 +143,7 @@ private:
 
     //partition
     std::unique_ptr<UWorldPartitionManager> Partition = nullptr;
+	std::unique_ptr<UWorldPhysics> Physics = nullptr;
 
     // Per-world selection manager
     std::unique_ptr<USelectionManager> SelectionMgr;

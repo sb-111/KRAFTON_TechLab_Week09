@@ -51,6 +51,7 @@ void UConsoleWidget::Initialize()
 	HelpCommandList.Add("STAT ALL");
 	HelpCommandList.Add("STAT NONE");
 	HelpCommandList.Add("STAT LIGHT");
+	HelpCommandList.Add("STAT PHYSICS");
     HelpCommandList.Add("SHADOW_FILTER NONE");
     HelpCommandList.Add("SHADOW_FILTER PCF");
     HelpCommandList.Add("SHADOW_FILTER VSM");
@@ -279,6 +280,7 @@ void UConsoleWidget::ExecCommand(const char* command_line)
 		AddLog("- STAT MEMORY");
 		AddLog("- STAT PICKING");
 		AddLog("- STAT DECAL");
+		AddLog("- STAT PHYSICS");
 		AddLog("- STAT ALL");
 		AddLog("- STAT LIGHT");
 		AddLog("- STAT NONE");
@@ -303,6 +305,11 @@ void UConsoleWidget::ExecCommand(const char* command_line)
 		UStatsOverlayD2D::Get().ToggleDecal();
 		AddLog("STAT DECAL TOGGLED");
 	}
+	else if (Stricmp(command_line, "STAT PHYSICS") == 0)
+	{
+		UStatsOverlayD2D::Get().TogglePhysics();
+		AddLog("STAT PHYSICS TOGGLED");
+	}
 	else if (Stricmp(command_line, "STAT LIGHT") == 0)
 	{
 		UStatsOverlayD2D::Get().ToggleTileCulling();
@@ -319,6 +326,7 @@ void UConsoleWidget::ExecCommand(const char* command_line)
 		UStatsOverlayD2D::Get().SetShowMemory(true);
 		UStatsOverlayD2D::Get().SetShowPicking(true);
 		UStatsOverlayD2D::Get().SetShowDecal(true);
+		UStatsOverlayD2D::Get().SetShowPhysics(true);
 		UStatsOverlayD2D::Get().SetShowTileCulling(true);
 		UStatsOverlayD2D::Get().SetShowShadowInfo(true);
 		AddLog("STAT: ON");
@@ -329,6 +337,7 @@ void UConsoleWidget::ExecCommand(const char* command_line)
 		UStatsOverlayD2D::Get().SetShowMemory(false);
 		UStatsOverlayD2D::Get().SetShowPicking(false);
 		UStatsOverlayD2D::Get().SetShowDecal(false);
+		UStatsOverlayD2D::Get().SetShowPhysics(false);
 		UStatsOverlayD2D::Get().SetShowTileCulling(false);
 		UStatsOverlayD2D::Get().SetShowShadowInfo(false);
 		AddLog("STAT: OFF");

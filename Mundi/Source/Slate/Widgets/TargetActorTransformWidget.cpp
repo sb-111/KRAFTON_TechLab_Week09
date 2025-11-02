@@ -490,7 +490,10 @@ void UTargetActorTransformWidget::RenderComponentHierarchy(AActor* SelectedActor
 		GWorld->GetSelectionManager()->ClearSelection();
 
 		// 컴포넌트 삭제
-		SelectedActor->RemoveOwnedComponent(ComponentPendingRemoval);
+		if (ComponentPendingRemoval->GetOwner()->RootComponent != ComponentPendingRemoval)
+		{
+			ComponentPendingRemoval->Destroy();
+		}
 		ComponentPendingRemoval = nullptr;
 
 		// 삭제 후 새로운 컴포넌트 선택

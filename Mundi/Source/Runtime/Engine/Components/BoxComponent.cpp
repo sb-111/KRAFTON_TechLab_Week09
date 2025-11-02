@@ -97,6 +97,7 @@ void UBoxComponent::UpdateOBB()
 	const FVector LocalMax = BoxExtent;
 	const FAABB LocalAABB(LocalMin, LocalMax);
 
+	// 주의: BoxComponent의 크기에는 자체 스케일도 반영됨!
 	const FMatrix WorldMatrix = GetWorldMatrix();
 	CachedBound = FOBB(LocalAABB, WorldMatrix);
 }

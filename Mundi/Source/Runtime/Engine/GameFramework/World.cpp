@@ -12,6 +12,7 @@
 #include "StaticMesh.h"
 #include "ObjManager.h"
 #include "WorldPartitionManager.h"
+#include "WorldPhysics.h"
 #include "PrimitiveComponent.h"
 #include "Octree.h"
 #include "BVHierarchy.h"
@@ -32,6 +33,7 @@ IMPLEMENT_CLASS(UWorld)
 
 UWorld::UWorld()
 	: Partition(new UWorldPartitionManager())
+	, Physics(new UWorldPhysics())
 {
 	SelectionMgr = std::make_unique<USelectionManager>();
 	//PIE의 경우 Initalize 없이 빈 Level 생성만 해야함
@@ -42,7 +44,6 @@ UWorld::UWorld()
 
 UWorld::~UWorld()
 {
-	// 1. Level의 모든 Actor들을 수집
 	TArray<AActor*> AllActorsToDelete;
 	if (Level)
 	{
@@ -50,7 +51,6 @@ UWorld::~UWorld()
 		Level->Clear();
 	}
 
-	// 2. 에디터 전용 Actor들 추가 (GridActor, GizmoActor 등)
 	for (AActor* EditorActor : EditorActors)
 	{
 		if (EditorActor)
@@ -60,13 +60,11 @@ UWorld::~UWorld()
 	}
 	EditorActors.clear();
 
-	// 3. MainCameraActor 추가
 	if (MainCameraActor)
 	{
 		AllActorsToDelete.AddUnique(MainCameraActor);
 	}
 
-	// 4. 모든 Actor의 Destroy() 호출 (ActorsToDestroy/ComponentsToDestroy에 추가)
 	for (AActor* Actor : AllActorsToDelete)
 	{
 		if (Actor)
@@ -75,10 +73,6 @@ UWorld::~UWorld()
 		}
 	}
 
-	// 5. World 소멸 중 플래그 설정 (이후 추가 방지)
-	bIsBeingDestroyed = true;
-
-	// 6. PendingDestroy 시스템으로 정리 (Component 먼저, Actor 나중에)
 	PendingDestroy();
 
 	GridActor = nullptr;
@@ -424,6 +418,7 @@ void UWorld::InitializeLuaState()
 void UWorld::Tick(float DeltaSeconds)
 {
 	Partition->Update(DeltaSeconds, /*budget*/256);
+	Physics->Update(DeltaSeconds);
 
 	// Coroutine Manager 업데이트
 	CoroutineManager.Update(DeltaSeconds);
@@ -641,6 +636,8 @@ void UWorld::SetLevel(std::unique_ptr<ULevel> InLevel)
     }
     // Clear spatial indices
     Partition->Clear();
+	// Clear Physics Manager
+	Physics->Clear();
 
     Level = std::move(InLevel);
 
