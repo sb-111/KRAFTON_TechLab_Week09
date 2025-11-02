@@ -12,7 +12,7 @@ BEGIN_PROPERTIES(USphereComponent)
     MARK_AS_COMPONENT("스피어 컴포넌트", "구 형태의 충돌 컴포넌트입니다.")
 END_PROPERTIES()
 
-USphereComponent::USphereComponent() : Radius(5.0f)
+USphereComponent::USphereComponent() : Radius(1.0f)
 {
     ShapeColor = FLinearColor(1.0f, 0.34f, 0.28f);
     bDrawOnlyIfSelected = false;
@@ -94,8 +94,6 @@ void USphereComponent::Serialize(const bool bInIsLoading, JSON& InOutHandle)
 		{
 			Radius = FMath::Max(0.0f, LoadedRadius);
 		}
-
-		UpdateBound();
 	}
 	else
 	{

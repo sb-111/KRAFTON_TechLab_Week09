@@ -39,6 +39,7 @@
 
 #include "CameraActor.h"
 #include "ShapeComponent.h"
+#include "WorldPhysics.h"
 
 using namespace std;
 
@@ -287,7 +288,9 @@ namespace
 		ImGui::PopID();
 	}
 
+	// ====================================================================================
 	// Custom UI Rendering
+	// ====================================================================================
 	void RenderShapeComponentDetail(UShapeComponent* ShapeComp)
 	{
 		FLinearColor Color = ShapeComp->GetShapeColor();
@@ -357,6 +360,19 @@ namespace
 			}
 			case EShapeType::None:
 				break;
+		}
+
+		if (ShapeComp->GetShapeType() != EShapeType::None)
+		{
+			if (UWorld* World = ShapeComp->GetWorld())
+			{
+				if (UWorldPhysics* Physics = World->GetWorldPhysics())
+				{
+					TArray<UShapeComponent*> Collided = Physics->CollisionQuery(ShapeComp);
+					ImGui::Separator();
+					ImGui::Text("Overlapped with %d Shapes", Collided.Num());
+				}
+			}
 		}
 	}
 }

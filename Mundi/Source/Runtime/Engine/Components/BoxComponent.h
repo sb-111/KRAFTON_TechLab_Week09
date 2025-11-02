@@ -34,6 +34,6 @@ public:
 	void OnSerialized() override;
 
 private:
-	FVector BoxExtent = FVector(5.0f, 5.0f, 5.0f); // Half Extent
+	FVector BoxExtent = FVector(1.0f, 1.0f, 1.0f); // Half Extent
 	FOBB CachedBound; // World OBB (충돌 검사용. Transform과 Extent에 의해 갱신)
 };

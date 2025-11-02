@@ -101,6 +101,16 @@ void UWorldPhysics::MarkCollisionDirty(UShapeComponent* PhysicsObject)
 		return;
 	}
 
+	// 캐시된 CollisionMap이 있다면 즉시 무효화
+	if (!CollisionMap.IsEmpty())
+	{
+		CollisionMap.Remove(PhysicsObject);
+		for (auto& Pair : CollisionMap)
+		{
+			Pair.second.Remove(PhysicsObject);
+		}
+	}
+
 	if (CollisionDirtySet.insert(PhysicsObject).second)
 	{
 		CollisionDirtyQueue.push(PhysicsObject);

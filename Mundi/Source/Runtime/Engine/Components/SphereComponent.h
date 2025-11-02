@@ -34,6 +34,6 @@ public:
 	void OnSerialized() override;
 
 private:
-	float Radius = 5.0f;
+	float Radius = 1.0f;
 	FBoundingSphere CachedBound; // World sphere volume (충돌 검사용. transform과 Radius에 의해 갱신)
 };

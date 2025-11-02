@@ -15,7 +15,7 @@ END_PROPERTIES()
 UCapsuleComponent::UCapsuleComponent()
 {
 	CapsuleHalfHeight = 1.0f;
-	CapsuleRadius = 5.0f;
+	CapsuleRadius = 1.0f;
 	ShapeColor = FLinearColor(1.0f, 0.34f, 0.28f);
 	bDrawOnlyIfSelected = false;
 	UpdateBound();
@@ -122,8 +122,6 @@ void UCapsuleComponent::Serialize(const bool bInIsLoading, JSON& InOutHandle)
 		{
 			CapsuleRadius = FMath::Max(0.0f, LoadedRadius);
 		}
-
-		UpdateBound();
 	}
 	else
 	{
