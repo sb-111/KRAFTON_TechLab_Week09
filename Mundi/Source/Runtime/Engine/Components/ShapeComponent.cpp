@@ -1,7 +1,25 @@
 ﻿#include "pch.h"
 #include "ShapeComponent.h"
+#include "World.h"
+#include "WorldPhysics.h"
 
 IMPLEMENT_CLASS(UShapeComponent)
+
+void UShapeComponent::Destroy()
+{
+    Super::Destroy();
+
+    if (UWorld* World = GetWorld())
+    {
+        if (!World->bIsBeingDestroyed)
+        {
+            if (UWorldPhysics* Physics = World->GetWorldPhysics())
+            {
+                Physics->UnregisterCollision(this);
+            }
+        }
+    }
+}
 
 void UShapeComponent::DuplicateSubObjects()
 {

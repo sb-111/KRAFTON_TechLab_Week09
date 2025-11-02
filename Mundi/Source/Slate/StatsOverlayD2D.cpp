@@ -15,6 +15,8 @@
 #include "PlatformTime.h"
 #include "DecalStatManager.h"
 #include "TileCullingStats.h"
+#include "World.h"
+#include "WorldPhysics.h"
 
 #pragma comment(lib, "d2d1")
 #pragma comment(lib, "dwrite")
@@ -149,7 +151,9 @@ static float CalcPanelHeightForText(IDWriteFactory* Dwrite, const wchar_t* InTex
 
 void UStatsOverlayD2D::Draw()
 {
-	if (!bInitialized || (!bShowFPS && !bShowMemory && !bShowPicking && !bShowDecal && !bShowTileCulling && !bShowShadowInfo) || !SwapChain)
+	if (!bInitialized
+		|| (!bShowFPS && !bShowMemory && !bShowPicking && !bShowDecal && !bShowTileCulling && !bShowShadowInfo && !bShowPhysics)
+		|| !SwapChain)
 		return;
 
 	ID2D1Factory1* D2dFactory = nullptr;
@@ -286,6 +290,32 @@ void UStatsOverlayD2D::Draw()
 			D2D1::ColorF(D2D1::ColorF::LightGreen));
 
 		NextY += PanelHeight + Space;
+	}
+
+	if (bShowPhysics)
+	{
+		int32 ShapeCount = 0;
+		int32 NodeCount = 0;
+		if (GWorld)
+		{
+			if (UWorldPhysics* Physics = GWorld->GetWorldPhysics())
+			{
+				ShapeCount = Physics->GetCollisionShapeCount();
+				NodeCount = Physics->GetCollisionNodeCount();
+			}
+		}
+
+		wchar_t Buf[128];
+		swprintf_s(Buf, L"[Physics]\nShape Components: %d\nBVH Nodes: %d", ShapeCount, NodeCount);
+
+		const float PhysicsPanelHeight = 96.0f;
+		D2D1_RECT_F Rc = D2D1::RectF(Margin, NextY, Margin + PanelWidth, NextY + PhysicsPanelHeight);
+		DrawTextBlock(
+			D2dCtx, Dwrite, Buf, Rc, 16.0f,
+			D2D1::ColorF(0, 0, 0, 0.6f),
+			D2D1::ColorF(D2D1::ColorF::LightSteelBlue));
+
+		NextY += PhysicsPanelHeight + Space;
 	}
 
 	if (bShowDecal)
@@ -512,6 +542,11 @@ void UStatsOverlayD2D::SetShowShadowInfo(bool b)
 	bShowShadowInfo = b;
 }
 
+void UStatsOverlayD2D::SetShowPhysics(bool b)
+{
+	bShowPhysics = b;
+}
+
 void UStatsOverlayD2D::ToggleTileCulling()
 {
 	bShowTileCulling = !bShowTileCulling;
@@ -520,6 +555,11 @@ void UStatsOverlayD2D::ToggleTileCulling()
 void UStatsOverlayD2D::ToggleShadowInfo()
 {
 	bShowShadowInfo = !bShowShadowInfo;
+}
+
+void UStatsOverlayD2D::TogglePhysics()
+{
+	bShowPhysics = !bShowPhysics;
 }
 
 

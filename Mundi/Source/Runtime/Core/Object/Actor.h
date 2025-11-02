@@ -33,7 +33,7 @@ public:
     const FName& GetName() { return Name; }
 
     // 월드/표시
-    void SetWorld(UWorld* InWorld) { World = InWorld; this->RegisterAllComponents(InWorld); }
+    void SetWorld(UWorld* InWorld);
     UWorld* GetWorld() const { return World; }
 
     // 루트/컴포넌트
@@ -186,6 +186,6 @@ protected:
     bool bCanEverTick = true;
     bool bIsCulled = false;
 
-private:
-   
+    // 월드에 의존적인 컴포넌트가 월드 설정 전 추가된 경우 나중에 추가될 수 있도록 대기열에 저장
+    TArray<UActorComponent*> PendingWorldRegistration;
 };

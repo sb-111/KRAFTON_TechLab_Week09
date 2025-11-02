@@ -26,6 +26,7 @@ public:
 	/**@brief UShapeComponent끼리 정확한 충돌 검사를 진행하여 충돌한 shape들을 반환합니다.*/
 	TArray<UShapeComponent*> Query(const UShapeComponent* InShape) const;
 
+	TArray<UShapeComponent*> GetShapeArray() const { return ShapeArray; }
 	int32 TotalShapeCount() const { return static_cast<int32>(ShapeArray.Num()); }
 	int32 TotalNodeCount() const { return static_cast<int32>(Nodes.Num()); }
 
