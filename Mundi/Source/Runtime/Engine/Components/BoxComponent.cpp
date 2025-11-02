@@ -120,8 +120,6 @@ void UBoxComponent::Serialize(const bool bInIsLoading, JSON& InOutHandle)
 		{
 			BoxExtent = LoadedExtent;
 		}
-
-		UpdateBound();
 	}
 	else
 	{

@@ -20,6 +20,7 @@ public:
 	~UShapeComponent() override = default;
 
 	void Destroy() override;
+	void OnRegister(UWorld* InWorld) override;
 	
 	void SetShapeColor(FLinearColor InColor) { ShapeColor = InColor; }
 	FLinearColor GetShapeColor() const { return ShapeColor; }

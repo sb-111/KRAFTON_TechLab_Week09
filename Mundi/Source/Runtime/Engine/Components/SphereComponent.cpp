@@ -94,8 +94,6 @@ void USphereComponent::Serialize(const bool bInIsLoading, JSON& InOutHandle)
 		{
 			Radius = FMath::Max(0.0f, LoadedRadius);
 		}
-
-		UpdateBound();
 	}
 	else
 	{

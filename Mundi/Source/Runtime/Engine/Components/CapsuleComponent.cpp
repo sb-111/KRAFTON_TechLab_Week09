@@ -122,8 +122,6 @@ void UCapsuleComponent::Serialize(const bool bInIsLoading, JSON& InOutHandle)
 		{
 			CapsuleRadius = FMath::Max(0.0f, LoadedRadius);
 		}
-
-		UpdateBound();
 	}
 	else
 	{

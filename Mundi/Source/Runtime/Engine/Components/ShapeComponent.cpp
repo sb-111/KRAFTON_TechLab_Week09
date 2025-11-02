@@ -20,6 +20,12 @@ void UShapeComponent::Destroy()
     }
 }
 
+void UShapeComponent::OnRegister(UWorld* InWorld)
+{
+	Super::OnRegister(InWorld);
+	UpdateBound();
+}
+
 void UShapeComponent::DuplicateSubObjects()
 {
     Super::DuplicateSubObjects();
