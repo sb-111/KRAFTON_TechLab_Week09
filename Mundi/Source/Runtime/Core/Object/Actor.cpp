@@ -159,8 +159,11 @@ void AActor::SetRootComponent(USceneComponent* InRoot)
 	// 루트 교체
 	USceneComponent* TempRootComponent = RootComponent;
 	RootComponent = InRoot;
-	RemoveOwnedComponent(TempRootComponent);
 
+	if (TempRootComponent)
+	{
+		TempRootComponent->Destroy();
+	}
 	if (RootComponent)
 	{
 		RootComponent->SetOwner(this);
@@ -219,29 +222,15 @@ void AActor::RemoveOwnedComponent(UActorComponent* Component)
 		return;
 	}
 
-	//if (USceneComponent* SceneComponent = Cast<USceneComponent>(Component))
-	//{
-	//	// 자식 컴포넌트들을 먼저 재귀적으로 삭제
-	//	// (자식을 먼저 삭제하면 부모의 AttachChildren이 변경되므로 복사본으로 순회)
-	//	TArray<USceneComponent*> ChildrenCopy = SceneComponent->GetAttachChildren();
-	//	for (USceneComponent* Child : ChildrenCopy)
-	//	{
-	//		RemoveOwnedComponent(Child); // 재귀 호출로 자식들 먼저 삭제
-	//	}
-
-	//	if (SceneComponent == RootComponent)
-	//	{
-	//		RootComponent = nullptr;
-	//	}
-
-	//	SceneComponents.Remove(SceneComponent);
-	//	GWorld->GetPartitionManager()->Unregister(SceneComponent);
-	//	SceneComponent->DetachFromParent(true);
-	//}
-
 	// OwnedComponents에서 제거
 	OwnedComponents.erase(Component);
 
+	// SceneComponent라면 SceneComponents에서도 제거
+	if (USceneComponent* SceneComponent = Cast<USceneComponent>(Component))
+	{
+		SceneComponents.Remove(SceneComponent);
+	}
+	
 	// World 등록 대기열에서도 제거 (이미 Destroy된 ShapeComponent가 재등록되는 것을 방지)
 	PendingWorldRegistration.Remove(Component);
 
