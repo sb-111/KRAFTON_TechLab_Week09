@@ -7,10 +7,16 @@ local MoveForce = 2000
 local BreakForce = 50
 local Velocity = Vector(0, 0, 0)
 local AngularSpeed = 0
+
 local InitialPosition = Vector(0, 0, 0)
 local InitialRotation = Vector(0, 0, 0)
 local prevGameOver = false  -- 게임 재시작 감지용
 
+-- 코루틴 에러때문에 boolean으로 처리
+local CheckPointPass0 = false
+local CheckPointPass1 = false
+local CheckPointPass2 = false
+local CheckPointPass3 = false
 
 local Inertia = 1
 -- z축만 회전할 거라서 flaot
@@ -18,27 +24,53 @@ local Torque = 500
 -- 각속도에 따른 저항
 local AngularRegistance = 5
 
--- 스코어를 관리할 이벤트 시스템을 쓰면 좋겠지만
--- 시간관계상 UI를 게임 시스템처럼 사용함
-function ScoreCoroutine()
-    wait_until(function()
-        local CheckPoint0 = -350.0
-        return obj:GetActorLocation().x > CheckPoint0
-    end)
-    
-    -- 게임 오버 상태 체크
-    if not UI then
-        print("[Car] Coroutine terminated: UI invalid")
-        return
+
+-- 코루틴 에러때문에 boolean으로 처리
+function UpdateScore()
+    local CurrentLocation = obj:GetActorLocation().x
+    local CheckPoint0 = -350
+    local CheckPoint1 = -100
+    local CheckPoint2 = 100
+    local CheckPoint3 = 360
+    if(not CheckPointPass0 and CurrentLocation > CheckPoint0 ) then
+        -- 남은 시간에 비례해서 스코어 증가
+        local CurrentPlayTime = UI:GetPlayTime()
+        
+        UI:AddScore(math.floor(CurrentPlayTime) * 50)
+        -- 다음 체크포인트까지 도달할 시간 추가
+        UI:AddPlayTime(5)
+        CheckPointPass0 = true
     end
-    
-    -- 남은 시간에 비례해서 스코어 증가
-    local CurrentPlayTime = UI:GetPlayTime()
-    
-    UI:AddScore(math.floor(CurrentPlayTime) * 50)
-    -- 다음 체크포인트까지 도달할 시간 추가
-    UI:AddPlayTime(5)
-    print("[Car] Coroutine Entered")
+
+    if(not CheckPointPass1 and CurrentLocation > CheckPoint1 ) then
+        local CurrentPlayTime = UI:GetPlayTime()
+        
+        UI:AddScore(math.floor(CurrentPlayTime) * 50)
+        UI:AddPlayTime(10)
+        CheckPointPass1 = true
+    end
+    if(not CheckPointPass2 and CurrentLocation > CheckPoint2 ) then
+        local CurrentPlayTime = UI:GetPlayTime()
+        
+        UI:AddScore(math.floor(CurrentPlayTime) * 50)
+
+        UI:AddPlayTime(10)
+        CheckPointPass2 = true
+    end
+    if(not CheckPointPass3 and CurrentLocation > CheckPoint3 ) then
+        local CurrentPlayTime = UI:GetPlayTime()
+        
+        UI:AddScore(math.floor(CurrentPlayTime) * 50)
+        CheckPointPass3 = true
+    end
+end
+
+function BeginOverlap(Other)
+    Velocity = Velocity * (-1.0)
+    obj:SetActorLocation(obj:GetActorLocation() + Velocity:GetNormalized())
+    UI:SetAfterCollisionTime(3)
+end
+function EndOverlap(Other)
 
 end
 -- 게임 재시작 위함
@@ -60,10 +92,16 @@ end
 function BeginPlay()
     print("[BeginPlay] Car" .. tostring(obj))
 
+
     -- 초기 위치와 회전 저장
     InitialPosition = obj:GetActorLocation()
     InitialRotation = obj:GetActorRotation()
     start_coroutine(ScoreCoroutine)
+
+    local ShapeComponent = obj:GetShapeComponent()
+    ShapeComponent:RegisterBeginOverlapFunction(BeginOverlap)
+    ShapeComponent:RegisterEndOverlapFunction(EndOverlap)
+
 end
 
 function SetCameraPos()
@@ -99,6 +137,12 @@ function Tick(dt)
     local LinearSpeed = Velocity:Size()
     local MaxMoveForceSpeed = 100
     local MoveForceFactor = math.min(LinearSpeed / MaxMoveForceSpeed, 1.0)
+    if UI:GetAfterCollisionTime() > 0 then
+        -- 충돌 이후 저항 계수(작을수록 저항 큼)
+        local AfterCollisionResistance = 0.3
+        MoveForceFactor = MoveForceFactor * AfterCollisionResistance
+        UI:AddAfterCollisionTime(-dt)
+    end
     if Input:IsKeyDown(Keys.W) then
         if ForwardSpeed > 0 then
             NetForce = NetForce + ForwardVector * (BreakForce + MoveForce*MoveForceFactor)
@@ -153,7 +197,7 @@ function Tick(dt)
     local AngularVelocity = Vector(0,0, AngularSpeed * dt) 
     obj:AddActorWorldRotation(AngularVelocity)
   
-
+    UpdateScore()
     SetCameraPos()
 end
 

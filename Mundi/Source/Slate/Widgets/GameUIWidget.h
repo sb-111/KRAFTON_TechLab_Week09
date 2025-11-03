@@ -27,6 +27,10 @@ public:
 	void AddPlayTime(float InTIme) { PlayTime += InTIme; }
 	float GetPlayTime() const { return PlayTime; }
 
+	void SetAfterCollisionTime(float InTime) { AfterCollisionTime = InTime; }
+	void AddAfterCollisionTime(float InTime)  { AfterCollisionTime += InTime; }
+	float GetAfterCollisionTime() const { return AfterCollisionTime; }
+
 	// 가시성
 	void SetVisible(bool bInVisible) { bIsVisible = bInVisible; }
 	bool IsWidgetVisible() const { return bIsVisible; }
@@ -34,5 +38,6 @@ public:
 private:
 	int32 CurrentScore = 0;
 	float PlayTime = 0.0f;
+	float AfterCollisionTime = 0.0f;
 	bool bIsVisible = true;
 };

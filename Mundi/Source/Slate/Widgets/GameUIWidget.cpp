@@ -84,6 +84,14 @@ void UGameUIWidget::RenderWidget()
 		ImGui::SetCursorPosX((windowSize.x - textSize.x) * 0.5f);
 		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), timeText.c_str());
 
+		if (AfterCollisionTime > 0.0f)
+		{
+			FString timeText = "Speed Down After Collision: " + std::to_string(AfterCollisionTime);
+			textSize = ImGui::CalcTextSize(timeText.c_str());
+			ImGui::SetCursorPosX((windowSize.x - textSize.x) * 0.5f);
+			ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), timeText.c_str());
+		}
+
 		ImGui::PopFont();
 	}
 	ImGui::End();

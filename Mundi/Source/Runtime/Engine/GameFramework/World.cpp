@@ -261,6 +261,10 @@ void UWorld::InitializeLuaState()
 			return Actor->GetComponentByClass<UHeightFogComponent>();
 		},
 
+		"GetShapeComponent", [](AActor* Actor) -> UShapeComponent* {
+			return Actor->GetComponentByClass<UShapeComponent>();
+		},
+
 		// Lua에서 C++ 액터를 소멸시킬 수 있게 함(주의)
 		"Destroy", &AActor::Destroy,
 		// Lua에서 액터 이름을 가져올 수 있게 함(디버깅 유용)
@@ -292,7 +296,9 @@ void UWorld::InitializeLuaState()
 	LuaState.new_usertype<UShapeComponent>("UShapeComponent",
 		sol::base_classes, sol::bases<UActorComponent>(),
 		"OnCollisionBegin", &UShapeComponent::OnCollisionBegin,
-		"OnCollisionEnd", &UShapeComponent::OnCollisionEnd
+		"OnCollisionEnd", &UShapeComponent::OnCollisionEnd,
+		"RegisterBeginOverlapFunction", &UShapeComponent::RegisterBeginOverlapFunction,
+		"RegisterEndOverlapFunction", &UShapeComponent::RegisterEndOverlapFunction
 	);
 	LuaState.new_usertype<UBoxComponent>("UBoxComponent",
 		sol::base_classes, sol::bases<UShapeComponent>(),
@@ -434,7 +440,10 @@ void UWorld::InitializeLuaState()
 		"SetFinalScore", &UUIManager::SetFinalScore,
 		"SetRestartCallback", &UUIManager::SetRestartCallback,
 		"IsGameOver", &UUIManager::IsGameOver,
-		"SetGameOver", &UUIManager::SetGameOver
+		"SetGameOver", &UUIManager::SetGameOver,
+		"GetAfterCollisionTime", &UUIManager::GetAfterCollisionTime,
+		"SetAfterCollisionTime", & UUIManager::SetAfterCollisionTime,
+		"AddAfterCollisionTime", & UUIManager::AddAfterCollisionTime
 	);
 
 	// Lua 전역 UI 객체 생성

@@ -489,7 +489,10 @@ void UWorldPhysics::BroadcastCollisionEvents()
 {
 	TSet<uint64> ProcessedPairs;
 
-	for (const auto& Pair : CollisionMap)
+	// 이벤트 브로드캐스트 중 콜백에서 CollisionMap이 수정될 수 있으므로 복사본 순회
+	TMap<const UShapeComponent*, TSet<UShapeComponent*>> CollisionMapSnapshot = CollisionMap;
+
+	for (const auto& Pair : CollisionMapSnapshot)
 	{
 		const UShapeComponent* OwnerConst = Pair.first;
 		UShapeComponent* Owner = const_cast<UShapeComponent*>(OwnerConst);

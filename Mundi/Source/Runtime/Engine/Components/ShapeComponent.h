@@ -3,6 +3,7 @@
 #include "Color.h"
 #include "AABB.h"
 #include "MultiCastDelegate.h"
+#include "lua.hpp"
 
 enum class EShapeType: uint8
 {
@@ -49,6 +50,8 @@ public:
 	virtual void OnCollisionBegin(UShapeComponent* Other) { UE_LOG("Collision Begin"); }
 	virtual void OnCollisionEnd(UShapeComponent* Other) { UE_LOG("Collision End"); }
 
+	void RegisterBeginOverlapFunction(sol::function LuaFunction);
+	void RegisterEndOverlapFunction(sol::function LuaFunction);
 protected:
 	void BindCollisionDelegates();
 	void UnbindCollisionDelegates();
@@ -62,4 +65,7 @@ protected:
 
 	FBindingHandle BeginOverlapHandle;
 	FBindingHandle EndOverlapHandle;
+
+	sol::function BeginOverlapLua;
+	sol::function EndOverlapLua;
 };

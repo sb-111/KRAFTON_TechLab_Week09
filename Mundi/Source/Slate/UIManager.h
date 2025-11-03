@@ -80,6 +80,10 @@ public:
 	void ClearTransformWidgetSelection(); // Transform 위젯의 선택을 즉시 해제
 
 	// Game UI Management (루아 스크립트에서 사용)
+	float GetAfterCollisionTime();
+	void SetAfterCollisionTime(float InTime);
+	void AddAfterCollisionTime(float InTime);
+
 	void SetInGameUIVisibility(bool bVisible);
 	void SetGameOverUIVisibility(bool bVisible);
 	void UpdateTime(float Time);
