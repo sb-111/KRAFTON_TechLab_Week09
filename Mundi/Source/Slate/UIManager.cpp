@@ -8,6 +8,8 @@
 #include "ImGui/imgui_impl_dx11.h"
 #include "imGui/imgui_impl_win32.h"
 #include "Widgets/TargetActorTransformWidget.h"
+#include "Widgets/GameUIWidget.h"
+#include "Widgets/GameOverWidget.h"
 
 IMPLEMENT_CLASS(UUIManager)
 
@@ -26,7 +28,7 @@ UUIManager& UUIManager::GetInstance()
 	static UUIManager* Instance = nullptr;
 	if (Instance == nullptr)
 	{
-		Instance = NewObject<UUIManager>();
+		Instance = NewObject< UUIManager>();
 	}
 	return *Instance;
 }
@@ -166,6 +168,17 @@ void UUIManager::Render()
 		{
 			Window->RenderWindow();
 		}
+	}
+
+	// 게임 UI 위젯 렌더링 (윈도우가 아닌 독립 위젯)
+	if (GameUIWidgetRef)
+	{
+		GameUIWidgetRef->RenderWidget();
+	}
+
+	if (GameOverWidgetRef)
+	{
+		GameOverWidgetRef->RenderWidget();
 	}
 }
 void UUIManager::EndFrame() 
@@ -368,4 +381,127 @@ void UUIManager::ClearTransformWidgetSelection()
 	{
 		TargetTransformWidgetRef->OnSelectedActorCleared();
 	}
+}
+
+// ═══════════════════════════════════════════════════════
+// Game UI Management Functions
+// ═══════════════════════════════════════════════════════
+
+void UUIManager::InitializeGameUI()
+{
+	if (!GameUIWidgetRef)
+	{
+		GameUIWidgetRef = NewObject<UGameUIWidget>();
+		GameUIWidgetRef->Initialize();
+		UE_LOG("UIManager: GameUIWidget initialized");
+	}
+
+	if (!GameOverWidgetRef)
+	{
+		GameOverWidgetRef = NewObject<UGameOverWidget>();
+		GameOverWidgetRef->Initialize();
+		UE_LOG("UIManager: GameOverWidget initialized");
+	}
+}
+
+void UUIManager::SetInGameUIVisibility(bool bVisible)
+{
+	if (!GameUIWidgetRef)
+	{
+		InitializeGameUI();
+	}
+
+	if (GameUIWidgetRef)
+	{
+		GameUIWidgetRef->SetVisible(bVisible);
+		UE_LOG("UIManager: InGame UI visibility set to %s", bVisible ? "true" : "false");
+	}
+}
+
+void UUIManager::SetGameOverUIVisibility(bool bVisible)
+{
+	if (!GameOverWidgetRef)
+	{
+		InitializeGameUI();
+	}
+
+	if (GameOverWidgetRef)
+	{
+		GameOverWidgetRef->SetVisible(bVisible);
+		UE_LOG("UIManager: GameOver UI visibility set to %s", bVisible ? "true" : "false");
+	}
+}
+
+void UUIManager::UpdateTime(float Time)
+{
+	if (!GameUIWidgetRef)
+	{
+		InitializeGameUI();
+	}
+	if (GameUIWidgetRef)
+	{
+		GameUIWidgetRef->SetPlayTime(Time);
+	}
+}
+
+void UUIManager::UpdateScore(int32 Score)
+{
+	if (!GameUIWidgetRef)
+	{
+		InitializeGameUI();
+	}
+
+	if (GameUIWidgetRef)
+	{
+		GameUIWidgetRef->SetScore(Score);
+	}
+}
+
+void UUIManager::SetFinalScore(int32 Score)
+{
+	if (!GameOverWidgetRef)
+	{
+		InitializeGameUI();
+	}
+
+	if (GameOverWidgetRef)
+	{
+		GameOverWidgetRef->SetFinalScore(Score);
+		UE_LOG("UIManager: Final score set to %d", Score);
+	}
+}
+
+void UUIManager::SetRestartCallback(sol::function Callback)
+{
+	if (!GameOverWidgetRef)
+	{
+		InitializeGameUI();
+	}
+
+	if (GameOverWidgetRef)
+	{
+		GameOverWidgetRef->SetRestartCallback(Callback);
+		UE_LOG("UIManager: Restart callback registered");
+	}
+}
+
+void UUIManager::CleanupGameUI()
+{
+	UE_LOG("UIManager: Cleaning up game UI widgets...");
+
+	// 게임 UI 위젯 정리
+	if (GameUIWidgetRef)
+	{
+		DeleteObject(GameUIWidgetRef);
+		GameUIWidgetRef = nullptr;
+	}
+
+	// 게임 오버 위젯 정리 (sol::function도 함께 정리됨)
+	if (GameOverWidgetRef)
+	{
+		DeleteObject(GameOverWidgetRef);
+		GameOverWidgetRef = nullptr;
+	}
+
+	UE_LOG("UIManager: Game UI widgets cleaned up successfully");
 }

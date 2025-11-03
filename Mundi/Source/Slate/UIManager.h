@@ -79,6 +79,16 @@ public:
 	void RegisterTargetTransformWidget(UTargetActorTransformWidget* InWidget);
 	void ClearTransformWidgetSelection(); // Transform 위젯의 선택을 즉시 해제
 
+	// Game UI Management (루아 스크립트에서 사용)
+	void SetInGameUIVisibility(bool bVisible);
+	void SetGameOverUIVisibility(bool bVisible);
+	void UpdateTime(float Time);
+	void UpdateScore(int32 Score);
+	void SetFinalScore(int32 Score);
+	void SetRestartCallback(sol::function Callback);
+	void InitializeGameUI(); // 게임 UI 위젯 초기화
+	void CleanupGameUI(); // 게임 UI 위젯 정리 (PIE 종료 시 호출)
+
 public:
 	UUIManager();
 protected:
@@ -113,4 +123,8 @@ private:
 
 	// Transform Widget reference
 	UTargetActorTransformWidget* TargetTransformWidgetRef = nullptr;
+
+	// Game UI Widget references
+	class UGameUIWidget* GameUIWidgetRef = nullptr;
+	class UGameOverWidget* GameOverWidgetRef = nullptr;
 };

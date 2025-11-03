@@ -28,6 +28,7 @@
 #include "LightComponent.h"
 #include "HeightFogComponent.h"
 #include "InputManager.h"
+#include "UIManager.h"
 
 IMPLEMENT_CLASS(UWorld)
 
@@ -44,6 +45,12 @@ UWorld::UWorld()
 
 UWorld::~UWorld()
 {
+	// PIE World가 소멸될 때 게임 UI 정리
+	if (bPie)
+	{
+		UUIManager::GetInstance().CleanupGameUI();
+	}
+
 	TArray<AActor*> AllActorsToDelete;
 	if (Level)
 	{
@@ -383,6 +390,21 @@ void UWorld::InitializeLuaState()
 
 	// Lua 스크립트 어디서나 접근할 수 있게전역 Input 객체 생성
 	LuaState["Input"] = &UInputManager::GetInstance();
+
+	// =================================================================
+	// UI Manager 바인딩 (게임 UI 관련)
+	// =================================================================
+	LuaState.new_usertype<UUIManager>("UIManager",
+		"SetInGameUIVisibility", &UUIManager::SetInGameUIVisibility,
+		"SetGameOverUIVisibility", &UUIManager::SetGameOverUIVisibility,
+		"UpdateScore", &UUIManager::UpdateScore,
+		"UpdateTime", &UUIManager::UpdateTime,
+		"SetFinalScore", &UUIManager::SetFinalScore,
+		"SetRestartCallback", &UUIManager::SetRestartCallback
+	);
+
+	// Lua 전역 UI 객체 생성
+	LuaState["UI"] = &UUIManager::GetInstance();
 
 	// 키 코드 테이블 생성 (가독성 향상)
 	// Lua 전역 공간에 Keys라는 이름의 테이블 생성
