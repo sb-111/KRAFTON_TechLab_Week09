@@ -219,11 +219,11 @@ FCascadeSelection SelectCascade(float viewZ)
     return selection;
 }
 
-float SampleCSMCascade(uint cascadeIdx, float3 worldPos)
+float SampleCSMCascade(uint cascadeIdx, float3 worldPos, float3 normal, float3 lightDir, float bias)
 {
     float4 uvw = mul(float4(worldPos, 1.0f), gShadowMatrix[cascadeIdx]);
     float invW = rcp(max(uvw.w, 1e-5f));
-    float cmpDepth = uvw.z * invW;
+    float cmpDepth = uvw.z * invW - bias;
     float2 baseUV = uvw.xy;
 #if USE_HARD_SHADOWS
     return g_CSMShadowTextureArray.SampleCmpLevelZero(ShadowSampler, float3(baseUV, cascadeIdx), cmpDepth);
@@ -435,14 +435,23 @@ float SampleShadow_PCF(int shadowIndex, float3 worldPos, float3 normal, float3 l
     return shadowSum / SHADOW_SAMPLE_COUNT;
 }
 
-float2 Shadow_DirectionalCSM(float3 worldPos, float viewZ)
+float2 Shadow_DirectionalCSM(float3 worldPos, float viewZ, float3 normal, float3 lightDir)
 {
+    // CSM용 bias 계산 - DirectionalLight의 shadow info 사용
+    float bias = 0.0f;
+    if (DirectionalLight.ShadowIndex >= 0)
+    {
+        FShadowInfo shadowInfo = ShadowInfoList[DirectionalLight.ShadowIndex];
+        bias = CalculateSlopeBias(normal, lightDir, shadowInfo.ShadowBias,
+                                  shadowInfo.ShadowSlopeBias, shadowInfo.MaxSlopeDepthBias);
+    }
+
     FCascadeSelection selection = SelectCascade(viewZ);
-    float shadow = SampleCSMCascade(selection.Primary, worldPos);
+    float shadow = SampleCSMCascade(selection.Primary, worldPos, normal, lightDir, bias);
 
     if (useBlending == 1 && selection.Blend > 0.0f && selection.Secondary != selection.Primary)
     {
-        float secondaryShadow = SampleCSMCascade(selection.Secondary, worldPos);
+        float secondaryShadow = SampleCSMCascade(selection.Secondary, worldPos, normal, lightDir, bias);
         shadow = lerp(shadow, secondaryShadow, selection.Blend);
     }
 
@@ -615,7 +624,7 @@ float3 CalculateLighting(PS_INPUT Input, float3 normal, float3 viewDir,
     if(useShadow)
     {
         float viewZ = mul(float4(Input.WorldPos, 1), ViewMatrix).z;
-        float2 result = Shadow_DirectionalCSM(Input.WorldPos, viewZ);
+        float2 result = Shadow_DirectionalCSM(Input.WorldPos, viewZ, normal, DirectionalLight.Direction);
         if (useDebugging == 1)
         {
             float3 DebuggingColor =  (result.y == 0)? float3(0.1f, 0.0, 0.0) : float3(0.0, 0.1f, 0.0);
@@ -624,7 +633,7 @@ float3 CalculateLighting(PS_INPUT Input, float3 normal, float3 viewDir,
         shadow = result.x;
     }
     #else // Default
-        shadow = ComputeShadowFactor(DirectionalLight.ShadowIndex, Input.WorldPos, 
+        shadow = ComputeShadowFactor(DirectionalLight.ShadowIndex, Input.WorldPos,
             normal, DirectionalLight.Direction, DirectionalLight.ShadowSharpen, ELightType_Directional);
     #endif
     float3 dirContrib = CalculateDirectionalLight(DirectionalLight, normal, viewDir, 
