@@ -444,6 +444,41 @@ void UUIManager::UpdateTime(float Time)
 	}
 }
 
+float UUIManager::GetAfterCollisionTime() 
+{
+	if (!GameUIWidgetRef)
+	{
+		InitializeGameUI();
+	}
+	if (GameUIWidgetRef)
+	{
+		return GameUIWidgetRef->GetAfterCollisionTime();
+	}
+	return 0;
+}
+void UUIManager::SetAfterCollisionTime(float InTime) 
+{
+	if (!GameUIWidgetRef)
+	{
+		InitializeGameUI();
+	}
+	if (GameUIWidgetRef)
+	{
+		GameUIWidgetRef->SetAfterCollisionTime(InTime);
+	}
+}
+void UUIManager::AddAfterCollisionTime(float InTime) 
+{
+	if (!GameUIWidgetRef)
+	{
+		InitializeGameUI();
+	}
+	if (GameUIWidgetRef)
+	{
+		GameUIWidgetRef->AddAfterCollisionTime(InTime);
+	}
+}
+
 void UUIManager::AddPlayTime(float Time)
 {
 	if (!GameUIWidgetRef)

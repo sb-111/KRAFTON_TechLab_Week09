@@ -438,7 +438,11 @@ void UWorld::InitializeLuaState()
 		"AddPlayTime", &UUIManager::AddPlayTime,
 		"GetPlayTime", &UUIManager::GetPlayTime,
 		"SetFinalScore", &UUIManager::SetFinalScore,
-		"SetRestartCallback", &UUIManager::SetRestartCallback
+		"SetRestartCallback", &UUIManager::SetRestartCallback,
+
+		"GetAfterCollisionTime", &UUIManager::GetAfterCollisionTime,
+		"SetAfterCollisionTime", & UUIManager::SetAfterCollisionTime,
+		"AddAfterCollisionTime", & UUIManager::AddAfterCollisionTime
 	);
 
 	// Lua 전역 UI 객체 생성
