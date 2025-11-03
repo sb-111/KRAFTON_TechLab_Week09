@@ -7,7 +7,9 @@ local MoveForce = 2000
 local BreakForce = 50
 local Velocity = Vector(0, 0, 0)
 local AngularSpeed = 0
-
+local InitialPosition = Vector(0, 0, 0)
+local InitialRotation = Vector(0, 0, 0)
+local prevGameOver = false  -- 게임 재시작 감지용
 
 
 local Inertia = 1
@@ -39,10 +41,28 @@ function ScoreCoroutine()
     print("[Car] Coroutine Entered")
 
 end
+-- 게임 재시작 위함
+function ResetCar()
+    -- 위치와 회전 초기화
+    obj:SetActorLocation(InitialPosition)
+    obj:SetActorRotation(InitialRotation)
+
+    -- 속도 초기화
+    Velocity = Vector(0, 0, 0)
+    AngularSpeed = 0
+
+    -- 스코어 코루틴 재시작
+    start_coroutine(ScoreCoroutine)
+
+    print("[Car] Reset to initial state")
+end
 
 function BeginPlay()
     print("[BeginPlay] Car" .. tostring(obj))
-    
+
+    -- 초기 위치와 회전 저장
+    InitialPosition = obj:GetActorLocation()
+    InitialRotation = obj:GetActorRotation()
     start_coroutine(ScoreCoroutine)
 end
 
@@ -56,6 +76,19 @@ function SetCameraPos()
 end
 
 function Tick(dt)
+    -- 게임 재시작 감지 (게임 오버 상태에서 플레이 상태로 전환)
+    local currentGameOver = UI and UI:IsGameOver() or false
+    if prevGameOver and not currentGameOver then
+        ResetCar()
+    end
+    prevGameOver = currentGameOver
+
+    -- 게임 오버 시 차량 움직임 정지 (UIManager를 통해 확인)
+    if UI and UI:IsGameOver() then
+        -- print("게임 오버 상태: 차량 정지") 
+        return
+    end
+
     -- Update logic here
 
     local NetForce = Vector(0,0,0)
@@ -68,7 +101,6 @@ function Tick(dt)
     local MoveForceFactor = math.min(LinearSpeed / MaxMoveForceSpeed, 1.0)
     if Input:IsKeyDown(Keys.W) then
         if ForwardSpeed > 0 then
-            
             NetForce = NetForce + ForwardVector * (BreakForce + MoveForce*MoveForceFactor)
         else
             NetForce = NetForce + ForwardVector * BreakForce

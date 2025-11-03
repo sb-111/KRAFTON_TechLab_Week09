@@ -526,6 +526,9 @@ void UUIManager::CleanupGameUI()
 {
 	UE_LOG("UIManager: Cleaning up game UI widgets...");
 
+	// 게임 상태 초기화
+	bIsGameOver = false;
+
 	// 게임 UI 위젯 정리
 	if (GameUIWidgetRef)
 	{

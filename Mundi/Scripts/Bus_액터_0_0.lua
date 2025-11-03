@@ -8,7 +8,7 @@
 local playTime = 10.0           -- 제한 시간 (초)
 local maxPlayTime = 10.0        -- 최대 제한 시간
 local currentScore = 0          -- 현재 점수
-local bIsGameOver = false       -- 게임 종료 여부
+local bIsGameOver = false             -- 게임 종료 여부 
 local gameCheckCoroutineId = -1 -- 게임 종료 체크 코루틴 ID
 
 -- ═══════════════════════════════════════════════════════
@@ -36,7 +36,7 @@ function Tick(dt)
     if bIsGameOver then
         return
     end
-
+    
     -- 시간 카운트 다운
     playTime = UI:GetPlayTime() - dt
     UI:UpdateTime(playTime)
@@ -72,6 +72,7 @@ function OnGameRestart()
     UI:UpdateTime(maxPlayTime)
     currentScore = 0
     bIsGameOver = false
+    UI:SetGameOver(false)  -- UIManager를 통해 게임 오버 상태 해제
 
     -- Game Over UI 숨기기
     UI:SetGameOverUIVisibility(false)
@@ -109,11 +110,15 @@ end
 -- ═══════════════════════════════════════════════════════
 function GameOver()
     if bIsGameOver then
+        print("[GameManager] GameOver 이미 호출됨 (중복 호출 방지)")
         return
     end
 
+    print("[GameManager] ===== 게임 오버 처리 시작 =====")
     bIsGameOver = true
-
+    UI:SetGameOver(true)  -- UIManager를 통해 게임 오버 상태 설정
+    print("[GameManager] bIsGameOver를 true로 설정함: " .. tostring(bIsGameOver))
+    print("[GameManager] UI:IsGameOver() = " .. tostring(UI:IsGameOver()))
     print("[GameManager] Game Over! Final Score: " .. currentScore)
 
     -- In Game UI 숨기기

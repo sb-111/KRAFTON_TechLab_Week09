@@ -93,6 +93,10 @@ public:
 	void InitializeGameUI(); // 게임 UI 위젯 초기화
 	void CleanupGameUI(); // 게임 UI 위젯 정리 (PIE 종료 시 호출)
 
+	// 게임 상태 확인
+	bool IsGameOver() const { return bIsGameOver; }
+	void SetGameOver(bool bInGameOver) { bIsGameOver = bInGameOver; }
+
 public:
 	UUIManager();
 protected:
@@ -131,4 +135,7 @@ private:
 	// Game UI Widget references
 	class UGameUIWidget* GameUIWidgetRef = nullptr;
 	class UGameOverWidget* GameOverWidgetRef = nullptr;
+
+	// 게임 상태
+	bool bIsGameOver = false;
 };
