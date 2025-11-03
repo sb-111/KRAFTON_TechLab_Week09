@@ -35,7 +35,7 @@ function ScoreCoroutine()
     
     UI:AddScore(math.floor(CurrentPlayTime) * 50)
     -- 다음 체크포인트까지 도달할 시간 추가
-    UI:AddPlayTime(20)
+    UI:AddPlayTime(5)
     print("[Car] Coroutine Entered")
 
 end

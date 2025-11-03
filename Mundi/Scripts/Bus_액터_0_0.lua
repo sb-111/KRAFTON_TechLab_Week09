@@ -24,7 +24,7 @@ function BeginPlay()
     UI:SetRestartCallback(OnGameRestart)
 
     -- 게임 종료 체크 코루틴 시작
-    gameCheckCoroutineId = start_coroutine(GameEndCheckCoroutine)
+    --gameCheckCoroutineId = start_coroutine(GameEndCheckCoroutine)
 
     print("[GameManager] Game Started Successfully!")
 end
@@ -136,10 +136,6 @@ function GameEndCheckCoroutine()
     -- 제한 시간이 0이 될 때까지 대기
     wait_until(function()
         -- UI가 유효한지 체크 (게임 종료 시 무효화될 수 있음)
-        if not UI then
-            return true  -- UI가 없으면 조건 충족으로 처리하여 코루틴 종료
-        end
-
         return UI:GetPlayTime() <= 0 or bIsGameOver
     end)
 
