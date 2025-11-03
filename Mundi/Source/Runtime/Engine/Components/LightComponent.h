@@ -42,7 +42,7 @@ public:
 
 protected:
     float ShadowSharpen;
-	float ShadowBias;
+	float ShadowBias = 0.0001f;;
 	float ShadowSlopeBias;
 	float MaxSlopeDepthBias;
 

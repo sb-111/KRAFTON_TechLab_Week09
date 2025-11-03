@@ -77,7 +77,7 @@ ULightComponent::ULightComponent()
 {
 	Temperature = 6500.0f;
     ShadowSharpen = 0.5f;
-	ShadowBias = 0.0f;
+	ShadowBias = 0.0001f;
 	ShadowSlopeBias = 0.001f;
 	MaxSlopeDepthBias = 1.0f;
 }
@@ -89,7 +89,7 @@ ULightComponent::~ULightComponent()
 void ULightComponent::SetShadowValuesToDefault()
 {
 	ShadowSharpen = 0.5f;
-	ShadowBias = 0.0f;
+	ShadowBias = 0.0001f;
 	ShadowSlopeBias = 0.001f;
 	MaxSlopeDepthBias = 1.0f;
 }

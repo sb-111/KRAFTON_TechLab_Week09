@@ -274,11 +274,11 @@ bool UPropertyRenderer::RenderFloatProperty(const FProperty& Prop, void* Instanc
 	// Min과 Max가 둘 다 0이면 범위 제한 없음
 	if (Prop.MinValue == 0.0f && Prop.MaxValue == 0.0f)
 	{
-		return ImGui::DragFloat(Prop.Name, Value, 0.01f);
+		return ImGui::DragFloat(Prop.Name, Value, 0.001f, 0.0f, 0.0f, "%.5f");
 	}
 	else
 	{
-		return ImGui::DragFloat(Prop.Name, Value, 0.01f, Prop.MinValue, Prop.MaxValue);
+		return ImGui::DragFloat(Prop.Name, Value, 0.001f, Prop.MinValue, Prop.MaxValue, "%.5f");
 	}
 }
 

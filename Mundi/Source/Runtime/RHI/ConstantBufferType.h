@@ -16,7 +16,7 @@ struct FShadowInfo
     float Far;
     float Padding[3]; // 16-byte alignment for array element size
 
-    float ShadowBias;
+    float ShadowBias = 0.0001f;
     float ShadowSlopeBias;
     float MaxSlopeDepthBias;
 	float Padding2; // 16-byte alignment
