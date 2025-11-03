@@ -44,6 +44,9 @@ void UShapeComponent::DuplicateSubObjects()
 	//PIE 복제 시 기존 핸들 ID가 복사되지 않도록 초기화
 	BeginOverlapHandle = FBindingHandle();
 	EndOverlapHandle = FBindingHandle();
+
+	BeginOverlapLua = sol::function();
+	EndOverlapLua = sol::function();
 }
 
 void UShapeComponent::Serialize(const bool bInIsLoading, JSON& InOutHandle)
@@ -77,6 +80,16 @@ bool UShapeComponent::Intersects(const UShapeComponent* A, const UShapeComponent
 	if (A->GetShapeType() == EShapeType::None || B->GetShapeType() == EShapeType::None) return false;
 
 	return A->Intersects(B);
+}
+
+void UShapeComponent::RegisterBeginOverlapFunction(sol::function LuaFunction)
+{
+	BeginOverlapLua = LuaFunction;
+}
+
+void UShapeComponent::RegisterEndOverlapFunction(sol::function LuaFunction)
+{
+	EndOverlapLua = LuaFunction;
 }
 
 void UShapeComponent::BindCollisionDelegates()
@@ -136,10 +149,18 @@ void UShapeComponent::HandleBeginOverlap(UShapeComponent* A, UShapeComponent* B)
 	if (A == this && B && B != this)
 	{
 		OnCollisionBegin(B);
+		if (BeginOverlapLua.valid())
+		{
+			BeginOverlapLua(B);
+		}
 	}
 	else if (B == this && A && A != this)
 	{
 		OnCollisionBegin(A);
+		if (BeginOverlapLua.valid())
+		{
+			BeginOverlapLua(A);
+		}
 	}
 }
 
@@ -148,9 +169,17 @@ void UShapeComponent::HandleEndOverlap(UShapeComponent* A, UShapeComponent* B)
 	if (A == this && B && B != this)
 	{
 		OnCollisionEnd(B);
+		if (EndOverlapLua.valid())
+		{
+			EndOverlapLua(B);
+		}
 	}
 	else if (B == this && A && A != this)
 	{
 		OnCollisionEnd(A);
+		if (EndOverlapLua.valid())
+		{
+			EndOverlapLua(A);
+		}
 	}
 }

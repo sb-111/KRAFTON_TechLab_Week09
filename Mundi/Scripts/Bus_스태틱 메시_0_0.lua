@@ -16,6 +16,15 @@ local Torque = 500
 -- 각속도에 따른 저항
 local AngularRegistance = 5
 
+
+function BeginOverlap(Other)
+    print("[Car] BeginOverlap In Car")
+    Velocity = Velocity * (-1.0)
+    obj:SetActorLocation(obj:GetActorLocation() + Velocity:GetNormalized())
+end
+function EndOverlap(Other)
+
+end
 -- 스코어를 관리할 이벤트 시스템을 쓰면 좋겠지만
 -- 시간관계상 UI를 게임 시스템처럼 사용함
 function ScoreCoroutine()
@@ -42,7 +51,10 @@ end
 
 function BeginPlay()
     print("[BeginPlay] Car" .. tostring(obj))
-    
+    local ShapeComponent = obj:GetShapeComponent()
+    ShapeComponent:RegisterBeginOverlapFunction(BeginOverlap)
+    ShapeComponent:RegisterEndOverlapFunction(EndOverlap)
+
     start_coroutine(ScoreCoroutine)
 end
 

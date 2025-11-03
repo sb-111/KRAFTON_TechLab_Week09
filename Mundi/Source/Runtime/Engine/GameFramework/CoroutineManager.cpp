@@ -131,6 +131,11 @@ void FCoroutineManager::Update(float DeltaTime)
 	{
 		FCoroutineHandle& Handle = *It;
 
+		if (Handle.Coroutine.status() == sol::call_status::ok)
+		{
+			It = ActiveCoroutines.erase(It);
+			continue;
+		}
 		// 1. 시간 기반 대기 처리
 		if (Handle.WaitTime > 0.0f)
 		{
