@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "GameUIWidget.h"
 #include "ImGui/imgui.h"
+#include "USlateManager.h"
 
 IMPLEMENT_CLASS(UGameUIWidget)
 
@@ -28,10 +29,24 @@ void UGameUIWidget::RenderWidget()
 		return;
 	}
 
-	// 화면 상단 중앙에 고정된 UI 렌더링
-	ImGuiIO& io = ImGui::GetIO();
+	// 메인 Viewport의 영역 가져오기 (게임이 실행되는 뷰포트)
+	SViewportWindow* mainViewport = USlateManager::GetInstance().GetMainViewport();
+	if (!mainViewport)
+	{
+		return; // Viewport가 없으면 렌더링하지 않음
+	}
+
+	FRect viewportRect = mainViewport->GetRect();
+	float viewportWidth = viewportRect.GetWidth();
+	float viewportHeight = viewportRect.GetHeight();
+
+	// Viewport 영역 내에서 상단 중앙에 UI 배치
+	// 툴바 높이를 고려하여 충분한 마진 확보 (약 60픽셀)
 	ImVec2 windowSize = ImVec2(300, 100);
-	ImVec2 windowPos = ImVec2((io.DisplaySize.x - windowSize.x) * 0.5f, 20);
+	ImVec2 windowPos = ImVec2(
+		viewportRect.Left + (viewportWidth - windowSize.x) * 0.5f,
+		viewportRect.Top + 60
+	);
 
 	ImGui::SetNextWindowPos(windowPos, ImGuiCond_Always);
 	ImGui::SetNextWindowSize(windowSize, ImGuiCond_Always);

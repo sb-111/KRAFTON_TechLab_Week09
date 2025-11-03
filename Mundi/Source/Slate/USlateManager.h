@@ -65,6 +65,9 @@ public:
     void ToggleConsole();
     bool IsConsoleVisible() const { return bIsConsoleVisible; }
 
+    // 메인 뷰포트 접근 (게임 UI 렌더링용)
+    SViewportWindow* GetMainViewport() const { return MainViewport; }
+
 private:
     FRect Rect; // 이전엔 SWindow로부터 상속받던 영역 정보
 

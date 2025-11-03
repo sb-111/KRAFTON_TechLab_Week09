@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "GameOverWidget.h"
 #include "ImGui/imgui.h"
+#include "USlateManager.h"
 
 IMPLEMENT_CLASS(UGameOverWidget)
 
@@ -28,11 +29,23 @@ void UGameOverWidget::RenderWidget()
 		return;
 	}
 
-	// 화면 중앙에 모달 형태로 표시
-	ImGuiIO& io = ImGui::GetIO();
+	// 메인 Viewport의 영역 가져오기 (게임이 실행되는 뷰포트)
+	SViewportWindow* mainViewport = USlateManager::GetInstance().GetMainViewport();
+	if (!mainViewport)
+	{
+		return; // Viewport가 없으면 렌더링하지 않음
+	}
+
+	FRect viewportRect = mainViewport->GetRect();
+	float viewportWidth = viewportRect.GetWidth();
+	float viewportHeight = viewportRect.GetHeight();
+
+	// Viewport 영역 내에서 중앙에 모달 형태로 표시
 	ImVec2 windowSize = ImVec2(400, 300);
-	ImVec2 windowPos = ImVec2((io.DisplaySize.x - windowSize.x) * 0.5f,
-							  (io.DisplaySize.y - windowSize.y) * 0.5f);
+	ImVec2 windowPos = ImVec2(
+		viewportRect.Left + (viewportWidth - windowSize.x) * 0.5f,
+		viewportRect.Top + (viewportHeight - windowSize.y) * 0.5f
+	);
 
 	ImGui::SetNextWindowPos(windowPos, ImGuiCond_Always);
 	ImGui::SetNextWindowSize(windowSize, ImGuiCond_Always);
