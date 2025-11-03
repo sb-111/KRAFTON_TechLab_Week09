@@ -290,7 +290,7 @@ void UWorld::InitializeLuaState()
 
 	// UShapeComponent 및 파생 클래스 바인딩
 	LuaState.new_usertype<UShapeComponent>("UShapeComponent",
-		sol::base_classes, sol::bases<UShapeComponent>(),
+		sol::base_classes, sol::bases<UActorComponent>(),
 		"OnCollisionBegin", &UShapeComponent::OnCollisionBegin,
 		"OnCollisionEnd", &UShapeComponent::OnCollisionEnd
 	);

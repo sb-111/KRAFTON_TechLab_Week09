@@ -23,6 +23,7 @@ namespace
 			return 0;
 		}
 
+		// 동일한 두 ShapeComponent 조합을 유일한 키로 만들기 위해 포인터 순서를 정규화
 		uintptr_t AddressA = reinterpret_cast<uintptr_t>(A);
 		uintptr_t AddressB = reinterpret_cast<uintptr_t>(B);
 		if (AddressA > AddressB)
@@ -122,6 +123,7 @@ void UWorldPhysics::UnregisterCollision(UShapeComponent* InShape)
 			if (Key != 0 && !ProcessedPairs.Contains(Key))
 			{
 				ProcessedPairs.Add(Key);
+				// 등록 해제 직전, 여전히 겹치고 있던 상대에게 EndOverlap 즉시 전달
 				EndOverlapEvent.Broadcast(InShape, Other);
 			}
 		}
@@ -141,6 +143,7 @@ void UWorldPhysics::UnregisterCollision(UShapeComponent* InShape)
 			if (Key != 0 && !ProcessedPairs.Contains(Key))
 			{
 				ProcessedPairs.Add(Key);
+				// 다른 컴포넌트의 캐시에도 InShape가 남아 있을 수 있으니 종료 이벤트를 한 번 더 보장
 				EndOverlapEvent.Broadcast(OtherOwner, InShape);
 			}
 		}
@@ -236,7 +239,9 @@ void UWorldPhysics::Update(float DeltaTime)
 		CollisionMap.clear();
 	}
 	
+	// 갱신된 충돌 집합을 기반으로 Begin/End 이벤트 발송
 	BroadcastCollisionEvents();
+	// 이후 프레임 비교를 위해 현재 프레임 결과를 스냅샷으로 보관
 	PreviousCollisionMap = CollisionMap;
 }
 
@@ -504,6 +509,7 @@ void UWorldPhysics::BroadcastCollisionEvents()
 				if (Key != 0 && !ProcessedPairs.Contains(Key))
 				{
 					ProcessedPairs.Add(Key);
+					// 처음으로 겹치기 시작한 경우에만 BeginOverlap을 브로드캐스트
 					BeginOverlapEvent.Broadcast(Owner, Other);
 				}
 			}
@@ -524,6 +530,7 @@ void UWorldPhysics::BroadcastCollisionEvents()
 					if (Key != 0 && !ProcessedPairs.Contains(Key))
 					{
 						ProcessedPairs.Add(Key);
+						// 앞선 프레임까지 겹쳤다가 이번 프레임에 분리된 경우 EndOverlap
 						EndOverlapEvent.Broadcast(Owner, PrevOther);
 					}
 				}

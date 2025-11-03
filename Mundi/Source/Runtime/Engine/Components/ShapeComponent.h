@@ -22,6 +22,7 @@ public:
 
 	void Destroy() override;
 	void OnRegister(UWorld* InWorld) override;
+	void OnUnregister() override;
 	
 	void SetShapeColor(FLinearColor InColor) { ShapeColor = InColor; }
 	FLinearColor GetShapeColor() const { return ShapeColor; }

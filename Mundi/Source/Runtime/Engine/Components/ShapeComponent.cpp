@@ -11,10 +11,12 @@ void UShapeComponent::Destroy()
     UWorld* World = GetWorld();
     UWorldPhysics* Physics = World ? World->GetWorldPhysics() : nullptr;
 
+	//월드가 사라질 때 델리게이트가 남지 않도록 먼저 해제
     UnbindCollisionDelegates();
 
     if (Physics)
     {
+		//Physics 캐시에 남아 있는 충돌 정보도 정리
         Physics->UnregisterCollision(this);
     }
 
@@ -25,12 +27,23 @@ void UShapeComponent::OnRegister(UWorld* InWorld)
 {
 	Super::OnRegister(InWorld);
 	UpdateBound();
+	//에디터/PIE 모두에서 새 월드 기준으로 다시 바인딩
 	BindCollisionDelegates();
+}
+
+void UShapeComponent::OnUnregister()
+{
+	//월드에서 빠질 때 이벤트 연결 해제
+	UnbindCollisionDelegates();
+	Super::OnUnregister();
 }
 
 void UShapeComponent::DuplicateSubObjects()
 {
     Super::DuplicateSubObjects();
+	//PIE 복제 시 기존 핸들 ID가 복사되지 않도록 초기화
+	BeginOverlapHandle = FBindingHandle();
+	EndOverlapHandle = FBindingHandle();
 }
 
 void UShapeComponent::Serialize(const bool bInIsLoading, JSON& InOutHandle)
@@ -68,19 +81,29 @@ bool UShapeComponent::Intersects(const UShapeComponent* A, const UShapeComponent
 
 void UShapeComponent::BindCollisionDelegates()
 {
-	if (BeginOverlapHandle.ID != static_cast<uint32>(-1) || EndOverlapHandle.ID != static_cast<uint32>(-1))
-	{
-		return;
-	}
-
 	UWorld* World = GetWorld();
 	if (!World)
 	{
+		//월드가 없으면 이후에 안전하게 재바인딩할 수 있도록 초기화
+		BeginOverlapHandle = FBindingHandle();
+		EndOverlapHandle = FBindingHandle();
 		return;
 	}
 
 	if (UWorldPhysics* Physics = World->GetWorldPhysics())
 	{
+		//이전 월드에서 사용하던 핸들을 정리
+		if (BeginOverlapHandle.ID != static_cast<uint32>(-1))
+		{
+			Physics->OnShapeBeginOverlap().Remove(BeginOverlapHandle);
+			BeginOverlapHandle = FBindingHandle();
+		}
+		if (EndOverlapHandle.ID != static_cast<uint32>(-1))
+		{
+			Physics->OnShapeEndOverlap().Remove(EndOverlapHandle);
+			EndOverlapHandle = FBindingHandle();
+		}
+
 		BeginOverlapHandle = Physics->OnShapeBeginOverlap().AddDynamic(this, &UShapeComponent::HandleBeginOverlap);
 		EndOverlapHandle = Physics->OnShapeEndOverlap().AddDynamic(this, &UShapeComponent::HandleEndOverlap);
 	}
@@ -93,6 +116,7 @@ void UShapeComponent::UnbindCollisionDelegates()
 
 	if (Physics)
 	{
+		//이미 등록된 핸들이 있다면 제거
 		if (BeginOverlapHandle.ID != static_cast<uint32>(-1))
 		{
 			Physics->OnShapeBeginOverlap().Remove(BeginOverlapHandle);
