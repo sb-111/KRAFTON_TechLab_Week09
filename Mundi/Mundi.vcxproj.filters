@@ -448,6 +448,11 @@
     </ClCompile>
     <ClCompile Include="Source\Runtime\Engine\Collision\WorldPhysics.cpp" />
     <ClCompile Include="Source\Runtime\Engine\GameFramework\CoroutineManager.cpp" />
+    <ClCompile Include="Source\Slate\Widgets\GameOverWidget.cpp" />
+    <ClCompile Include="Source\Slate\Widgets\GameUIWidget.cpp" />
+    <ClCompile Include="Source\Runtime\Engine\Components\PlayerComponent.cpp">
+      <Filter>Source\Runtime\Engine\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -928,6 +933,11 @@
     </ClInclude>
     <ClInclude Include="Source\Runtime\Engine\Collision\WorldPhysics.h" />
     <ClInclude Include="Source\Runtime\Engine\GameFramework\CoroutineManager.h" />
+    <ClInclude Include="Source\Slate\Widgets\GameOverWidget.h" />
+    <ClInclude Include="Source\Slate\Widgets\GameUIWidget.h" />
+    <ClInclude Include="Source\Runtime\Engine\Components\PlayerComponent.h">
+      <Filter>Source\Runtime\Engine\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source">
