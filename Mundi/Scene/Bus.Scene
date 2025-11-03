@@ -1,15 +1,15 @@
 {
   "Actors" : {
-    "781" : {
+    "947" : {
       "Name" : "Directional Light Actor",
       "OwnedComponents" : [{
-          "Id" : 783,
+          "Id" : 949,
           "Intensity" : 1.000000,
           "LightColor" : [1.000000, 1.000000, 1.000000, 1.000000],
           "MaxSlopeDepthBias" : 1.000000,
           "ParentId" : 0,
-          "RelativeLocation" : [0.000000, 0.000000, 0.000000],
-          "RelativeRotationEuler" : [-62.900280, 16.769619, -62.900280],
+          "RelativeLocation" : [0.000000, 0.000000, 3.431678],
+          "RelativeRotationEuler" : [-35.137859, 50.598591, -46.595150],
           "RelativeScale" : [1.000000, 1.000000, 1.000000],
           "ShadowBias" : 0.000000,
           "ShadowSharpen" : 0.500000,
@@ -24,13 +24,13 @@
           "bSceneAABB" : false,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 783,
+      "RootComponentId" : 949,
       "Type" : "ADirectionalLightActor"
     },
-    "784" : {
+    "950" : {
       "Name" : "Ambient Light Actor",
       "OwnedComponents" : [{
-          "Id" : 786,
+          "Id" : 952,
           "Intensity" : 0.100000,
           "LightColor" : [1.000000, 1.000000, 1.000000, 1.000000],
           "MaxSlopeDepthBias" : 1.000000,
@@ -49,102 +49,729 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 786,
+      "RootComponentId" : 952,
       "Type" : "AAmbientLightActor"
     },
-    "787" : {
+    "953" : {
       "Name" : "스태틱 메시_0",
       "OwnedComponents" : [{
+          "Id" : 955,
+          "MaterialSlots" : [{
+              "AssetPath" : "Material_Redbull",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Material_Redbull",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Material_Redbull",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Material_Redbull",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Material_Redbull",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Material_Redbull",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Material_Redbull",
+              "Type" : "UMaterial"
+            }],
+          "ParentId" : 0,
+          "RelativeLocation" : [-480.000000, 0.690840, 1.654447],
+          "RelativeRotationEuler" : [0.000000, -0.000000, -179.999969],
+          "RelativeScale" : [2.000000, 2.000000, 2.000000],
+          "StaticMesh" : "Data/Model/Redbull/Redbull.obj",
+          "Type" : "UStaticMeshComponent",
+          "bHiddenInGame" : false,
+          "bIsActive" : true,
+          "bIsVisible" : true,
+          "bTickEnabled" : true
+        }, {
           "ScriptFilePath" : "Scripts/Bus_스태틱 메시_0_0.lua",
           "Type" : "UScriptComponent",
           "bIsActive" : true,
           "bTickEnabled" : true
         }, {
-          "BoxExtent" : [5.000000, 5.000000, 5.000000],
-          "Id" : 790,
-          "ParentId" : 791,
-          "RelativeLocation" : [0.000000, 0.000000, 8.299999],
-          "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
-          "RelativeScale" : [4.100000, 1.300000, 1.500000],
+          "CapsuleHalfHeight" : 2.700000,
+          "CapsuleRadius" : 1.400000,
+          "Id" : 957,
+          "ParentId" : 955,
+          "RelativeLocation" : [-0.363764, 0.000000, 0.359111],
+          "RelativeRotationEuler" : [0.000000, -90.000000, -0.000005],
+          "RelativeScale" : [1.000000, 1.170783, 1.842235],
           "ShapeColor" : [1.000000, 0.340000, 0.280000, 1.000000],
-          "Type" : "UBoxComponent",
+          "Type" : "UCapsuleComponent",
           "bDrawOnlyIfSelected" : false,
           "bHiddenInGame" : false,
           "bIsActive" : true,
           "bIsVisible" : true,
           "bTickEnabled" : true
-        }, {
-          "Id" : 791,
-          "MaterialSlots" : [{
-              "AssetPath" : "bus_ussr1",
-              "Type" : "UMaterial"
-            }],
-          "ParentId" : 0,
-          "RelativeLocation" : [0.000000, 0.000000, 0.000000],
-          "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
-          "RelativeScale" : [1.000000, 1.000000, 1.000000],
-          "StaticMesh" : "Data/Model/Bus/Bus.obj",
-          "Type" : "UStaticMeshComponent",
-          "bHiddenInGame" : false,
-          "bIsActive" : true,
-          "bIsVisible" : true,
-          "bTickEnabled" : true
         }],
-      "RootComponentId" : 791,
+      "RootComponentId" : 955,
       "Type" : "AStaticMeshActor"
     },
-    "792" : {
-      "Name" : "스태틱 메시_1",
-      "OwnedComponents" : [{
-          "Id" : 794,
-          "MaterialSlots" : [{
-              "AssetPath" : "texture",
-              "Type" : "UMaterial"
-            }],
-          "ParentId" : 0,
-          "RelativeLocation" : [20.129507, 19.323706, 17.464275],
-          "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
-          "RelativeScale" : [1.000000, 95.352333, 54.893562],
-          "StaticMesh" : "Data/cube-tex.obj",
-          "Type" : "UStaticMeshComponent",
-          "bHiddenInGame" : false,
-          "bIsActive" : true,
-          "bIsVisible" : true,
-          "bTickEnabled" : true
-        }],
-      "RootComponentId" : 794,
-      "Type" : "AStaticMeshActor"
-    },
-    "813" : {
+    "958" : {
       "Name" : "스태틱 메시_0",
       "OwnedComponents" : [{
-          "Id" : 814,
+          "Id" : 960,
           "MaterialSlots" : [{
-              "AssetPath" : "Shaders/Materials/UberLit.hlsl_LIGHTING_MODEL_PHONG=1",
+              "AssetPath" : "Props1_u2NWBuild9_1",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Merged_materials",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Merged_materials",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_0",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_0",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_1",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_2",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_3",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_4",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_4",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_4",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_5",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_6",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_6",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_7",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_7",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_8",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_8",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_8",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_8",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_8",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_8",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_8",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_8",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_8",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_8",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_8",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_8",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_8",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_9",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_10",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_11",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_12",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_13",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_14",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_15",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_16",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_17",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_18",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_19",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_19",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_19",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_19",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_19",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_19",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_19",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_19",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_19",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_19",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_19",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_20",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_20",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_20",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_20",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_20",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_20",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_20",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_20",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_20",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_20",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_20",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_20",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_20",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_20",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_20",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_20",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_21",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_22",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_23",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_24",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "StreeLamp1",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_25",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_26",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_27",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_28",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_29",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_30",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_31",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_32",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_32",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_33",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_34",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_34",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_34",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_34",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_34",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_35",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_36",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_37",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_37",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_37",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_37",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_38",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_39",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_40",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_41",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_42",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_43",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_44",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_45",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_46",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_47",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_48",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_48",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_49",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_49",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_49",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_50",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_51",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_51",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_52",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_53",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_54",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_55",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_56",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_56",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_57",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_57",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_57",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_57",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_57",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_57",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_57",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_57",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_58",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_58",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_59",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_60",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_60",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_60",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_61",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_62",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_63",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_64",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_65",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_65",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_66",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_67",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_67",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_68",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_69",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_70",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_70",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_70",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_70",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_70",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_70",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_71",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_72",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_73",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_74",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_74",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_75",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_76",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_77",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_77",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_78",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_78",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_78",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_78",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_78",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_78",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_78",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_78",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_78",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_78",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_79",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_80",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_81",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_82",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_83",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_84",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_85",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_86",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_86",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_87",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_87",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_88",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_89",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_90",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_91",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_91",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_91",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_92",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_93",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_93",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_94",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_95",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_95",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_95",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_95",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_95",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_95",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_95",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_95",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_95",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_95",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_95",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_95",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_95",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_95",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_95",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Props1_u2NWBuild9_1_96",
               "Type" : "UMaterial"
             }],
           "ParentId" : 0,
           "RelativeLocation" : [-50.308918, -7.776989, 0.723801],
-          "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
-          "RelativeScale" : [67.486938, 81.893982, 1.000000],
-          "StaticMesh" : "Data/Model/Plane.obj",
+          "RelativeRotationEuler" : [-90.000008, -0.000000, 0.000000],
+          "RelativeScale" : [7.000000, 7.000000, 3.000000],
+          "StaticMesh" : "Data/Model/City/City.obj",
           "Type" : "UStaticMeshComponent",
           "bHiddenInGame" : false,
           "bIsActive" : true,
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 814,
+      "RootComponentId" : 960,
       "Type" : "AStaticMeshActor"
+    },
+    "961" : {
+      "Name" : "하이트 포그 액터_0",
+      "OwnedComponents" : [{
+          "FogCutoffDistance" : 6000.000000,
+          "FogDensity" : 0.360000,
+          "FogHeightFalloff" : 0.040000,
+          "FogInscatteringColor" : [0.356345, 0.575937, 0.961390, 1.000000],
+          "FogMaxOpacity" : 1.000000,
+          "HeightFogShader" : "Shaders/PostProcess/HeightFog_PS.hlsl",
+          "Id" : 964,
+          "ParentId" : 0,
+          "RelativeLocation" : [-73.636047, 11.462835, -2.521000],
+          "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
+          "RelativeScale" : [1.000000, 1.000000, 1.000000],
+          "StartDistance" : 500.000000,
+          "Type" : "UHeightFogComponent",
+          "bHiddenInGame" : false,
+          "bIsActive" : true,
+          "bIsVisible" : true,
+          "bTickEnabled" : true
+        }],
+      "RootComponentId" : 964,
+      "Type" : "AHeightFogActor"
     }
   },
-  "NextUUID" : 816,
+  "NextUUID" : 986,
   "PerspectiveCamera" : {
     "FOV" : [60.000000],
     "FarClip" : [1000.000000],
-    "Location" : [-80.172050, 6.393509, 30.186466],
+    "Location" : [-492.376801, -4.566674, 8.687414],
     "NearClip" : [0.100000],
-    "Rotation" : [0.000000, 17.399988, -3.600122]
+    "Rotation" : [0.000000, 15.500065, 25.497456]
   },
   "Version" : 1
 }

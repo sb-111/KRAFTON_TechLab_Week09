@@ -28,6 +28,7 @@
 #include "LightComponent.h"
 #include "HeightFogComponent.h"
 #include "InputManager.h"
+#include "Factory/UIWindowFactory.h"
 
 IMPLEMENT_CLASS(UWorld)
 
@@ -189,6 +190,8 @@ void UWorld::InitializeLuaState()
 	LuaState.new_usertype<ACameraActor>("ACameraActor",
 		sol::base_classes,  sol::bases<AActor>());
 
+	LuaState.new_usertype<UUIWindowFactory>("UUIWindowFactory",
+		"CreateDefaultUILayout", &UUIWindowFactory::CreateDefaultUILayout);
 	// FTransform 바인딩
 	LuaState.new_usertype<FTransform>("FTransform",
 		sol::call_constructor,

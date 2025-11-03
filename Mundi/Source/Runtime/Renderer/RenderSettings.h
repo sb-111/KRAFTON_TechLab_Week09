@@ -78,7 +78,7 @@ private:
 
     // Shadow filtering
     EShadowFilterMode ShadowFilterMode = EShadowFilterMode::NONE;
-    EDirectionalShadowMode DirectionalShadowMode = EDirectionalShadowMode::GENERAL;
+    EDirectionalShadowMode DirectionalShadowMode = EDirectionalShadowMode::CSM;
 
     // Shadow resolution (used for Spot/Point atlas textures)
     uint32 SpotShadowResolution = 1024;

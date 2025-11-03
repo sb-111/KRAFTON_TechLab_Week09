@@ -166,7 +166,10 @@ void ACameraActor::ProcessEditorCameraInput(float DeltaSeconds)
     if (bRightButtonDown)
     {
         ProcessCameraRotation(DeltaSeconds);
-        ProcessCameraMovement(DeltaSeconds);
+        if (!GWorld->bPie)
+        {
+            ProcessCameraMovement(DeltaSeconds);
+        }
     }
 }
 
