@@ -428,6 +428,9 @@ void UWorld::InitializeLuaState()
 		"SetGameOverUIVisibility", &UUIManager::SetGameOverUIVisibility,
 		"UpdateScore", &UUIManager::UpdateScore,
 		"UpdateTime", &UUIManager::UpdateTime,
+		"AddScore", &UUIManager::AddScore,
+		"AddPlayTime", &UUIManager::AddPlayTime,
+		"GetPlayTime", &UUIManager::GetPlayTime,
 		"SetFinalScore", &UUIManager::SetFinalScore,
 		"SetRestartCallback", &UUIManager::SetRestartCallback
 	);

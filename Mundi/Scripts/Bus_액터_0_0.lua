@@ -38,14 +38,14 @@ function Tick(dt)
     end
 
     -- 시간 카운트 다운
-    playTime = playTime - dt
+    playTime = UI:GetPlayTime() - dt
     UI:UpdateTime(playTime)
 
     -- 예제: 임의로 점수를 증가시킵니다 (실제로는 게임 로직에 따라 변경)
     -- 실제 게임에서는 플레이어가 무언가를 획득하거나 적을 처치할 때 점수 증가
-    if math.random() < 0.01 then  -- 1% 확률로 점수 증가
-        AddScore(10)
-    end
+    --  if math.random() < 0.01 then  -- 1% 확률로 점수 증가
+    --    AddScore(10)
+    -- end
 end
 
 -- ═══════════════════════════════════════════════════════
@@ -69,7 +69,7 @@ function OnGameRestart()
     print("[GameManager] Restarting Game...")
 
     -- 게임 상태 초기화
-    playTime = maxPlayTime
+    UI:UpdateTime(maxPlayTime)
     currentScore = 0
     bIsGameOver = false
 
@@ -135,7 +135,12 @@ function GameEndCheckCoroutine()
 
     -- 제한 시간이 0이 될 때까지 대기
     wait_until(function()
-        return playTime <= 0 or bIsGameOver
+        -- UI가 유효한지 체크 (게임 종료 시 무효화될 수 있음)
+        if not UI then
+            return true  -- UI가 없으면 조건 충족으로 처리하여 코루틴 종료
+        end
+
+        return UI:GetPlayTime() <= 0 or bIsGameOver
     end)
 
     -- playTime이 0이 되어서 종료조건을 만족하면 resume되고 GameOver를 통해 bIsGameOver를 true로 만들어줌

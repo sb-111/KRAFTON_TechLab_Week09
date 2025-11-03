@@ -22,20 +22,28 @@ int32 FCoroutineManager::StartCoroutine(sol::function Func)
 		return -1;
 	}
 	
-	// 새 thraed 생성
-	sol::thread NewThread = sol::thread::create(*LuaStatePtr);
-	// thread 유효성 확인
-	if (!NewThread.valid())
-	{
-		UE_LOG("[FCoroutineManager] Error: Failed to create thread");
-		return -1;
-	}
+	// ============================================================
+	// CRITICAL FIX for L->ci Dangling Pointer Issue
+	//
+	// Problem: sol::thread::create(*LuaStatePtr) creates a NEW isolated lua_State
+	//          with its own _G environment, causing upvalues (UI, obj, etc.)
+	//          to become invalid when accessed from the thread state.
+	//
+	// Solution: Use lua_newthread() to create thread that SHARES main state's _G
+	// ============================================================
 
-	// thread의 lua state 가져오기
-	sol::state_view ThreadState = NewThread.state();
+	// Step 1: Create new thread (lua_State) from main state
+	// lua_newthread() creates a thread that SHARES _G with main state (unlike lua_newstate)
+	lua_State* MainState = LuaStatePtr->lua_state();
+	lua_State* CoroState = lua_newthread(MainState);
 
-	// coroutine 생성 (state_view를 전달해야 함!)
-	sol::coroutine NewCoroutine(ThreadState, Func);
+	// Step 2: Pop the thread from stack and wrap in sol::thread for RAII
+	// lua_newthread leaves the thread on stack, we need to convert it to sol::thread
+	sol::thread NewThread = sol::stack::pop<sol::thread>(MainState);
+
+	// Step 3: Create coroutine using the thread's state view
+	sol::state_view ThreadView(CoroState);
+	sol::coroutine NewCoroutine(ThreadView, Func);
 	// coroutine 유효성 확인
 	if (!NewCoroutine.valid())
 	{
@@ -123,6 +131,11 @@ void FCoroutineManager::Update(float DeltaTime)
 	{
 		FCoroutineHandle& Handle = *It;
 
+		if (Handle.Coroutine.status() == sol::call_status::ok)
+		{
+			It = ActiveCoroutines.erase(It);
+			continue;
+		}
 		// 1. 시간 기반 대기 처리
 		if (Handle.WaitTime > 0.0f)
 		{
@@ -140,36 +153,42 @@ void FCoroutineManager::Update(float DeltaTime)
 		// 2. 조건 기반 대기 처리
 		if (Handle.bWaitingForCondition)
 		{
-			if (Handle.Condition.valid())
+			// 조건 함수 유효성 체크 (Thread와 Coroutine도 함께 확인)
+			if (!Handle.Thread.valid() || !Handle.Coroutine.valid() || !Handle.Condition.valid())
 			{
-				// 조건 함수 실행
-				auto CondResult = Handle.Condition();
+				UE_LOG("[FCoroutineManager] Warning: Invalid coroutine state detected (ID=%d), removing...",
+					Handle.ID);
+				It = ActiveCoroutines.erase(It);
+				continue;
+			}
+			
+			// 조건 함수 실행
+			auto CondResult = Handle.Condition();
 
-				if (!CondResult.valid())
-				{
-					sol::error Err = CondResult;
-					UE_LOG("[FCoroutineManager] Error in condition (ID=%d): %s",
-						Handle.ID, Err.what());
-					It = ActiveCoroutines.erase(It);
-					continue;
-				}
+			if (!CondResult.valid())
+			{
+				sol::error Err = CondResult;
+				UE_LOG("[FCoroutineManager] Error in condition (ID=%d): %s",
+					Handle.ID, Err.what());
+				It = ActiveCoroutines.erase(It);
+				continue;
+			}
 
-				// 조건 결과 확인 (true면 대기 종료)
-				bool bConditionMet = false;
-				if (CondResult.return_count() > 0)
+			// 조건 결과 확인 (true면 대기 종료)
+			bool bConditionMet = false;
+			if (CondResult.return_count() > 0)
+			{
+				sol::object resultObj = CondResult[0];
+				if (resultObj.is<bool>())
 				{
-					sol::object resultObj = CondResult[0];
-					if (resultObj.is<bool>())
-					{
-						bConditionMet = resultObj.as<bool>();
-					}
+					bConditionMet = resultObj.as<bool>();
 				}
+			}
 
-				if (!bConditionMet)
-				{
-					++It;
-					continue;  // 조건 미충족, 계속 대기
-				}
+			if (!bConditionMet)
+			{
+				++It;
+				continue;  // 조건 미충족, 계속 대기
 			}
 
 			Handle.bWaitingForCondition = false;  // 조건 충족
@@ -178,6 +197,15 @@ void FCoroutineManager::Update(float DeltaTime)
 		// 3. 대기가 끝났으면 코루틴 재개 (resume)
 		if (!Handle.IsWaiting())
 		{
+			// 코루틴 재개 전 유효성 재확인
+			if (!Handle.Thread.valid() || !Handle.Coroutine.valid())
+			{
+				UE_LOG("[FCoroutineManager] Warning: Coroutine became invalid before resume (ID=%d), removing...",
+					Handle.ID);
+				It = ActiveCoroutines.erase(It);
+				continue;
+			}
+
 			auto Result = Handle.Coroutine();
 
 			// 에러 체크

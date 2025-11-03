@@ -444,6 +444,31 @@ void UUIManager::UpdateTime(float Time)
 	}
 }
 
+void UUIManager::AddPlayTime(float Time)
+{
+	if (!GameUIWidgetRef)
+	{
+		InitializeGameUI();
+	}
+	if (GameUIWidgetRef)
+	{
+		GameUIWidgetRef->AddPlayTime(Time);
+	}
+}
+
+float UUIManager::GetPlayTime()
+{
+	if (!GameUIWidgetRef)
+	{
+		InitializeGameUI();
+	}
+	if (GameUIWidgetRef)
+	{
+		return GameUIWidgetRef->GetPlayTime();
+	}
+	return 0;
+}
+
 void UUIManager::UpdateScore(int32 Score)
 {
 	if (!GameUIWidgetRef)

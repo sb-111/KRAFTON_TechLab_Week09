@@ -16,9 +16,34 @@ local Torque = 500
 -- 각속도에 따른 저항
 local AngularRegistance = 5
 
-function BeginPlay()
-    print("[BeginPlay] " .. tostring(obj))
+-- 스코어를 관리할 이벤트 시스템을 쓰면 좋겠지만
+-- 시간관계상 UI를 게임 시스템처럼 사용함
+function ScoreCoroutine()
+    wait_until(function()
+        local CheckPoint0 = -350.0
+        return obj:GetActorLocation().x > CheckPoint0
+    end)
+    
+    -- 게임 오버 상태 체크
+    if not UI then
+        print("[Car] Coroutine terminated: UI invalid")
+        return
+    end
+    
+    -- 남은 시간에 비례해서 스코어 증가
+    local CurrentPlayTime = UI:GetPlayTime()
+    
+    UI:AddScore(math.floor(CurrentPlayTime) * 50)
+    -- 다음 체크포인트까지 도달할 시간 추가
+    UI:AddPlayTime(20)
+    print("[Car] Coroutine Entered")
 
+end
+
+function BeginPlay()
+    print("[BeginPlay] Car" .. tostring(obj))
+    
+    start_coroutine(ScoreCoroutine)
 end
 
 function SetCameraPos()

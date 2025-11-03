@@ -24,6 +24,7 @@ public:
 
 	// 시간 관리
 	void SetPlayTime(float InTime) { PlayTime = InTime; }
+	void AddPlayTime(float InTIme) { PlayTime += InTIme; }
 	float GetPlayTime() const { return PlayTime; }
 
 	// 가시성

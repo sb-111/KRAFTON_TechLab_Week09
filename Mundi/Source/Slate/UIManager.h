@@ -84,6 +84,9 @@ public:
 	void SetGameOverUIVisibility(bool bVisible);
 	void UpdateTime(float Time);
 	void UpdateScore(int32 Score);
+	void AddPlayTime(float Time);
+	float GetPlayTime();
+
 	void AddScore(int32 Score);
 	void SetFinalScore(int32 Score);
 	void SetRestartCallback(sol::function Callback);
