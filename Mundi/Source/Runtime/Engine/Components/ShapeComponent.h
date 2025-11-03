@@ -2,6 +2,7 @@
 #include "PrimitiveComponent.h"
 #include "Color.h"
 #include "AABB.h"
+#include "MultiCastDelegate.h"
 
 enum class EShapeType: uint8
 {
@@ -44,8 +45,20 @@ public:
     virtual bool Intersects(const UShapeComponent* Other) const { return false; }
 	static bool Intersects(const UShapeComponent* A, const UShapeComponent* B);
 
+	virtual void OnCollisionBegin(UShapeComponent* Other) { UE_LOG("Collision Begin"); }
+	virtual void OnCollisionEnd(UShapeComponent* Other) { UE_LOG("Collision End"); }
+
 protected:
+	void BindCollisionDelegates();
+	void UnbindCollisionDelegates();
+
+	void HandleBeginOverlap(UShapeComponent* A, UShapeComponent* B);
+	void HandleEndOverlap(UShapeComponent* A, UShapeComponent* B);
+
     // 기본 디버그 표시 속성
     FLinearColor ShapeColor = FLinearColor(1.0f, 0.34f, 0.28f);
     bool bDrawOnlyIfSelected = false;
+
+	FBindingHandle BeginOverlapHandle;
+	FBindingHandle EndOverlapHandle;
 };

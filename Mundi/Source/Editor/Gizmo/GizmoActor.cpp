@@ -435,7 +435,7 @@ void AGizmoActor::ProcessGizmoHovering(ACameraActor* Camera, FViewport* Viewport
 
 	if (GizmoAxis > 0)	//기즈모 축이 0이상이라면 선택 된것 
 	{
-		UE_LOG("bIsHovering In AGizmoActor::ProcessGizmoHovering. GizmoAxis: %d", GizmoAxis);
+		// UE_LOG("bIsHovering In AGizmoActor::ProcessGizmoHovering. GizmoAxis: %d", GizmoAxis);
 		bIsHovering = true;
 	}
 	else
