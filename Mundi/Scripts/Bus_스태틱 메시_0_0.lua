@@ -67,8 +67,9 @@ end
 
 function BeginOverlap(Other)
     Velocity = Velocity * (-1.0)
+    
 
-    obj:SetActorLocation(obj:GetActorLocation() + Velocity:GetNormalized())
+    obj:SetActorLocation(obj:GetActorLocation() + obj:GetActorRight())
     UI:SetAfterCollisionTime(3)
     UI:AddScore(-30)
 end
