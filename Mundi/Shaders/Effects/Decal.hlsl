@@ -15,7 +15,7 @@
 // --- 공통 조명 시스템 include ---
 #include "../Common/LightStructures.hlsl"
 #include "../Common/LightingBuffers.hlsl"
-#include "../Common/LightingCommon.hlsl"
+
 
 // --- Decal 전용 상수 버퍼 ---
 cbuffer ModelBuffer : register(b0)
@@ -31,6 +31,7 @@ cbuffer ViewProjBuffer : register(b1)
     row_major float4x4 InverseViewMatrix;
     row_major float4x4 InverseProjectionMatrix;
 }
+#include "../Common/LightingCommon.hlsl"
 
 cbuffer PSScrollCB : register(b5)
 {

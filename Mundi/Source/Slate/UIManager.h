@@ -100,7 +100,7 @@ public:
 
 	// 게임 상태 확인
 	bool IsGameOver() const { return bIsGameOver; }
-	void SetGameOver(bool bInGameOver) { bIsGameOver = bInGameOver; }
+	void SetGameOver(bool bInGameOver);
 
 public:
 	UUIManager();

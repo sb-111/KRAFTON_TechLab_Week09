@@ -31,7 +31,7 @@ function UpdateScore()
     local CheckPoint0 = -350
     local CheckPoint1 = -100
     local CheckPoint2 = 100
-    local CheckPoint3 = 360
+    local EndPoint = 360
     if(not CheckPointPass0 and CurrentLocation > CheckPoint0 ) then
         -- 남은 시간에 비례해서 스코어 증가
         local CurrentPlayTime = UI:GetPlayTime()
@@ -57,11 +57,11 @@ function UpdateScore()
         UI:AddPlayTime(10)
         CheckPointPass2 = true
     end
-    if(not CheckPointPass3 and CurrentLocation > CheckPoint3 ) then
+    if(CurrentLocation > EndPoint ) then
         local CurrentPlayTime = UI:GetPlayTime()
         
         UI:AddScore(math.floor(CurrentPlayTime) * 50)
-        CheckPointPass3 = true
+        UI:SetGameOver(true)
     end
 end
 
@@ -69,6 +69,7 @@ function BeginOverlap(Other)
     Velocity = Velocity * (-1.0)
     obj:SetActorLocation(obj:GetActorLocation() + Velocity:GetNormalized())
     UI:SetAfterCollisionTime(3)
+    UI:AddScore(-30)
 end
 function EndOverlap(Other)
 
@@ -83,8 +84,11 @@ function ResetCar()
     Velocity = Vector(0, 0, 0)
     AngularSpeed = 0
 
-    -- 스코어 코루틴 재시작
-    start_coroutine(ScoreCoroutine)
+    CheckPointPass0 = false
+    CheckPointPass1 = false
+    CheckPointPass2 = false
+    CheckPointPass3 = false
+    UI:SetAfterCollisionTime(0)
 
     print("[Car] Reset to initial state")
 end

@@ -595,3 +595,23 @@ void UUIManager::CleanupGameUI()
 
 	UE_LOG("UIManager: Game UI widgets cleaned up successfully");
 }
+
+
+void UUIManager::SetGameOver(bool bInGameOver)
+{
+	bIsGameOver = bInGameOver;
+
+	if (bIsGameOver)
+	{
+		int FinalScore = GetScore();
+		UE_LOG("[GameManager] ===== 게임 오버 처리 시작 =====");
+
+		UE_LOG("[GameManager] bIsGameOver를 true로 설정함");
+		UE_LOG("[GameManager] UI:IsGameOver() = ");
+		UE_LOG("[GameManager] Game Over! Final Score: %d", FinalScore);
+		SetInGameUIVisibility(false);
+
+		SetFinalScore(FinalScore);
+		SetGameOverUIVisibility(true);
+	}
+}

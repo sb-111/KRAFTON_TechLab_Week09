@@ -93,19 +93,6 @@ function OnGameRestart()
 end
 
 -- ═══════════════════════════════════════════════════════
--- 점수 추가
--- ═══════════════════════════════════════════════════════
-function AddScore(deltaScore)
-    if bIsGameOver then
-        return
-    end
-
-    currentScore = currentScore + deltaScore
-    UI:UpdateScore(currentScore)
-    print("[GameManager] Score: " .. currentScore)
-end
-
--- ═══════════════════════════════════════════════════════
 -- 게임 종료 처리
 -- ═══════════════════════════════════════════════════════
 function GameOver()
@@ -113,25 +100,8 @@ function GameOver()
         print("[GameManager] GameOver 이미 호출됨 (중복 호출 방지)")
         return
     end
-
-    print("[GameManager] ===== 게임 오버 처리 시작 =====")
+    UI:SetGameOver(true)
     bIsGameOver = true
-    UI:SetGameOver(true)  -- UIManager를 통해 게임 오버 상태 설정
-    print("[GameManager] bIsGameOver를 true로 설정함: " .. tostring(bIsGameOver))
-    print("[GameManager] UI:IsGameOver() = " .. tostring(UI:IsGameOver()))
-
-    -- GameUIWidget에서 실제 점수 가져오기
-    local finalScore = UI:GetScore()
-    print("[GameManager] Game Over! Final Score: " .. finalScore)
-
-    -- In Game UI 숨기기
-    UI:SetInGameUIVisibility(false)
-
-    -- 최종 점수 설정 (UI에서 가져온 실제 점수 사용)
-    UI:SetFinalScore(finalScore)
-
-    -- Game Over UI 표시
-    UI:SetGameOverUIVisibility(true)
 end
 
 -- ═══════════════════════════════════════════════════════
