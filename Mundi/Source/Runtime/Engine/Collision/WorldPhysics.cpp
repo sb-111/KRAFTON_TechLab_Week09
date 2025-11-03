@@ -10,7 +10,31 @@
 #include "OBB.h"
 #include "BoundingSphere.h"
 #include "BoundingCapsule.h"
+#include <algorithm>
 #include <cmath>
+#include <cstdint>
+
+namespace
+{
+	static uint64 MakeCollisionPairKey(const UShapeComponent* A, const UShapeComponent* B)
+	{
+		if (!A || !B)
+		{
+			return 0;
+		}
+
+		uintptr_t AddressA = reinterpret_cast<uintptr_t>(A);
+		uintptr_t AddressB = reinterpret_cast<uintptr_t>(B);
+		if (AddressA > AddressB)
+		{
+			std::swap(AddressA, AddressB);
+		}
+
+		const uint64 MixedLow = static_cast<uint64>(AddressA);
+		const uint64 MixedHigh = static_cast<uint64>(AddressB);
+		return MixedLow ^ (MixedHigh + 0x9e3779b97f4a7c15ULL + (MixedLow << 6) + (MixedLow >> 2));
+	}
+}
 
 IMPLEMENT_CLASS(UWorldPhysics)
 
@@ -83,9 +107,50 @@ void UWorldPhysics::UnregisterCollision(UShapeComponent* InShape)
 		BVH->Remove(InShape);
 	}
 
+	TSet<uint64> ProcessedPairs;
+
+	if (const TSet<UShapeComponent*>* CurrentCollisions = CollisionMap.Find(InShape))
+	{
+		for (UShapeComponent* Other : *CurrentCollisions)
+		{
+			if (!Other)
+			{
+				continue;
+			}
+
+			const uint64 Key = MakeCollisionPairKey(InShape, Other);
+			if (Key != 0 && !ProcessedPairs.Contains(Key))
+			{
+				ProcessedPairs.Add(Key);
+				EndOverlapEvent.Broadcast(InShape, Other);
+			}
+		}
+	}
+
+	for (auto& Pair : CollisionMap)
+	{
+		if (Pair.first == InShape)
+		{
+			continue;
+		}
+
+		if (Pair.second.Remove(InShape))
+		{
+			UShapeComponent* OtherOwner = const_cast<UShapeComponent*>(Pair.first);
+			const uint64 Key = MakeCollisionPairKey(OtherOwner, InShape);
+			if (Key != 0 && !ProcessedPairs.Contains(Key))
+			{
+				ProcessedPairs.Add(Key);
+				EndOverlapEvent.Broadcast(OtherOwner, InShape);
+			}
+		}
+	}
+
 	// Collision Map에서 제거
 	CollisionMap.Remove(InShape);
-	for (auto& Pair : CollisionMap)
+
+	PreviousCollisionMap.Remove(InShape);
+	for (auto& Pair : PreviousCollisionMap)
 	{
 		Pair.second.Remove(InShape);
 	}
@@ -170,6 +235,9 @@ void UWorldPhysics::Update(float DeltaTime)
 	{
 		CollisionMap.clear();
 	}
+	
+	BroadcastCollisionEvents();
+	PreviousCollisionMap = CollisionMap;
 }
 
 /**
@@ -408,6 +476,58 @@ void UWorldPhysics::DebugDrawCollision(URenderer* Renderer, USelectionManager* S
 			break;
 		default:
 			break;
+		}
+	}
+}
+
+void UWorldPhysics::BroadcastCollisionEvents()
+{
+	TSet<uint64> ProcessedPairs;
+
+	for (const auto& Pair : CollisionMap)
+	{
+		const UShapeComponent* OwnerConst = Pair.first;
+		UShapeComponent* Owner = const_cast<UShapeComponent*>(OwnerConst);
+		const TSet<UShapeComponent*>& Current = Pair.second;
+		const TSet<UShapeComponent*>* Previous = PreviousCollisionMap.Find(OwnerConst);
+
+		for (UShapeComponent* Other : Current)
+		{
+			if (!Previous || !Previous->Contains(Other))
+			{
+				if (!Other)
+				{
+					continue;
+				}
+
+				const uint64 Key = MakeCollisionPairKey(OwnerConst, Other);
+				if (Key != 0 && !ProcessedPairs.Contains(Key))
+				{
+					ProcessedPairs.Add(Key);
+					BeginOverlapEvent.Broadcast(Owner, Other);
+				}
+			}
+		}
+
+		if (Previous)
+		{
+			for (UShapeComponent* PrevOther : *Previous)
+			{
+				if (!Current.Contains(PrevOther))
+				{
+					if (!PrevOther)
+					{
+						continue;
+					}
+
+					const uint64 Key = MakeCollisionPairKey(OwnerConst, PrevOther);
+					if (Key != 0 && !ProcessedPairs.Contains(Key))
+					{
+						ProcessedPairs.Add(Key);
+						EndOverlapEvent.Broadcast(Owner, PrevOther);
+					}
+				}
+			}
 		}
 	}
 }

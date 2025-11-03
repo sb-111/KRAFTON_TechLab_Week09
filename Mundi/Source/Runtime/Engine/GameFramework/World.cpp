@@ -30,6 +30,11 @@
 #include "InputManager.h"
 #include "UIManager.h"
 
+#include "ShapeComponent.h"
+#include "BoxComponent.h"
+#include "SphereComponent.h"
+#include "CapsuleComponent.h"
+
 IMPLEMENT_CLASS(UWorld)
 
 UWorld::UWorld()
@@ -281,6 +286,30 @@ void UWorld::InitializeLuaState()
 		// Cast Shadow (그림자) 관련 함수
 		"SetCastShadow", &ULightComponentBase::SetCastShadow,
 		"GetCastShadow", &ULightComponentBase::GetCastShadow
+	);
+
+	// UShapeComponent 및 파생 클래스 바인딩
+	LuaState.new_usertype<UShapeComponent>("UShapeComponent",
+		sol::base_classes, sol::bases<UShapeComponent>(),
+		"OnCollisionBegin", &UShapeComponent::OnCollisionBegin,
+		"OnCollisionEnd", &UShapeComponent::OnCollisionEnd
+	);
+	LuaState.new_usertype<UBoxComponent>("UBoxComponent",
+		sol::base_classes, sol::bases<UShapeComponent>(),
+		"GetExtent", &UBoxComponent::GetExtent,
+		"SetExtent", &UBoxComponent::SetExtent
+	);
+	LuaState.new_usertype<USphereComponent>("USphereComponent",
+		sol::base_classes, sol::bases<UShapeComponent>(),
+		"GetRadius", &USphereComponent::GetRadius,
+		"SetRadius", &USphereComponent::SetRadius
+	);
+	LuaState.new_usertype<UCapsuleComponent>("UCapsuleComponent",
+		sol::base_classes, sol::bases<UShapeComponent>(),
+		"GetCapsuleRadius", &UCapsuleComponent::GetCapsuleRadius,
+		"SetCapsuleRadius", &UCapsuleComponent::SetCapsuleRadius,
+		"GetCapsuleHalfHeight", &UCapsuleComponent::GetCapsuleHalfHeight,
+		"SetCapsuleHalfHeight", &UCapsuleComponent::SetCapsuleHalfHeight
 	);
 
 	// ═══════════════════════════════════════════════════════

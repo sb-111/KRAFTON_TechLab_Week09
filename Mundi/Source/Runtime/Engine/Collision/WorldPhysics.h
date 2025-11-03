@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "Object.h"
 #include "Vector.h"
+#include "MultiCastDelegate.h"
 
 class UShapeComponent;
 class FCollisionBVH;
@@ -28,15 +29,26 @@ public:
 	int32 GetCollisionShapeCount() const;
 	int32 GetCollisionNodeCount() const;
 
+	//Delegate for collision events
+	using FShapeCollisionEvent = TMultiCastDelegate<UShapeComponent*, UShapeComponent*>;
+	FShapeCollisionEvent& OnShapeBeginOverlap() { return BeginOverlapEvent; }
+	FShapeCollisionEvent& OnShapeEndOverlap() { return EndOverlapEvent; }
+
 private:
 	// 싱글톤 
 	UWorldPhysics(const UWorldPhysics&) = delete;
 	UWorldPhysics& operator=(const UWorldPhysics&) = delete;
+
+	void BroadcastCollisionEvents();
 	
 	TQueue<UShapeComponent*> CollisionDirtyQueue; // 추가 혹은 갱신이 필요한 요소의 대기 큐
 	TSet<UShapeComponent*> CollisionDirtySet;     // 더티 큐 중복 추가를 막기 위한 Set
 
 	TMap<const UShapeComponent*, TSet<UShapeComponent*>> CollisionMap;
-	
+	TMap<const UShapeComponent*, TSet<UShapeComponent*>> PreviousCollisionMap;
+
 	FCollisionBVH* BVH = nullptr;
+
+	FShapeCollisionEvent BeginOverlapEvent;
+	FShapeCollisionEvent EndOverlapEvent;
 };
