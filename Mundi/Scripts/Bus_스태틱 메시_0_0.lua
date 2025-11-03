@@ -18,6 +18,11 @@ local CheckPointPass1 = false
 local CheckPointPass2 = false
 local CheckPointPass3 = false
 
+-- 카메라 쉐이크 변수
+local CameraShakeTime = 0       -- 남은 쉐이크 시간
+local CameraShakeDuration = 0.5 -- 쉐이크 지속 시간 (초)
+local CameraShakeIntensity = 2.0 -- 쉐이크 강도
+
 local Inertia = 1
 -- z축만 회전할 거라서 flaot
 local Torque = 500
@@ -67,9 +72,15 @@ end
 
 function BeginOverlap(Other)
     Velocity = Velocity * (-1.0)
-    obj:SetActorLocation(obj:GetActorLocation() + Velocity:GetNormalized())
+    
+
+    obj:SetActorLocation(obj:GetActorLocation() + obj:GetActorRight())
     UI:SetAfterCollisionTime(3)
     UI:AddScore(-30)
+
+    -- 카메라 쉐이크 시작
+    CameraShakeTime = CameraShakeDuration
+    print("[Car] Collision! Camera shake triggered")
 end
 function EndOverlap(Other)
 
@@ -84,11 +95,15 @@ function ResetCar()
     Velocity = Vector(0, 0, 0)
     AngularSpeed = 0
 
+    -- 체크포인트 초기화
     CheckPointPass0 = false
     CheckPointPass1 = false
     CheckPointPass2 = false
     CheckPointPass3 = false
     UI:SetAfterCollisionTime(0)
+
+    -- 카메라 쉐이크 초기화
+    CameraShakeTime = 0
 
     print("[Car] Reset to initial state")
 end
@@ -114,7 +129,22 @@ function SetCameraPos()
     local Forward = CameraActor:GetActorRight() * (-10)
     local RelativeLocation = Forward
 
-    CameraActor:SetActorLocation(obj:GetActorLocation() + RelativeLocation)
+    -- 카메라 쉐이크 오프셋 추가
+    local ShakeOffset = Vector(0, 0, 0)
+    if CameraShakeTime > 0 then
+        -- 시간이 지날수록 강도 감소 (감쇠)
+        local DecayFactor = CameraShakeTime / CameraShakeDuration
+        local CurrentIntensity = CameraShakeIntensity * DecayFactor
+
+        -- 랜덤 오프셋 생성 (-1 ~ 1 범위)
+        local RandomX = (math.random() * 2 - 1) * CurrentIntensity
+        local RandomY = (math.random() * 2 - 1) * CurrentIntensity
+        local RandomZ = (math.random() * 2 - 1) * CurrentIntensity * 0.5 -- Z축은 덜 흔들리게
+
+        ShakeOffset = Vector(RandomX, RandomY, RandomZ)
+    end
+
+    CameraActor:SetActorLocation(obj:GetActorLocation() + RelativeLocation + ShakeOffset)
 end
 
 function Tick(dt)
@@ -127,8 +157,16 @@ function Tick(dt)
 
     -- 게임 오버 시 차량 움직임 정지 (UIManager를 통해 확인)
     if UI and UI:IsGameOver() then
-        -- print("게임 오버 상태: 차량 정지") 
+        -- print("게임 오버 상태: 차량 정지")
         return
+    end
+
+    -- 카메라 쉐이크 시간 감소
+    if CameraShakeTime > 0 then
+        CameraShakeTime = CameraShakeTime - dt
+        if CameraShakeTime < 0 then
+            CameraShakeTime = 0
+        end
     end
 
     -- Update logic here
