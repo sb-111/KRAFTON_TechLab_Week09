@@ -29,6 +29,7 @@
 #include "HeightFogComponent.h"
 #include "InputManager.h"
 #include "UIManager.h"
+#include "PlayerComponent.h"
 
 #include "ShapeComponent.h"
 #include "BoxComponent.h"
@@ -264,6 +265,9 @@ void UWorld::InitializeLuaState()
 		"GetShapeComponent", [](AActor* Actor) -> UShapeComponent* {
 			return Actor->GetComponentByClass<UShapeComponent>();
 		},
+		"GetPlayerComponent", [](AActor* Actor) -> UPlayerComponent* {
+			return Actor->GetComponentByClass<UPlayerComponent>();
+		},
 
 		// Lua에서 C++ 액터를 소멸시킬 수 있게 함(주의)
 		"Destroy", &AActor::Destroy,
@@ -272,7 +276,13 @@ void UWorld::InitializeLuaState()
 	);
 	// UActorComponent 바인딩 (기본 컴포넌트)
 	LuaState.new_usertype<UActorComponent>("UActorComponent",
-		sol::base_classes, sol::bases<>()
+		sol::base_classes, sol::bases<>(),
+		"GetOwner", &UActorComponent::GetOwner
+	);
+
+	// UPlayerComponent 바인딩 (플레이어 컴포넌트)
+	LuaState.new_usertype<UPlayerComponent>("UPlayerComponent",
+		sol::base_classes, sol::bases<UActorComponent>()
 	);
 
 	LuaState.new_usertype<UHeightFogComponent>("UHeightFogComponent",

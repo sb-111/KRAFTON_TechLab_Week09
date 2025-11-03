@@ -1,4 +1,4 @@
--- Game Manager Lua Script
+﻿-- Game Manager Lua Script
 -- 게임의 시작, 종료, 점수 관리를 담당하는 스크립트
 -- 이 스크립트는 PIE 시작 버튼을 누르면 실행
 
@@ -134,6 +134,15 @@ function OnPlayerDeath()
     print("[GameManager] Player Died!")
     GameOver()
 end
+
+do
+    local envMeta = getmetatable(_ENV)
+    local sharedGlobals = envMeta and envMeta.__index
+    if type(sharedGlobals) == "table" then
+        sharedGlobals.OnPlayerDeath = OnPlayerDeath
+    end
+end
+
 
 -- ═══════════════════════════════════════════════════════
 -- 게임 플레이 중인지 확인
