@@ -654,6 +654,8 @@ void UTargetActorTransformWidget::RenderSelectedActorDetails(AActor* SelectedAct
 		}
 	}
 	
+	static TMap<UScriptComponent*, FString> ProposedScriptPaths;
+
 	if (!ScriptComponents.IsEmpty())
 	{
 		ImGui::Text("[Lua Scripts]");
@@ -664,41 +666,63 @@ void UTargetActorTransformWidget::RenderSelectedActorDetails(AActor* SelectedAct
 		{
 			ImGui::PushID(ScriptComp); // 각 컴포넌트 UI에 고유 ID 부여
 
-			// Script Comp가 Lua 파일 경로를 가지고 있는지 확인
-			bool bHasScriptPath = ScriptComp->HasScriptFile();
-			bool bFileExists = false;
+			const FString SceneName = SelectedActor->GetWorld() ? SelectedActor->GetWorld()->GetSceneName() : "Untitled";
+			const FString ActorName = SelectedActor->GetName().ToString();
 
-			if (bHasScriptPath)
+			FString* PathForInput = nullptr;
+
+			if (!ScriptComp->ScriptFilePath.empty())
 			{
-				// 절대 경로로 변환해서 파일 존재 확인 (한글 경로 지원)
-				std::filesystem::path AbsPath = std::filesystem::absolute(Utf8ToWide(ScriptComp->ScriptFilePath));
-				bFileExists = std::filesystem::exists(AbsPath);
+				// 이미 경로가 지정되어 있다면 그 값을 사용하고, 캐시에 남아있던 제안 경로는 제거
+				ProposedScriptPaths.erase(ScriptComp);
+				PathForInput = &ScriptComp->ScriptFilePath;
+			}
+			else
+			{
+				// 아직 경로가 지정되지 않았다면 제안 경로 캐시를 사용 (없으면 새로 생성)
+				FString& CachedPath = ProposedScriptPaths[ScriptComp];
+				if (CachedPath.empty())
+				{
+					CachedPath = "Scripts/" + SceneName + "_" + ActorName + "_" + std::to_string(ScriptIndex) + ".lua";
+				}
+				PathForInput = &CachedPath;
+			}
 
-				// 디버깅용 로그
-				if (!bFileExists)
+			bool bFileExists = false;
+			if (PathForInput && !PathForInput->empty())
+			{
+				std::filesystem::path AbsPath = std::filesystem::absolute(Utf8ToWide(*PathForInput));
+				bFileExists = std::filesystem::exists(AbsPath);
+				if (!bFileExists && ScriptComp->HasScriptFile())
 				{
 					UE_LOG("[ScriptUI] File not found - Relative: %s, Absolute: %s",
-						ScriptComp->ScriptFilePath.c_str(), AbsPath.string().c_str());
+						PathForInput->c_str(), AbsPath.string().c_str());
 				}
 			}
 
 			ImGui::Text("Script File:");
 			ImGui::SameLine();
-	
-			FString DisplayPath;
-			if (bFileExists)
+
+			char PathBuffer[512];
+			strncpy_s(PathBuffer, PathForInput ? PathForInput->c_str() : "", sizeof(PathBuffer) - 1);
+			PathBuffer[sizeof(PathBuffer) - 1] = '\0';
+
+			ImGui::SetNextItemWidth(320.0f);
+			if (ImGui::InputText("##ScriptFilePath", PathBuffer, sizeof(PathBuffer)))
 			{
-				// Lua 파일이 존재하면 위젯에 파일명 표시
-				DisplayPath = ScriptComp->ScriptFilePath;
-				ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), "%s", DisplayPath.c_str());
+				const FString NewPath(PathBuffer);
+				if (PathForInput)
+				{
+					*PathForInput = NewPath;
+				}
+				// ScriptComponent에도 즉시 반영하여 이후 로직이 동일한 값을 사용하도록 함
+				ScriptComp->ScriptFilePath = NewPath;
 			}
-			else
+
+			if (!bFileExists)
 			{
-				// Lua 파일이 없으면 제안 경로(임시)를 생성해서 위젯에 파일명 표시
-				FString SceneName = SelectedActor->GetWorld() ? SelectedActor->GetWorld()->GetSceneName() : "Untitled";
-				FString ActorName = SelectedActor->GetName().ToString();
-				DisplayPath = "Scripts/" + SceneName + "_" + ActorName + "_" + std::to_string(ScriptIndex) + ".lua";
-				ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1.0f), "%s (proposed)", DisplayPath.c_str());
+				ImGui::SameLine();
+				ImGui::TextColored(ImVec4(0.8f, 0.6f, 0.2f, 1.0f), "(missing)");
 			}
 	
 			ImGui::Spacing();
@@ -743,7 +767,9 @@ void UTargetActorTransformWidget::RenderSelectedActorDetails(AActor* SelectedAct
 				if (ImGui::Button("Create Script", ImVec2(150, 0)))
 				{
 					// 제안된 경로로 스크립트 생성
-					ScriptComp->CreateScript(DisplayPath);
+					const FString PathToCreate = ScriptComp->ScriptFilePath.empty() && PathForInput ? *PathForInput : ScriptComp->ScriptFilePath;
+					ScriptComp->CreateScript(PathToCreate);
+					ProposedScriptPaths.erase(ScriptComp);
 					UE_LOG("[UI] Script created: %s", ScriptComp->ScriptFilePath.c_str());
 				}
 
