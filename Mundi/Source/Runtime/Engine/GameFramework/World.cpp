@@ -435,6 +435,7 @@ void UWorld::InitializeLuaState()
 		"UpdateScore", &UUIManager::UpdateScore,
 		"UpdateTime", &UUIManager::UpdateTime,
 		"AddScore", &UUIManager::AddScore,
+		"GetScore", &UUIManager::GetScore,
 		"AddPlayTime", &UUIManager::AddPlayTime,
 		"GetPlayTime", &UUIManager::GetPlayTime,
 		"SetFinalScore", &UUIManager::SetFinalScore,

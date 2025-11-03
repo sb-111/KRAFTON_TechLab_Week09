@@ -529,6 +529,21 @@ void UUIManager::AddScore(int32 Score)
 		GameUIWidgetRef->AddScore(Score);
 	}
 }
+
+int32 UUIManager::GetScore()
+{
+	if (!GameUIWidgetRef)
+	{
+		InitializeGameUI();
+	}
+
+	if (GameUIWidgetRef)
+	{
+		return GameUIWidgetRef->GetScore();
+	}
+	return 0;
+}
+
 void UUIManager::SetFinalScore(int32 Score)
 {
 	if (!GameOverWidgetRef)

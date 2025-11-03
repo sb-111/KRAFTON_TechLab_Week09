@@ -92,6 +92,7 @@ public:
 	float GetPlayTime();
 
 	void AddScore(int32 Score);
+	int32 GetScore();
 	void SetFinalScore(int32 Score);
 	void SetRestartCallback(sol::function Callback);
 	void InitializeGameUI(); // 게임 UI 위젯 초기화

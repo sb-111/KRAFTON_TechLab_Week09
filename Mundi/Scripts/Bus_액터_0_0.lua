@@ -119,13 +119,16 @@ function GameOver()
     UI:SetGameOver(true)  -- UIManager를 통해 게임 오버 상태 설정
     print("[GameManager] bIsGameOver를 true로 설정함: " .. tostring(bIsGameOver))
     print("[GameManager] UI:IsGameOver() = " .. tostring(UI:IsGameOver()))
-    print("[GameManager] Game Over! Final Score: " .. currentScore)
+
+    -- GameUIWidget에서 실제 점수 가져오기
+    local finalScore = UI:GetScore()
+    print("[GameManager] Game Over! Final Score: " .. finalScore)
 
     -- In Game UI 숨기기
     UI:SetInGameUIVisibility(false)
 
-    -- 최종 점수 설정
-    UI:SetFinalScore(currentScore)
+    -- 최종 점수 설정 (UI에서 가져온 실제 점수 사용)
+    UI:SetFinalScore(finalScore)
 
     -- Game Over UI 표시
     UI:SetGameOverUIVisibility(true)
