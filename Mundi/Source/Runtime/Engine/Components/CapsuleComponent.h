@@ -18,6 +18,8 @@ public:
 	// ───── Capsule Component 속성 ────────────────────────
 	void SetCapsuleHalfHeight(const float InHalfHeight);
 	void SetCapsuleRadius(const float InRadius);
+	float GetCapsuleHalfHeight() const { return CapsuleHalfHeight; }
+	float GetCapsuleRadius() const { return CapsuleRadius; }
 	const FBoundingCapsule& GetBoundingCapsule() const { return CachedBound; }
 
 	// ───── Transform 업데이트 ────────────────────────────
