@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "ActorComponent.h"
 
 class UPlayerComponent : public UActorComponent
@@ -9,4 +9,6 @@ public:
 
     UPlayerComponent();
     ~UPlayerComponent() override = default;
+
+    DECLARE_DUPLICATE(UPlayerComponent)
 };
