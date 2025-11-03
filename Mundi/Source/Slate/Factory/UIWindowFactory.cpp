@@ -50,11 +50,11 @@ void UUIWindowFactory::CreateDefaultUILayout()
 	auto& UIManager = UUIManager::GetInstance();
 
 	// 기본 레이아웃 생성
-	//UConsoleWindow* ConsoleWindow = CreateConsoleWindow(EUIDockDirection::Bottom);
-	//UIManager.RegisterUIWindow(ConsoleWindow);
+	UConsoleWindow* ConsoleWindow = CreateConsoleWindow(EUIDockDirection::Bottom);
+	UIManager.RegisterUIWindow(ConsoleWindow);
 	
-	// GlobalConsole에 ConsoleWidget 등록 (반드시 다른 UI 생성 전에)
-	//UGlobalConsole::SetConsoleWidget(ConsoleWindow->GetConsoleWidget());
+	//GlobalConsole에 ConsoleWidget 등록 (반드시 다른 UI 생성 전에)
+	UGlobalConsole::SetConsoleWidget(ConsoleWindow->GetConsoleWidget());
 	
 	// 콘솔 설정 후 테스트 메시지
 	UE_LOG("GlobalConsole 설정 완료 - ConsoleWidget 연결됨");

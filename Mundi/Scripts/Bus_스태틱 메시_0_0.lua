@@ -1,9 +1,9 @@
 -- Auto-generated script for 스태틱 메시_0
 local Mass = 1.0
 -- 공기저항
-local AirResistance = 0.2
+local AirResistance = 0.5
 -- 차 엔진 힘(추진력, forward에 대한 벡터는 엑터로부터 얻으므로 float로 저장)
-local MoveForce = 500
+local MoveForce = 2000
 local BreakForce = 50
 local Velocity = Vector(0, 0, 0)
 local AngularSpeed = 0
@@ -12,7 +12,7 @@ local AngularSpeed = 0
 
 local Inertia = 1
 -- z축만 회전할 거라서 flaot
-local Torque = 300
+local Torque = 500
 -- 각속도에 따른 저항
 local AngularRegistance = 5
 
@@ -24,7 +24,7 @@ end
 function SetCameraPos()
     local CameraActor = GWorld:GetCameraActor()
 
-    local Forward = CameraActor:GetActorRight() * (-60)
+    local Forward = CameraActor:GetActorRight() * (-10)
     local RelativeLocation = Forward
 
     CameraActor:SetActorLocation(obj:GetActorLocation() + RelativeLocation)
@@ -36,11 +36,15 @@ function Tick(dt)
     local NetForce = Vector(0,0,0)
     local NetTorque = 0
     --Velocity = Velocity + Acceleration * dt
-    local ForwardVector = obj:GetActorRight()
+    local ForwardVector = Vector(0,0,0) - obj:GetActorRight()
     local ForwardSpeed = Vector.Dot(Velocity, ForwardVector)
+    local LinearSpeed = Velocity:Size()
+    local MaxMoveForceSpeed = 100
+    local MoveForceFactor = math.min(LinearSpeed / MaxMoveForceSpeed, 1.0)
     if Input:IsKeyDown(Keys.W) then
         if ForwardSpeed > 0 then
-            NetForce = NetForce + ForwardVector * MoveForce
+            
+            NetForce = NetForce + ForwardVector * (BreakForce + MoveForce*MoveForceFactor)
         else
             NetForce = NetForce + ForwardVector * BreakForce
         end
@@ -49,7 +53,7 @@ function Tick(dt)
         if ForwardSpeed > 0 then
             NetForce = NetForce - ForwardVector * BreakForce
         else
-            NetForce = NetForce - ForwardVector * MoveForce
+            NetForce = NetForce - ForwardVector * (BreakForce + MoveForce*MoveForceFactor)
         end
     end
 
@@ -78,8 +82,8 @@ function Tick(dt)
     end
     
     -- 이 속도에 다다르면 각속도 최대
-    local MaxSteeringSpeed = 100
-    local LinearSpeed = Velocity:Size()
+    local MaxSteeringSpeed = 40
+   
     local SteeringFactor = math.min(LinearSpeed / MaxSteeringSpeed, 1.0)
     NetTorque = NetTorque * SteeringFactor
 

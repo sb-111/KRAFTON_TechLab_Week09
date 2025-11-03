@@ -140,20 +140,26 @@ void FCSM::BuildCascadeMatrices(const FCascadeSettings& Settings, const FSceneVi
     FAABB FrustumAABBLight = FAABB::GetAABB(FrustumCornersWS);
 
     FAABB ShadowAABB;
-    if (GWorld->GetLightManager()->GetDirectionalLight()->GetSceneAABB())
-    {
-        ShadowAABB.Min.X = FrustumAABBLight.Min.X;  // 프러스텀 좌
-        ShadowAABB.Max.X = FrustumAABBLight.Max.X;  // 프러스텀 우
-        ShadowAABB.Min.Y = std::min(SceneAABBLight.Min.Y, FrustumAABBLight.Min.Y);    // 씬 하단 (더 넓게)
-        ShadowAABB.Max.Y = SceneAABBLight.Max.Y;    // 씬 상단 (더 넓게)
-        ShadowAABB.Min.Z = SceneAABBLight.Min.Z;    // 씬 전방 (더 깊게)
-        ShadowAABB.Max.Z = FrustumAABBLight.Max.Z;  // 프러스텀 후방
-    }
-    else
-    {
-        ShadowAABB = FAABB::GetAABB(FrustumCornersWS);
-    }
-    
+    //if (GWorld->GetLightManager()->GetDirectionalLight()->GetSceneAABB())
+    //{
+    //    ShadowAABB.Min.X = FrustumAABBLight.Min.X;  // 프러스텀 좌
+    //    ShadowAABB.Max.X = FrustumAABBLight.Max.X;  // 프러스텀 우
+    //    ShadowAABB.Min.Y = std::min(SceneAABBLight.Min.Y, FrustumAABBLight.Min.Y);    // 씬 하단 (더 넓게)
+    //    ShadowAABB.Max.Y = SceneAABBLight.Max.Y;    // 씬 상단 (더 넓게)
+    //    ShadowAABB.Min.Z = SceneAABBLight.Min.Z;    // 씬 전방 (더 깊게)
+    //    ShadowAABB.Max.Z = FrustumAABBLight.Max.Z;  // 프러스텀 후방
+    //}
+    //else
+    //{
+    //    ShadowAABB = FAABB::GetAABB(FrustumCornersWS);
+    //}
+    ShadowAABB.Min.X = std::max(SceneAABBLight.Min.X, FrustumAABBLight.Min.X);  // 프러스텀 좌
+    ShadowAABB.Max.X = std::min(SceneAABBLight.Max.X, FrustumAABBLight.Max.X);  // 프러스텀 우
+    ShadowAABB.Min.Y = std::max(SceneAABBLight.Min.Y, FrustumAABBLight.Min.Y);    // 씬 하단 (더 넓게)
+    ShadowAABB.Max.Y = std::min(SceneAABBLight.Max.Y, FrustumAABBLight.Max.Y);    // 씬 상단 (더 넓게)
+    ShadowAABB.Min.Z = SceneAABBLight.Min.Z;    // 씬 전방 (더 깊게)
+    ShadowAABB.Max.Z = std::min(FrustumAABBLight.Max.Z, SceneAABBLight.Max.Z);  // 프러스텀 후방
+
     // Artifact를 보정 
     {
         // 1. Texel Snap
