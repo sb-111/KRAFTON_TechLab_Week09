@@ -99,6 +99,22 @@ void UScriptComponent::PostDuplicate()
 	// (BeginPlay에서 자동으로 로드되므로 여기서는 초기화만 수행)
 }
 
+void UScriptComponent::HandleThrustInput(float InValue)
+{
+	if (OnThrustInput.valid())
+	{
+		OnThrustInput(InValue);
+	}
+}
+
+void UScriptComponent::HandleSteerInput(float InValue)
+{
+	if (OnSteerInput.valid())
+	{
+		OnSteerInput(InValue);
+	}
+}
+
 void UScriptComponent::InitializeEnvironment()
 {
 	if (bEnvironmentInitialized) return;
@@ -284,6 +300,9 @@ void UScriptComponent::LoadScript(const FString& FilePath)
 	{
 		UE_LOG("[ScriptComponent] WARNING: BeginPlay function NOT found in script!");
 	}
+
+	OnThrustInput = Env["OnThrustInput"];
+	OnSteerInput = Env["OnSteerInput"];
 }
 
 void UScriptComponent::ReloadScript()
