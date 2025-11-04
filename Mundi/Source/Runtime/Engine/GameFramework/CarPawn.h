@@ -5,6 +5,7 @@
 
 class UScriptComponent;
 
+// HandleInput을 받을 수 있는 클래스
 class ACarPawn : public APawn
 {
 public:
@@ -14,6 +15,8 @@ public:
 
 	void HandleThrustInput(float InValue) override;
 	void HandleSteerInput(float InValue) override;
+
+	void BeginPlay() override;
 
 	DECLARE_DUPLICATE(ACarPawn)
 

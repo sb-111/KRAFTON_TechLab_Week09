@@ -13,7 +13,6 @@ ACarPawn::ACarPawn()
 {
 	Name = "Car Pawn";
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("CarStaticMeshComponent");
-	ScriptComponent = CreateDefaultSubobject<UScriptComponent>("CarScriptComponent");
 	RootComponent = StaticMeshComponent;
 }
 
@@ -31,6 +30,14 @@ void ACarPawn::HandleSteerInput(float InValue)
 	{
 		ScriptComponent->HandleSteerInput(InValue);
 	}
+}
+
+void ACarPawn::BeginPlay()
+{
+	Super_t::BeginPlay();
+
+	ScriptComponent = GetComponentByClass<UScriptComponent>();
+
 }
 
 void ACarPawn::DuplicateSubObjects()

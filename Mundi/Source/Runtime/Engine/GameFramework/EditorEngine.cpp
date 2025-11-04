@@ -363,7 +363,8 @@ void UEditorEngine::StartPIE()
 
     UWorld* EditorWorld = WorldContexts[0].World;
     UWorld* PIEWorld = UWorld::DuplicateWorldForPIE(EditorWorld);
-
+    
+    
     GWorld = PIEWorld;
     SLATE.SetPIEWorld(GWorld);
 

@@ -22,17 +22,33 @@ void APlayerController::ProcessInput()
 	{
 		Pawn->HandleThrustInput(1.0f);
 	}
+	if (InputManager.IsKeyReleased('W'))
+	{
+		Pawn->HandleThrustInput(0.0f);
+	}
 	if (InputManager.IsKeyDown('S'))
 	{
 		Pawn->HandleThrustInput(-1.0f);
+	}
+	if (InputManager.IsKeyReleased('S'))
+	{
+		Pawn->HandleThrustInput(0.0f);
 	}
 
 	if (InputManager.IsKeyDown('D'))
 	{
 		Pawn->HandleSteerInput(1.0f);
 	}
+	if (InputManager.IsKeyReleased('D'))
+	{
+		Pawn->HandleSteerInput(0.0f);
+	}
 	if (InputManager.IsKeyDown('A'))
 	{
 		Pawn->HandleSteerInput(-1.0f);
+	}
+	if (InputManager.IsKeyReleased('A'))
+	{
+		Pawn->HandleSteerInput(0.0f);
 	}
 }

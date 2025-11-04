@@ -7,6 +7,7 @@
 #include "LightManager.h"
 #include "sol/sol.hpp"
 #include "CoroutineManager.h"
+#include "PlayerController.h"
 
 // Forward Declarations
 class UResourceManager;
@@ -160,6 +161,9 @@ private:
 
     // Lua Coroutine Manager
     FCoroutineManager CoroutineManager;
+
+    // Pie에서 생성
+    std::unique_ptr<APlayerController> PlayerController = nullptr;
 
     // Pending Destory List
     TArray<AActor*> ActorsToDestroy;
