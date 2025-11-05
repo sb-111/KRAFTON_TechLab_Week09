@@ -69,6 +69,14 @@ public:
     FMatrix GetWorldMatrix() const; // ToMatrixWithScale
 
     // ──────────────────────────────
+    // Socket World Transform API
+    // ──────────────────────────────
+    virtual FTransform GetSocketWorldTransform() const;
+    virtual FVector GetSocketWorldLocation() const;
+    virtual FQuat GetSocketWorldRotation() const;
+    virtual FVector GetSocketWorldScale() const;
+
+    // ──────────────────────────────
     // Attach/Detach
     // ──────────────────────────────
     void SetupAttachment(USceneComponent* InParent, EAttachmentRule Rule = EAttachmentRule::KeepWorld);

@@ -1,8 +1,7 @@
 ﻿#pragma once
 #include "Object.h"
-
-class AActor;
-class UWorld;
+#include "Actor.h"
+#include "World.h"
 
 enum class EEndPlayReason : uint8
 {
@@ -47,6 +46,9 @@ public:
     void SetTickEnabled(bool bEnabled) { bTickEnabled = bEnabled; }
     bool IsTickEnabled() const { return bTickEnabled; }
 
+	void SetTickInEditor(bool bEnabled) { bTickInEditor = bEnabled; }
+	bool CanTickInEditor() const { return bTickInEditor; }
+
     void SetEditability(bool InEditable) { bIsEditable = InEditable; }
     bool IsEditable() const { return bIsEditable; }
 
@@ -56,14 +58,10 @@ public:
     void SetCanEverTick(bool b) { bCanEverTick = b; }
     bool CanEverTick() const { return bCanEverTick; }
 
-    bool IsComponentTickEnabled() const
-    {
-        // 틱을 진짜 돌릴지 최종 판단(액터 Tick에서 이걸로 거른다)
-        return bIsActive && bCanEverTick && bTickEnabled && bRegistered;
-    }
+    bool IsComponentTickEnabled() const;
 
     // ─────────────── Owner/World
-    void   SetOwner(AActor* InOwner) { Owner = InOwner; }
+    void SetOwner(AActor* InOwner) { Owner = InOwner; }
     AActor* GetOwner() const { return Owner; }
     UWorld* GetWorld() const; // 구현은 .cpp에서 Owner->GetWorld()
 
@@ -89,9 +87,10 @@ protected:
     AActor* Owner = nullptr;     // 소유 액터
     bool bIsNative = false;      // 액터의 기본 구성 컴포넌트인지 여부. 활성화되면 보호되어 UI에서 삭제 불가 상태가 됨 
     bool bIsActive = true;       // 활성 상태(사용자 on/off), 물리 적용
-    bool bHiddenInGame = false; // 게임에서 숨김 여부
+    bool bHiddenInGame = false;  // 게임에서 숨김 여부
     bool bCanEverTick = false;   // 컴포넌트 설계상 틱 지원 여부
     bool bTickEnabled = false;   // 현재 틱 켜짐 여부
+	bool bTickInEditor = false;  // 에디터 모드에서 틱 허용 여부
 
     bool bRegistered = false;    // RegisterComponent가 호출됐는가
     bool bHasBegunPlay = false;  // BeginPlay가 호출됐는가
