@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "PlayerCameraManager.h"
 #include "CameraComponent.h"
 #include "CameraModifier.h"
@@ -9,13 +9,15 @@ IMPLEMENT_CLASS(APlayerCameraManager)
 
 void APlayerCameraManager::Tick(float DeltaTime)
 {
+	float WorldDeltaTime = DeltaTime / CustomTimeDilation;
+
 	//UpdateFadeInOut(DeltaTime); // FadeAmount 계산 (보간)
-	UpdateVignetteBlend(DeltaTime); // VignetteIntensity/Radius 계산 (보간)
-	UpdateLetterboxBlend(DeltaTime); // LetterBoxSize 계산(보간)
-	UpdatePostProcess(DeltaTime); // Modifier들이 수정(선택)해서 GPU로 전송
+	UpdateVignetteBlend(WorldDeltaTime); // VignetteIntensity/Radius 계산 (보간)
+	UpdateLetterboxBlend(WorldDeltaTime); // LetterBoxSize 계산(보간)
+	UpdatePostProcess(WorldDeltaTime); // Modifier들이 수정(선택)해서 GPU로 전송
 	if (FadeTimeRemaining > 0)
 	{
-		FadeTimeRemaining -= DeltaTime;
+		FadeTimeRemaining -= WorldDeltaTime; // fade effect is depentent on WORLD TIME, not actor time 
 
 		if (FadeTimeRemaining <= 0)
 		{

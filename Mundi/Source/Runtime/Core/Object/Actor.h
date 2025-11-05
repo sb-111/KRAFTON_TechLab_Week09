@@ -25,6 +25,7 @@ protected:
 public:
     // 수명
     virtual void BeginPlay();
+	void ExecuteTick(float GlobalAdjustedDeltaSeconds);
     virtual void Tick(float DeltaSeconds);
     virtual void EndPlay(EEndPlayReason Reason);
     virtual void Destroy();
@@ -159,6 +160,10 @@ public:
         return bTickInEditor;
     }
 
+    // ───── Time ────────────────────────────────
+	void SetCustomTimeDilation(float NewDilation) { CustomTimeDilation = std::max(0.0f, NewDilation); }
+	float GetCustomTimeDilation() const { return CustomTimeDilation; }
+
     // ───── 복사 관련 ────────────────────────────
     void DuplicateSubObjects() override;
     void PostDuplicate() override;
@@ -188,6 +193,8 @@ protected:
     bool bIsPicked = false;
     bool bCanEverTick = true;
     bool bIsCulled = false;
+
+	float CustomTimeDilation = 1.0f;
 
     // 월드에 의존적인 컴포넌트가 월드 설정 전 추가된 경우 나중에 추가될 수 있도록 대기열에 저장
     TArray<UActorComponent*> PendingWorldRegistration;

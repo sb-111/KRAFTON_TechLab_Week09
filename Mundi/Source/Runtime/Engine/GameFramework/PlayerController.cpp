@@ -29,10 +29,12 @@ void APlayerController::Possess(APawn* InPawn)
 
 void APlayerController::Tick(float DeltaSecond)
 {
+	float WorldDeltaTime = DeltaSecond / CustomTimeDilation;
+
 	ProcessInput();
 	if (PlayerCameraManager)
 	{
-		PlayerCameraManager->Tick(DeltaSecond);
+		PlayerCameraManager->ExecuteTick(DeltaSecond);
 	}
 }
 

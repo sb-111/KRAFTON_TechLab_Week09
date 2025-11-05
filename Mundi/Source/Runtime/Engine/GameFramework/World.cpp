@@ -603,6 +603,8 @@ void UWorld::InitializeLuaState()
 
 void UWorld::Tick(float DeltaSeconds)
 {
+	DeltaSeconds *= GlobalTimeDeliation;
+
 	Partition->Update(DeltaSeconds, /*budget*/256);
 	Physics->Update(DeltaSeconds);
 
@@ -614,7 +616,7 @@ void UWorld::Tick(float DeltaSeconds)
 
 	if (PlayerController)
 	{
-		PlayerController->Tick(DeltaSeconds);
+		PlayerController->ExecuteTick(DeltaSeconds);
 	}
 //순서 바꾸면 안댐
 	if (Level)
@@ -623,13 +625,13 @@ void UWorld::Tick(float DeltaSeconds)
 		{
 			if (Actor && (Actor->CanTickInEditor() || bPie))
 			{
-				Actor->Tick(DeltaSeconds);
+				Actor->ExecuteTick(DeltaSeconds);
 			}
 		}
 	}
 	for (AActor* EditorActor : EditorActors)
 	{
-		if (EditorActor && !bPie) EditorActor->Tick(DeltaSeconds);
+		if (EditorActor && !bPie) EditorActor->ExecuteTick(DeltaSeconds);
 	}
 }
 
