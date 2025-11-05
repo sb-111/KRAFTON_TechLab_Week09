@@ -631,14 +631,23 @@ void UTargetActorTransformWidget::RenderSelectedActorDetails(AActor* SelectedAct
 	USceneComponent* RootComponent = SelectedActor->GetRootComponent();
 	const TArray<FProperty>& Properties = USceneComponent::StaticClass()->GetProperties();
 	
-
-	UPropertyRenderer::RenderProperties(Properties, RootComponent);
-
+	// ======== Actor Properties UI ========
+	ImGui::Text("[Actor Settings]");
 	bool bActorHiddenInGame = SelectedActor->GetActorHiddenInGame();
-	if (ImGui::Checkbox("bActorHiddendInGame", &bActorHiddenInGame))
+	if (ImGui::Checkbox("Actor Hidden InGame", &bActorHiddenInGame))
 	{
 		SelectedActor->SetActorHiddenInGame(bActorHiddenInGame);
 	}
+
+	bool bActorEidtorTickEnabled = SelectedActor->CanTickInEditor();
+	if (ImGui::Checkbox("Actor Editor Tick Enabled", &bActorEidtorTickEnabled))
+	{
+		SelectedActor->SetTickInEditor(bActorEidtorTickEnabled);
+	}
+	ImGui::Separator();
+
+	// ======== Root Component Properties UI ========
+	UPropertyRenderer::RenderProperties(Properties, RootComponent);
 
 	// ======== Lua Script UI ======== 
 	ImGui::Spacing();

@@ -61,7 +61,7 @@ public:
     bool IsComponentTickEnabled() const;
 
     // ─────────────── Owner/World
-    virtual void SetOwner(AActor* InOwner) { Owner = InOwner; } // 오너 설정과 동시에 특수한 처리 필요한 컴포넌트 있어 가상함수로 설정
+    void SetOwner(AActor* InOwner) { Owner = InOwner; }
     AActor* GetOwner() const { return Owner; }
     UWorld* GetWorld() const; // 구현은 .cpp에서 Owner->GetWorld()
 
