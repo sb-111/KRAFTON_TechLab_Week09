@@ -127,6 +127,7 @@ function BeginPlay()
     InitialPosition = obj:GetActorLocation()
     InitialRotation = obj:GetActorRotation()
     PlayerController:Possess(Pawn)
+    PlayerController:GetPlayerCameraManager():SetViewTarget(obj, 0)
     print("[PlayerController] Possess Pawn")
 
     local ShapeComponent = obj:GetShapeComponent()
@@ -253,7 +254,7 @@ function Tick(dt)
     obj:AddActorWorldRotation(AngularVelocity)
   
     UpdateScore()
-    SetCameraPos()
+    --SetCameraPos()
 end
 
 function EndPlay()

@@ -27,6 +27,7 @@ struct FFrustum
 };
 
 FFrustum CreateFrustumFromCamera(const UCameraComponent& Camera, float OverrideAspect = -1.0f);
+FFrustum CreateFrustum(const FVector& Location, const FQuat& Rotation, float Znear, float ZFar, float Fov, float Aspect);
 bool IsBoundingSphereIntersects(const FFrustum& Frustum, const FBoundingSphere& InBound);
 bool IsAABBVisible(const FFrustum& Frustum, const FAABB& Bound);
 bool IsAABBIntersects(const FFrustum& Frustum, const FAABB& Bound);

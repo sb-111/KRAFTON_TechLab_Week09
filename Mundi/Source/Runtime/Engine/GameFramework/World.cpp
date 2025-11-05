@@ -31,6 +31,7 @@
 #include "UIManager.h"
 #include "PlayerComponent.h"
 #include "PlayerController.h"
+#include "PlayerCameraManager.h"
 
 #include "ShapeComponent.h"
 #include "BoxComponent.h"
@@ -436,7 +437,11 @@ void UWorld::InitializeLuaState()
 
 	LuaState.new_usertype<APlayerController>("PlayerController",
 		sol::base_classes, sol::bases<AActor>(),
-		"Possess", &APlayerController::Possess);
+		"Possess", &APlayerController::Possess,
+		"GetPlayerCameraManager", &APlayerController::GetPlayerCameraManager);
+	LuaState.new_usertype<APlayerCameraManager>("PlayerCameraManager",
+		sol::base_classes, sol::bases<AActor>(),
+		"SetViewTarget", &APlayerCameraManager::SetViewTarget);
 
 	// Lua 스크립트 어디서나 접근할 수 있게전역 Input 객체 생성
 	LuaState["Input"] = &UInputManager::GetInstance();

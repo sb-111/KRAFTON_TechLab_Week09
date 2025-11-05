@@ -100,6 +100,7 @@ public:
     AGridActor* GetGridActor() const { return GridActor; }
     UWorldPartitionManager* GetPartitionManager() const { return Partition.get(); }
     UWorldPhysics* GetWorldPhysics() const { return Physics.get(); }
+    APlayerController* GetPlayerController() const { return PlayerController.get(); }
 
     // Per-world render settings
     URenderSettings& GetRenderSettings() { return RenderSettings; }
