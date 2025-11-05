@@ -553,13 +553,13 @@ void UEditorEngine::StartPIE()
     SLATE.SetPIEWorld(GWorld);
 #endif
 
+    UI.SetWorld(GWorld);
     bPIEActive = true;
 
     // 게임 UI 초기화 (GameUIWidget 등)
     UE_LOG("StartPIE: Initializing Game UI...");
-    UI.InitializeGameUI();
-    UI.SetInGameUIVisibility(true);
-    UE_LOG("StartPIE: Game UI initialized and set to visible");
+    UI.PrepareGameStart();
+    UE_LOG("StartPIE: Game UI initialized and waiting for player input");
 
     //// 슬레이트 매니저 (singleton)
     //FRect ScreenRect(0, 0, ClientWidth, ClientHeight);

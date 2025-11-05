@@ -53,7 +53,6 @@
       <Filter>Shaders\Effects</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\Utility\LightTilesComputeShader.hlsl" />
-    <FxCompile Include="PostProcessChain_PS.hlsl" />
     <FxCompile Include="Shaders\PostProcess\PostProcessChain_PS.hlsl">
       <Filter>Shaders\PostProcess</Filter>
     </FxCompile>
@@ -470,6 +469,11 @@
     <ClCompile Include="Source\Runtime\Engine\Components\AudioComponent.cpp" />
     <ClCompile Include="Source\Runtime\Engine\GameFramework\CameraShakeModifier.cpp">
       <Filter>Source\Runtime\Engine\GameFramework</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Slate\Bezier.cpp" />
+    <ClCompile Include="Source\Slate\SplashScreen.cpp" />
+    <ClCompile Include="Source\Slate\Widgets\GameReadyUI.cpp">
+      <Filter>Source\Slate\Widgets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -969,6 +973,11 @@
     <ClInclude Include="Source\Runtime\Engine\Components\AudioComponent.h" />
     <ClInclude Include="Source\Runtime\Engine\GameFramework\CameraShakeModifier.h">
       <Filter>Source\Runtime\Engine\GameFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Slate\Bezier.h" />
+    <ClInclude Include="Source\Slate\SplashScreen.h" />
+    <ClInclude Include="Source\Slate\Widgets\GameReadyUI.h">
+      <Filter>Source\Slate\Widgets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
