@@ -34,6 +34,14 @@ local Torque = 500
 -- 각속도에 따른 저항
 local AngularRegistance = 5
 
+-- 부스터 관련 변수
+local BoosterActive = false
+local BoosterForce = 5000  -- 부스터 추가 힘
+local BoosterDuration = 2.0  -- 부스터 지속 시간 (초)
+local BoosterTimeRemaining = 0.0
+local BoosterCooldown = 5.0  -- 부스터 재사용 대기 시간 (초)
+local BoosterCooldownRemaining = 0.0
+
 function OnThrustInput(InValue)
     ThrustInput = InValue
 end
@@ -42,122 +50,31 @@ function OnSteerInput(InValue)
     SteerInput = InValue
 end
 
-local audioComp = nil
-local savedVolume = 100.0  -- 뮤트 해제 시 복원할 볼륨
+-- 부스터
+function OnBoosterInput()
+    -- 쿨다운이 끝나고 부스터가 비활성 상태일 때만 활성화 가능
+    if BoosterCooldownRemaining <= 0 and not BoosterActive then
+        BoosterActive = true
+        BoosterTimeRemaining = BoosterDuration
+        BoosterCooldownRemaining = BoosterCooldown
 
--- M키: 뮤트/뮤트 해제 토글
-function OnMuteInput()
-    if not audioComp then
-        audioComp = obj:GetAudioComponent()
-        if not audioComp then
-            print("AudioComponent not found")
-            return
+        print(string.format("Booster activated! (Duration: %.1fs, Cooldown: %.1fs)", BoosterDuration, BoosterCooldown))
+
+        -- 소리 재생
+        local AudioComp = obj:GetAudioComponentByName("Booster")
+        if AudioComp then
+            AudioComp:Stop(true)
+            AudioComp:Play(false)
         end
-    end
-
-    local currentVolume = audioComp:GetVolume()
-    if currentVolume > 0.0 then
-        -- 뮤트: 현재 볼륨 저장하고 0으로 설정
-        savedVolume = currentVolume
-        audioComp:SetVolume(0.0)
-        print("Audio muted")
     else
-        -- 뮤트 해제: 저장된 볼륨으로 복원
-        audioComp:SetVolume(savedVolume)
-        print("Audio unmuted (Volume: " .. savedVolume .. ")")
-    end
-end
-
--- 스페이스바: 재생/일시정지 토글
-function OnPlayPauseInput()
-    local AudioComp = nil
-    if not AudioComp then
-        AudioComp = obj:GetAudioComponentByName("Booster")
-        if not AudioComp then
-            return
+        if BoosterActive then
+            print("Booster already active!")
+        else
+            print(string.format("Booster on cooldown: %.1fs remaining", BoosterCooldownRemaining))
         end
     end
-
-    AudioComp:Stop(true)
-    AudioComp:Play(false)
-    print("Boost started playing")
 end
 
--- P키: 정지
-function OnStopInput()
-    if not audioComp then
-        audioComp = obj:GetAudioComponent()
-        if not audioComp then
-            print("AudioComponent not found")
-            return
-        end
-    end
-
-    audioComp:Stop(true)
-    print("Audio stopped")
-end
-
--- 왼쪽 화살표: 5초 뒤로
-function OnLeftArrowInput()
-    if not audioComp then
-        audioComp = obj:GetAudioComponent()
-        if not audioComp then
-            return
-        end
-    end
-
-    audioComp:SeekRelative(-5.0)
-    local newPos = audioComp:GetPlaybackPosition()
-    print(string.format("Seeked backward to %.2f seconds", newPos))
-end
-
--- 오른쪽 화살표: 5초 앞으로
-function OnRightArrowInput()
-    if not audioComp then
-        audioComp = obj:GetAudioComponent()
-        if not audioComp then
-            return
-        end
-    end
-
-    audioComp:SeekRelative(5.0)
-    local newPos = audioComp:GetPlaybackPosition()
-    print(string.format("Seeked forward to %.2f seconds", newPos))
-end
-
--- 위쪽 화살표: 볼륨 증가
-function OnUpArrowInput()
-    if not audioComp then
-        audioComp = obj:GetAudioComponent()
-        if not audioComp then
-            return
-        end
-    end
-
-    local currentVolume = audioComp:GetVolume()
-    local newVolume = math.min(currentVolume + 10.0, 100.0)
-    audioComp:SetVolume(newVolume)
-    savedVolume = newVolume  -- 뮤트 해제 시 복원할 볼륨도 업데이트
-    print(string.format("Volume: %.0f", newVolume))
-end
-
--- 아래쪽 화살표: 볼륨 감소
-function OnDownArrowInput()
-    if not audioComp then
-        audioComp = obj:GetAudioComponent()
-        if not audioComp then
-            return
-        end
-    end
-
-    local currentVolume = audioComp:GetVolume()
-    local newVolume = math.max(currentVolume - 10.0, 0.0)
-    audioComp:SetVolume(newVolume)
-    if newVolume > 0.0 then
-        savedVolume = newVolume  -- 뮤트 해제 시 복원할 볼륨도 업데이트
-    end
-    print(string.format("Volume: %.0f", newVolume))
-end
 -- 코루틴 에러때문에 boolean으로 처리
 function UpdateScore()
     local CurrentLocation = obj:GetActorLocation().x
@@ -210,6 +127,21 @@ function BeginOverlap(Other)
     CameraShakeTime = CameraShakeDuration
     print("[Car] Collision! Camera shake triggered")
 
+    -- 부스터 비활성화
+    if BoosterActive then
+        BoosterActive = false
+        BoosterTimeRemaining = 0.0
+
+        -- 부스터 오디오 중단
+        local BoosterAudioComp = obj:GetAudioComponentByName("Booster")
+        if BoosterAudioComp then
+            BoosterAudioComp:Stop(true)
+        end
+
+        print("[Car] Booster disabled due to collision")
+    end
+
+    -- 충돌 소리 재생
     local AudioComp = nil
     if not AudioComp then
         AudioComp = obj:GetAudioComponentByName("CarCrush")
@@ -245,6 +177,11 @@ function ResetCar()
 
     -- 카메라 쉐이크 초기화
     CameraShakeTime = 0
+
+    -- 부스터 초기화
+    BoosterActive = false
+    BoosterTimeRemaining = 0.0
+    BoosterCooldownRemaining = 0.0
 
     print("[Car] Reset to initial state")
 end
@@ -321,6 +258,24 @@ function Tick(dt)
         end
     end
 
+    -- 부스터 타이머 업데이트
+    if BoosterActive then
+        BoosterTimeRemaining = BoosterTimeRemaining - dt
+        if BoosterTimeRemaining <= 0 then
+            BoosterActive = false
+            BoosterTimeRemaining = 0
+            print("Booster deactivated!")
+        end
+    end
+
+    -- 부스터 쿨다운 업데이트
+    if BoosterCooldownRemaining > 0 then
+        BoosterCooldownRemaining = BoosterCooldownRemaining - dt
+        if BoosterCooldownRemaining < 0 then
+            BoosterCooldownRemaining = 0
+        end
+    end
+
     -- Update logic here
 
     local NetForce = Vector(0,0,0)
@@ -351,6 +306,11 @@ function Tick(dt)
         else
             NetForce = NetForce - ForwardVector * (BreakForce + MoveForce*MoveForceFactor)
         end
+    end
+
+    -- 부스터 힘 적용 (속도 제한 무시, 최대 속도 돌파 가능)
+    if BoosterActive then
+        NetForce = NetForce + ForwardVector * BoosterForce
     end
 
     local AirResistanceForce = Vector(0,0,0)
