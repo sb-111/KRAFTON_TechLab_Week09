@@ -1,6 +1,13 @@
-#pragma once
+﻿#pragma once
 #include "Widget.h"
+#include "ImGui/imgui.h"
+#include "USlateManager.h"
+#include "Texture.h"
+#include "ResourceManager.h"
+#include <utility>
 #include <functional>
+
+class UTexture;
 
 /**
  * @brief 게임 시작 전 표시되는 준비 UI
@@ -28,4 +35,7 @@ public:
 private:
 	bool bIsVisible = false;
 	std::function<void()> StartCallback;
+	UTexture* TitleTexture = nullptr;
+
+	const ImVec2 WindowSize = ImVec2(840.0f, 480.0f);
 };
