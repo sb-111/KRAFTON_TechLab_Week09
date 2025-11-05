@@ -214,7 +214,9 @@ void UWorld::InitializeLuaState()
 	);
 
 	LuaState.new_usertype<UWorld>("UWorld",
-		"GetCameraActor", &UWorld::GetCameraActor);
+		"GetCameraActor", &UWorld::GetCameraActor,
+		"SetGlobalTimeDilation", &UWorld::SetGlobalTimeDilation,
+		"GetGlobalTimeDilation", &UWorld::GetGlobalTimeDilation);
 	LuaState.set("GWorld", GWorld);
 	LuaState.new_usertype<ACameraActor>("ACameraActor",
 		sol::base_classes,  sol::bases<AActor>());

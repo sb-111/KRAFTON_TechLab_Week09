@@ -42,6 +42,8 @@ local BoosterTimeRemaining = 0.0
 local BoosterCooldown = 5.0  -- 부스터 재사용 대기 시간 (초)
 local BoosterCooldownRemaining = 0.0
 
+local PlayerComponent = obj:GetPlayerComponent()
+
 function OnThrustInput(InValue)
     ThrustInput = InValue
 end
@@ -116,6 +118,9 @@ function UpdateScore()
 end
 
 function BeginOverlap(Other)
+    if obj:GetActorLocation().x > 350 then
+        return
+    end
     -- 충돌 법선 = 진행 방향의 반대 (실제 충돌 접점 방향과 유사)
     local CollisionNormal = Velocity:GetNormalized() * (-1.0)
 
@@ -187,6 +192,8 @@ function EndOverlap(Other)
 end
 -- 게임 재시작 위함
 function ResetCar()
+    local PCM = PlayerController:GetPlayerCameraManager()
+    PCM:SetLetterboxSize(0.0)
     -- 위치와 회전 초기화
     obj:SetActorLocation(InitialPosition)
     obj:SetActorRotation(InitialRotation)
