@@ -30,21 +30,34 @@ void UGameOverWidget::RenderWidget()
 	}
 
 	// 메인 Viewport의 영역 가져오기 (게임이 실행되는 뷰포트)
-	SViewportWindow* mainViewport = USlateManager::GetInstance().GetMainViewport();
-	if (!mainViewport)
-	{
-		return; // Viewport가 없으면 렌더링하지 않음
-	}
+	float viewportWidth, viewportHeight;
+	float viewportLeft = 0.0f, viewportTop = 0.0f;
 
-	FRect viewportRect = mainViewport->GetRect();
-	float viewportWidth = viewportRect.GetWidth();
-	float viewportHeight = viewportRect.GetHeight();
+	SViewportWindow* mainViewport = USlateManager::GetInstance().GetMainViewport();
+	if (mainViewport)
+	{
+		// 에디터 모드: Viewport 영역 사용
+		FRect viewportRect = mainViewport->GetRect();
+		viewportWidth = viewportRect.GetWidth();
+		viewportHeight = viewportRect.GetHeight();
+		viewportLeft = viewportRect.Left;
+		viewportTop = viewportRect.Top;
+	}
+	else
+	{
+		// Release_StandAlone 모드: 전체 화면 사용
+		ImGuiIO& io = ImGui::GetIO();
+		viewportWidth = io.DisplaySize.x;
+		viewportHeight = io.DisplaySize.y;
+		viewportLeft = 0.0f;
+		viewportTop = 0.0f;
+	}
 
 	// Viewport 영역 내에서 중앙에 모달 형태로 표시
 	ImVec2 windowSize = ImVec2(400, 300);
 	ImVec2 windowPos = ImVec2(
-		viewportRect.Left + (viewportWidth - windowSize.x) * 0.5f,
-		viewportRect.Top + (viewportHeight - windowSize.y) * 0.5f
+		viewportLeft + (viewportWidth - windowSize.x) * 0.5f,
+		viewportTop + (viewportHeight - windowSize.y) * 0.5f
 	);
 
 	ImGui::SetNextWindowPos(windowPos, ImGuiCond_Always);

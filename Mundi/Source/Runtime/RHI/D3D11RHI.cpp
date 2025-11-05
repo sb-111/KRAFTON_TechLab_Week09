@@ -457,8 +457,10 @@ void D3D11RHI::DrawFullScreenQuad()
 
 void D3D11RHI::Present()
 {
-    // Draw any Direct2D overlays before present
+#ifndef _RELEASE_STANDALONE
+    // Draw any Direct2D overlays before present (에디터 모드에서만)
     UStatsOverlayD2D::Get().Draw();
+#endif
     SwapChain->Present(0, 0); // vsync on
 }
 

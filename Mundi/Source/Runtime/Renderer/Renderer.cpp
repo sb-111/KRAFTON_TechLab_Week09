@@ -221,7 +221,6 @@ void URenderer::EndLineBatch(const FMatrix& ModelMatrix)
 	if (!bLineBatchActive || !LineBatchData || !DynamicLineMesh || LineBatchData->Vertices.empty())
 	{
 		bLineBatchActive = false;
-		return;
 	}
 
 	// Clamp to GPU buffer capacity to avoid full drop when overflowing
@@ -240,7 +239,6 @@ void URenderer::EndLineBatch(const FMatrix& ModelMatrix)
 	if (!DynamicLineMesh->UpdateData(LineBatchData, RHIDevice->GetDeviceContext()))
 	{
 		bLineBatchActive = false;
-		return;
 	}
 
 	// Set up rendering state
@@ -261,12 +259,13 @@ void URenderer::EndLineBatch(const FMatrix& ModelMatrix)
 		RHIDevice->GetDeviceContext()->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 		RHIDevice->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 		// Overlay 스텐실(=1) 영역은 그리지 않도록 스텐실 테스트 설정
-		RHIDevice->OMSetDepthStencilState_StencilRejectOverlay();
+		
 		RHIDevice->GetDeviceContext()->DrawIndexed(DynamicLineMesh->GetCurrentIndexCount(), 0, 0);
-		// 상태 복구
-		RHIDevice->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		RHIDevice->OMSetDepthStencilState(EComparisonFunc::LessEqual);
+		
 	}
+	RHIDevice->OMSetDepthStencilState_StencilRejectOverlay();
+	RHIDevice->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	RHIDevice->OMSetDepthStencilState(EComparisonFunc::LessEqual);
 
 	bLineBatchActive = false;
 }
