@@ -28,6 +28,8 @@
 #include "LightComponent.h"
 #include "HeightFogComponent.h"
 #include "InputManager.h"
+#include "AudioComponent.h"
+#include "AudioManager.h"
 #include "UIManager.h"
 #include "PlayerComponent.h"
 #include "PlayerController.h"
@@ -92,6 +94,12 @@ UWorld::~UWorld()
 
 	GridActor = nullptr;
 	GizmoActor = nullptr;
+
+	// AudioManager 종료 - 모든 Actor와 Component가 정리된 후에 호출 (PIE World가 아닐 때만)
+	if (!bPie)
+	{
+		UAudioManager::GetInstance().Shutdown();
+	}
 }
 
 void UWorld::Initialize()
@@ -104,6 +112,12 @@ void UWorld::Initialize()
 
 	// Coroutine Manager 초기화
 	CoroutineManager.Initialize(&LuaState);
+
+	// AudioManager 초기화 (PIE World가 아닐 때만)
+	if (!bPie)
+	{
+		UAudioManager::GetInstance().Initialize();
+	}
 }
 
 void UWorld::InitializeGrid()
@@ -271,6 +285,9 @@ void UWorld::InitializeLuaState()
 			return Actor->GetComponentByClass<UPlayerComponent>();
 		},
 
+		"GetAudioComponent", [](AActor* Actor) -> UAudioComponent* {
+			return Actor->GetComponentByClass<UAudioComponent>();
+		},
 		// Lua에서 C++ 액터를 소멸시킬 수 있게 함(주의)
 		"Destroy", &AActor::Destroy,
 		// Lua에서 액터 이름을 가져올 수 있게 함(디버깅 유용)
@@ -285,6 +302,28 @@ void UWorld::InitializeLuaState()
 	// UPlayerComponent 바인딩 (플레이어 컴포넌트)
 	LuaState.new_usertype<UPlayerComponent>("UPlayerComponent",
 		sol::base_classes, sol::bases<UActorComponent>()
+	);
+
+	// UAudioComponent 바인딩 (오디오 컴포넌트)
+	LuaState.new_usertype<UAudioComponent>("UAudioComponent",
+		sol::base_classes, sol::bases<USceneComponent>(),
+		"Play", &UAudioComponent::Play,
+		"Stop", &UAudioComponent::Stop,
+		"Pause", sol::resolve<void(bool)>(&UAudioComponent::Pause),
+		"Resume", &UAudioComponent::Resume,
+		"SetVolume", &UAudioComponent::SetVolume,
+		"GetVolume", &UAudioComponent::GetVolume,
+		"SetPlaybackSpeed", &UAudioComponent::SetPlaybackSpeed,
+		"GetPlaybackSpeed", &UAudioComponent::GetPlaybackSpeed,
+		"SetLoop", &UAudioComponent::SetLoop,
+		"IsLoop", &UAudioComponent::IsLoop,
+		"IsPlaying", &UAudioComponent::IsPlaying,
+		"SetAudioFile", &UAudioComponent::SetAudioFile,
+		"GetAudioFile", &UAudioComponent::GetAudioFile,
+		"GetPlaybackPosition", &UAudioComponent::GetPlaybackPosition,
+		"SetPlaybackPosition", &UAudioComponent::SetPlaybackPosition,
+		"GetDuration", &UAudioComponent::GetDuration,
+		"SeekRelative", &UAudioComponent::SeekRelative
 	);
 
 	LuaState.new_usertype<UHeightFogComponent>("UHeightFogComponent",
@@ -569,6 +608,9 @@ void UWorld::Tick(float DeltaSeconds)
 
 	// Coroutine Manager 업데이트
 	CoroutineManager.Update(DeltaSeconds);
+
+	// AudioManager 업데이트
+	UAudioManager::GetInstance().Update(DeltaSeconds);
 
 	if (PlayerController)
 	{

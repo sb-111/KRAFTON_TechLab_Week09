@@ -467,6 +467,8 @@ void FSceneRenderer::RenderDirectionalCSMShadowMap(FCSM* CSMSystem)
         CSMSystem->UpdateDepthConstant(RHIDevice, idx);
         RHIDevice->GetDeviceContext()->ClearDepthStencilView(DSVViews[idx], D3D11_CLEAR_DEPTH, 1.0f, 0);
 		RHIDevice->GetDeviceContext()->OMSetRenderTargets(0, nullptr, DSVViews[idx]);
+		// Depth-only pass: Pixel Shader 없음 (RTV가 없으므로 PS 출력 불필요)
+		RHIDevice->GetDeviceContext()->PSSetShader(nullptr, nullptr, 0);
 		// Provide light type for DepthOnly encoding
 		RHIDevice->SetAndUpdateConstantBuffer(FShadowBufferIndexType(idx, (int)ELightType::DirectionalLight));
 		// 메시 배치 요소 순회
@@ -579,6 +581,8 @@ void FSceneRenderer::RenderShadowMap(FShadowSystem* InShadowSystem)
 	{
 		ID3D11DepthStencilView* DirectionalShadowMapDSV = InShadowSystem->GetDirectionalShadowMapDSV();
 		RHIDevice->GetDeviceContext()->OMSetRenderTargets(0, nullptr, DirectionalShadowMapDSV);
+		// Depth-only pass: Pixel Shader 없음
+		RHIDevice->GetDeviceContext()->PSSetShader(nullptr, nullptr, 0);
         RHIDevice->SetAndUpdateConstantBuffer(FShadowBufferIndexType(DirectionalLight->GetShadowIndex(), (int)ELightType::DirectionalLight));
 		// 메시 배치 요소 순회
 		for (const FMeshBatchElement& Batch : MeshBatchElements)
@@ -628,6 +632,8 @@ void FSceneRenderer::RenderShadowMap(FShadowSystem* InShadowSystem)
 		//// ShadowViewports의 index는 FShadowBufferType.ShadowInfoList의 index와 매칭됨.
 		//const FViewportInfo& ViewportInfo = ShadowViewports[ShadowBufferIndex];
 		RHIDevice->GetDeviceContext()->OMSetRenderTargets(0, nullptr, DSVViews[Index]);
+		// Depth-only pass: Pixel Shader 없음
+		RHIDevice->GetDeviceContext()->PSSetShader(nullptr, nullptr, 0);
 		// +1 -> DirectionalLight
         RHIDevice->SetAndUpdateConstantBuffer(FShadowBufferIndexType(SpotLights[Index]->GetShadowIndex(), (int)ELightType::SpotLight));
 		if (bUseVSM)
@@ -643,6 +649,8 @@ void FSceneRenderer::RenderShadowMap(FShadowSystem* InShadowSystem)
 		else
 		{
 			RHIDevice->GetDeviceContext()->OMSetRenderTargets(0, nullptr, DSVViews[Index]);
+			// Depth-only pass: Pixel Shader 없음
+			RHIDevice->GetDeviceContext()->PSSetShader(nullptr, nullptr, 0);
 			RHIDevice->OMSetBlendState(false);
 			RHIDevice->OMSetDepthStencilState(EComparisonFunc::LessEqual);
 		}

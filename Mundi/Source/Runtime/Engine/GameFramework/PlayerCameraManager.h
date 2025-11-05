@@ -52,7 +52,7 @@ public:
     void UpdateLetterboxBlend(float DeltaTime);
     void UpdateVignetteBlend(float DeltaTime);
     void UpdatePostProcess(float DeltaTime);
-    void SetViewTarget(AActor* InTargetActor, float TransitionTime = 0.0f);
+    void SetViewTarget(AActor* InTargetActor, float InTransitionTime = 0.0f);
     const FMinimalViewInfo& GetCameraViewInfo() { return ViewTarget.ViewInfo; }
 
     // PostProcess 설정 접근자
@@ -115,10 +115,12 @@ private:
     float LetterboxBlendTimeRemaining;
     bool bLetterboxBlendTargetEnable;
 
+    float TransitionTime = 0.0f;
+    float TransitionTimeRemaining = 0.0f;
+
     // Camera
     FName CameraStyle;
     FViewTarget ViewTarget;
-    TArray<UCameraModifier*> ModifierList;
 
     // PostProcess 설정
     /**
@@ -134,4 +136,8 @@ private:
     FPostProcessSettings CachedPostProcessSettings;
 
 
+    // Transition 전의 타겟에 대한 ViewInfo(보간 위해 저장)
+    FMinimalViewInfo PreviousViewInfo;
+
+    TArray<UCameraModifier*> ModifierList;
 };

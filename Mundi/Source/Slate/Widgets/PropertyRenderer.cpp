@@ -12,6 +12,8 @@
 #include "DecalComponent.h"
 #include "StaticMeshComponent.h"
 #include "LightComponentBase.h"
+#include "AudioManager.h"
+#include "AudioComponent.h"
 
 // 정적 멤버 변수 초기화
 TArray<FString> UPropertyRenderer::CachedStaticMeshPaths;
@@ -22,6 +24,8 @@ TArray<FString> UPropertyRenderer::CachedShaderPaths;
 TArray<const char*> UPropertyRenderer::CachedShaderItems;
 TArray<FString> UPropertyRenderer::CachedTexturePaths;
 TArray<const char*> UPropertyRenderer::CachedTextureItems;
+TArray<FString> UPropertyRenderer::CachedAudioPaths;
+TArray<const char*> UPropertyRenderer::CachedAudioItems;
 
 bool UPropertyRenderer::RenderProperty(const FProperty& Property, void* ObjectInstance)
 {
@@ -78,6 +82,10 @@ bool UPropertyRenderer::RenderProperty(const FProperty& Property, void* ObjectIn
 
 	case EPropertyType::Material:
 		bChanged = RenderMaterialProperty(Property, ObjectInstance);
+		break;
+
+	case EPropertyType::Audio:
+		bChanged = RenderAudioProperty(Property, ObjectInstance);
 		break;
 
 	case EPropertyType::Array:
@@ -239,6 +247,33 @@ void UPropertyRenderer::CacheResources()
 			CachedTextureItems.push_back(path.c_str());
 		}
 	}
+
+	// 5. 오디오
+	if (CachedAudioPaths.IsEmpty() && CachedAudioItems.IsEmpty())
+	{
+		UAudioManager& AudioMgr = UAudioManager::GetInstance();
+
+		// AudioManager가 초기화되지 않았으면 초기화 시도
+		if (!AudioMgr.IsInitialized())
+		{
+			AudioMgr.Initialize();
+		}
+
+		if (AudioMgr.IsInitialized())
+		{
+			CachedAudioPaths = AudioMgr.GetAllSoundFilePaths();
+			CachedAudioItems.Add("None");
+			for (const FString& path : CachedAudioPaths)
+			{
+				CachedAudioItems.push_back(path.c_str());
+			}
+			UE_LOG("PropertyRenderer: Cached %d audio files", CachedAudioPaths.size());
+		}
+		else
+		{
+			UE_LOG("PropertyRenderer: Failed to initialize AudioManager");
+		}
+	}
 }
 
 void UPropertyRenderer::ClearResourcesCache()
@@ -251,6 +286,8 @@ void UPropertyRenderer::ClearResourcesCache()
 	CachedShaderItems.Empty();
 	CachedTexturePaths.Empty();
 	CachedTextureItems.Empty();
+	CachedAudioPaths.Empty();
+	CachedAudioItems.Empty();
 }
 
 // ===== 타입별 렌더링 구현 =====
@@ -271,15 +308,49 @@ bool UPropertyRenderer::RenderFloatProperty(const FProperty& Prop, void* Instanc
 {
 	float* Value = Prop.GetValuePtr<float>(Instance);
 
+	// 프로퍼티에 따라 드래그 속도 조정
+	float DragSpeed = 0.001f;
+	const char* Format = "%.2f";
+
+	if (strcmp(Prop.Name, "Volume") == 0)
+	{
+		DragSpeed = 0.1f; // 볼륨은 0~100 범위이므로 0.1 단위로 드래그
+		Format = "%.0f"; // 정수로 표시
+	}
+	else if (strcmp(Prop.Name, "PlaybackSpeed") == 0)
+	{
+		DragSpeed = 0.01f; // 재생 속도는 0.01 단위로 드래그
+	}
+
 	// Min과 Max가 둘 다 0이면 범위 제한 없음
+	bool bChanged = false;
 	if (Prop.MinValue == 0.0f && Prop.MaxValue == 0.0f)
 	{
-		return ImGui::DragFloat(Prop.Name, Value, 0.001f, 0.0f, 0.0f, "%.5f");
+		bChanged = ImGui::DragFloat(Prop.Name, Value, DragSpeed, 0.0f, 0.0f, Format);
 	}
 	else
 	{
-		return ImGui::DragFloat(Prop.Name, Value, 0.001f, Prop.MinValue, Prop.MaxValue, "%.5f");
+		bChanged = ImGui::DragFloat(Prop.Name, Value, DragSpeed, Prop.MinValue, Prop.MaxValue, Format);
 	}
+
+	// AudioComponent의 Volume/PlaybackSpeed가 변경되면 실시간 반영
+	if (bChanged)
+	{
+		UAudioComponent* AudioComp = Cast<UAudioComponent>(static_cast<UObject*>(Instance));
+		if (AudioComp)
+		{
+			if (strcmp(Prop.Name, "Volume") == 0)
+			{
+				AudioComp->SetVolume(*Value);
+			}
+			else if (strcmp(Prop.Name, "PlaybackSpeed") == 0)
+			{
+				AudioComp->SetPlaybackSpeed(*Value);
+			}
+		}
+	}
+
+	return bChanged;
 }
 
 bool UPropertyRenderer::RenderVectorProperty(const FProperty& Prop, void* Instance)
@@ -1125,4 +1196,193 @@ bool UPropertyRenderer::RenderTransformProperty(const FProperty& Prop, void* Ins
 	ImGui::PopID();
 
 	return bAnyChanged;
+}
+
+bool UPropertyRenderer::RenderAudioProperty(const FProperty& Prop, void* Instance)
+{
+	FString* AudioFilePathPtr = Prop.GetValuePtr<FString>(Instance);
+	if (!AudioFilePathPtr)
+	{
+		ImGui::Text("%s: [Invalid Audio File Path Ptr]", Prop.Name);
+		return false;
+	}
+
+	// 캐시가 비어있으면 아무것도 렌더링하지 않음
+	if (CachedAudioItems.empty())
+	{
+		ImGui::Text("%s: [No audio files available]", Prop.Name);
+		return false;
+	}
+
+	bool bChanged = false;
+
+	// 현재 선택된 오디오 파일 경로
+	FString CurrentPath = AudioFilePathPtr->empty() ? "None" : *AudioFilePathPtr;
+
+	// ImGui 콤보박스 (드롭다운)
+	ImGui::SetNextItemWidth(300);
+	if (ImGui::BeginCombo(Prop.Name, CurrentPath.c_str()))
+	{
+		// "None" 옵션
+		bool bIsNoneSelected = AudioFilePathPtr->empty();
+		if (ImGui::Selectable(CachedAudioItems[0], bIsNoneSelected))
+		{
+			*AudioFilePathPtr = "";
+			bChanged = true;
+
+			// AudioComponent라면 SetAudioFile 호출
+			if (UAudioComponent* AudioComp = Cast<UAudioComponent>(static_cast<UObject*>(Instance)))
+			{
+				AudioComp->SetAudioFile("");
+			}
+		}
+
+		// 모든 오디오 파일 목록
+		for (size_t i = 0; i < CachedAudioPaths.size(); ++i)
+		{
+			bool bIsSelected = (*AudioFilePathPtr == CachedAudioPaths[i]);
+			if (ImGui::Selectable(CachedAudioItems[i + 1], bIsSelected))
+			{
+				*AudioFilePathPtr = CachedAudioPaths[i];
+				bChanged = true;
+
+				// AudioComponent라면 SetAudioFile 호출
+				if (UAudioComponent* AudioComp = Cast<UAudioComponent>(static_cast<UObject*>(Instance)))
+				{
+					AudioComp->SetAudioFile(CachedAudioPaths[i]);
+				}
+			}
+
+			if (bIsSelected)
+			{
+				ImGui::SetItemDefaultFocus();
+			}
+		}
+
+		ImGui::EndCombo();
+	}
+
+	// 툴팁 표시
+	if (ImGui::IsItemHovered())
+	{
+		ImGui::BeginTooltip();
+		ImGui::TextUnformatted(CurrentPath.c_str());
+		ImGui::EndTooltip();
+	}
+
+	// AudioComponent이고 파일이 설정되어 있으면 에디터용 플레이어 컨트롤 표시
+	UAudioComponent* AudioComp = Cast<UAudioComponent>(static_cast<UObject*>(Instance));
+	if (AudioComp && !AudioFilePathPtr->empty())
+	{
+		ImGui::Separator();
+		ImGui::Text("Editor Audio Player");
+
+		// 슬라이더 드래그 상태 추적용 static 변수
+		static float SliderTime = 0.0f;
+		static bool bWasDragging = false;
+		static bool bWasPlayingBeforeDrag = false;
+		static int FramesSincePositionSet = 999;  // 마지막 SetPlaybackPosition 호출 후 경과 프레임
+
+		// 현재 재생 시간 / 전체 시간
+		float Duration = AudioComp->GetDuration();
+
+		// 드래그 중이 아니고, SetPlaybackPosition 호출 후 충분한 시간이 지났을 때만 업데이트
+		if (!bWasDragging && FramesSincePositionSet > 2)
+		{
+			SliderTime = AudioComp->GetPlaybackPosition();
+		}
+
+		// 시간 표시 포맷
+		char TimeLabel[64];
+		snprintf(TimeLabel, sizeof(TimeLabel), "%.2f / %.2f s", SliderTime, Duration);
+
+		// 슬라이더로 재생 위치 조절
+		ImGui::SliderFloat("##AudioTimeSlider", &SliderTime, 0.0f, Duration, TimeLabel);
+
+		// 드래그 시작 감지 (슬라이더를 그린 후에 체크)
+		bool bIsDragging = ImGui::IsItemActive();
+		if (bIsDragging && !bWasDragging)
+		{
+			// 드래그 시작 - 현재 재생 상태 저장하고 일시정지 (위치 저장 안 함)
+			bWasPlayingBeforeDrag = AudioComp->IsPlaying();
+			if (bWasPlayingBeforeDrag)
+			{
+				AudioComp->Pause(false);  // 위치 저장하지 않고 정지만
+			}
+			bWasDragging = true;
+		}
+
+		// 드래그 끝 감지
+		if (!bIsDragging && bWasDragging)
+		{
+			// 드래그 끝 - 드래그한 위치로 설정
+			AudioComp->SetPlaybackPosition(SliderTime);
+			FramesSincePositionSet = 0;  // 프레임 카운터 리셋
+
+			if (bWasPlayingBeforeDrag)
+			{
+				// 원래 재생 중이었으면 드래그한 위치에서 재생
+				AudioComp->Resume();
+			}
+			bWasDragging = false;
+		}
+
+		// 프레임 카운터 증가
+		if (FramesSincePositionSet <= 2)
+		{
+			FramesSincePositionSet++;
+		}
+
+		// 재생/일시정지 버튼
+		if (AudioComp->IsPlaying())
+		{
+			if (ImGui::Button("||"))  // Pause
+			{
+				AudioComp->Pause();
+			}
+		}
+		else
+		{
+			if (ImGui::Button(">"))  // Play/Resume
+			{
+				// Pause 상태거나 중간 위치라면 Resume, 아니면 Play
+				if (AudioComp->GetPlaybackPosition() > 0.0f || SliderTime > 0.0f)
+				{
+					AudioComp->Resume();
+				}
+				else
+				{
+					AudioComp->Play(false);
+					FramesSincePositionSet = 0;  // Play는 처음부터 시작하므로 프레임 카운터 리셋
+				}
+			}
+		}
+
+		// 정지 버튼
+		ImGui::SameLine();
+		if (ImGui::Button("[]"))  // Stop
+		{
+			AudioComp->Stop(true);
+			SliderTime = 0.0f;
+			FramesSincePositionSet = 999;  // 즉시 업데이트 허용
+		}
+
+		// 5초 뒤로 버튼
+		ImGui::SameLine();
+		if (ImGui::Button("<<"))  // <<5s
+		{
+			AudioComp->SeekRelative(-5.0f);
+			FramesSincePositionSet = 0;  // 프레임 카운터 리셋
+		}
+
+		// 5초 앞으로 버튼
+		ImGui::SameLine();
+		if (ImGui::Button(">>"))  // 5s>>
+		{
+			AudioComp->SeekRelative(5.0f);
+			FramesSincePositionSet = 0;  // 프레임 카운터 리셋
+		}
+	}
+
+	return bChanged;
 }

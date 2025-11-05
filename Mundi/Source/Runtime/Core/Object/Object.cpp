@@ -172,6 +172,16 @@ void UObject::Serialize(const bool bInIsLoading, JSON& InOutHandle)
 			}
 			break;
 		}
+		case EPropertyType::Audio:
+		{
+			// AudioFilePath는 FString이므로 직접 직렬화
+			FString* Value = Prop.GetValuePtr<FString>(this);
+			if (bInIsLoading)
+				FJsonSerializer::ReadString(InOutHandle, Prop.Name, *Value);
+			else
+				InOutHandle[Prop.Name] = Value->c_str();
+			break;
+		}
 		case EPropertyType::Material:
 		{
 			UMaterial** Value = Prop.GetValuePtr<UMaterial*>(this);

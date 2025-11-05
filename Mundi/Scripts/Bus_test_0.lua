@@ -6,7 +6,7 @@ function BeginOverlap(Other)
     print("[Test] Collide")
     if Other:GetOwner():GetPlayerComponent() ~= nil then
         print("[Test] Collide")
-        PlayerController:GetPlayerCameraManager():SetViewTarget(obj, 0)
+        PlayerController:GetPlayerCameraManager():SetViewTarget(obj, 2)
     end
 end
 function BeginPlay()

@@ -29,7 +29,7 @@ FSceneView::FSceneView(ACameraActor* InCamera, FViewport* InViewport, EViewModeI
         ZFar = ViewInfo.ZFar;
 
         ViewMatrix = FMatrix::GetViewMatrix(FTransform(ViewLocation, ViewInfo.Rotation, FVector(1,1,1)));
-        ProjectionMatrix = FMatrix::PerspectiveFovLH(ViewInfo.Fov, AspectRatio, ZNear, ZFar);
+        ProjectionMatrix = FMatrix::PerspectiveFovLH(DegreesToRadians(ViewInfo.Fov), AspectRatio, ZNear, ZFar);
         ViewFrustum = CreateFrustum(ViewInfo.Location, ViewInfo.Rotation, ZNear, ZFar, ViewInfo.Fov, AspectRatio);
         ViewDirection = ViewInfo.Rotation.RotateVector(FVector(1, 0, 0));
 
