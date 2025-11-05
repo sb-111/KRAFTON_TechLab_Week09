@@ -116,12 +116,36 @@ function UpdateScore()
 end
 
 function BeginOverlap(Other)
-    -- 속도 반전
-    Velocity = Velocity * (-1.0)
+    -- 충돌 법선 = 진행 방향의 반대 (실제 충돌 접점 방향과 유사)
+    local CollisionNormal = Velocity:GetNormalized() * (-1.0)
 
-    -- 반전된 방향으로 충분히 밀어내서 콜리전이 겹치지 않도록 함
+    -- Z축 제거 (XY 평면에서만 충돌 처리)
+    CollisionNormal.z = 0
+    if CollisionNormal:Size() > 0 then
+        CollisionNormal = CollisionNormal:GetNormalized()
+    else
+        -- 속도가 0이면 오브젝트 중심 방향 사용
+        local MyPos = obj:GetActorLocation()
+        local OtherPos = Other:GetOwner():GetActorLocation()
+        CollisionNormal = (MyPos - OtherPos)
+        CollisionNormal.z = 0
+        CollisionNormal = CollisionNormal:GetNormalized()
+    end
+
+    -- 충돌 법선 방향으로 밀어냄 (겹침 해제)
     local SeparationDistance = 2.0
-    obj:SetActorLocation(obj:GetActorLocation() + Velocity:GetNormalized() * SeparationDistance)
+    local MyPos = obj:GetActorLocation()
+    obj:SetActorLocation(MyPos + CollisionNormal * SeparationDistance)
+
+    -- 속도를 충돌 면에 반사 (법선 방향으로 튕김)
+    local VelocityDotNormal = Vector.Dot(Velocity, CollisionNormal)
+    if VelocityDotNormal < 0 then
+        -- 충돌 면으로 향하고 있을 때만 반사
+        Velocity = Velocity - CollisionNormal * (VelocityDotNormal * 2.0)
+    end
+
+    -- Z축 속도 제거 (XY 평면에서만 움직임)
+    Velocity.z = 0
 
     UI:SetAfterCollisionTime(3)
     UI:AddScore(-30)
@@ -322,6 +346,10 @@ function Tick(dt)
 
     local Acceleration = NetForce / Mass
     Velocity = Velocity + Acceleration * dt
+
+    -- Z축 속도 제거 (XY 평면에서만 움직임)
+    Velocity.z = 0
+
     obj:AddActorWorldLocation(Velocity * dt)
 
 
