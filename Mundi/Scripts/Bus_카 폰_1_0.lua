@@ -70,27 +70,17 @@ end
 
 -- 스페이스바: 재생/일시정지 토글
 function OnPlayPauseInput()
-    if not audioComp then
-        audioComp = obj:GetAudioComponent()
-        if not audioComp then
-            print("AudioComponent not found")
+    local AudioComp = nil
+    if not AudioComp then
+        AudioComp = obj:GetAudioComponentByName("Booster")
+        if not AudioComp then
             return
         end
     end
 
-    if audioComp:IsPlaying() then
-        audioComp:Pause(true)
-        print("Audio paused")
-    else
-        -- 재생 위치가 0이면 처음부터, 아니면 이어서 재생
-        if audioComp:GetPlaybackPosition() > 0.0 then
-            audioComp:Resume()
-            print("Audio resumed")
-        else
-            audioComp:Play(false)
-            print("Audio started playing")
-        end
-    end
+    AudioComp:Stop(true)
+    AudioComp:Play(false)
+    print("Boost started playing")
 end
 
 -- P키: 정지
@@ -220,15 +210,16 @@ function BeginOverlap(Other)
     CameraShakeTime = CameraShakeDuration
     print("[Car] Collision! Camera shake triggered")
 
-    if not audioComp then
-        audioComp = obj:GetAudioComponent()
-        if not audioComp then
+    local AudioComp = nil
+    if not AudioComp then
+        AudioComp = obj:GetAudioComponentByName("CarCrush")
+        if not AudioComp then
             return
         end
     end
 
-    audioComp:Stop(true)
-    audioComp:Play(false)
+    AudioComp:Stop(true)
+    AudioComp:Play(false)
     print("Car Crush started playing")
 
 end

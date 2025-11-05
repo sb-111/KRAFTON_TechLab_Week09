@@ -102,6 +102,12 @@ public:
 	const FString& GetAudioFile() const { return AudioFilePath; }
 
 	/**
+	 * 컴포넌트 이름을 설정/반환합니다. (여러 AudioComponent 구분용)
+	 */
+	void SetComponentName(const FString& InName) { ComponentName = InName; }
+	const FString& GetComponentName() const { return ComponentName; }
+
+	/**
 	 * 현재 설정된 오디오 파일을 로드합니다.
 	 * BeginPlay에서 자동으로 호출되지만 수동으로도 호출 가능합니다.
 	 */
@@ -124,6 +130,7 @@ private:
 	void ReleaseSourceVoice();
 
 private:
+	FString ComponentName;			// 컴포넌트 이름 (구분용, 예: "Engine", "Booster", "Collision")
 	FString AudioFilePath;			// 오디오 파일 경로
 	float Volume = 100.0f;			// 볼륨 (0 ~ 100)
 	float PlaybackSpeed = 1.0f;		// 재생 속도 (0.25 ~ 2.0배속, 피치도 함께 변경됨)
