@@ -12,6 +12,7 @@
 #include "World.h"
 #include "SelectionManager.h"
 #include "WorldPhysics.h"
+#include "CameraComponent.h"
 
 IMPLEMENT_CLASS(AActor)
 
@@ -187,11 +188,6 @@ void AActor::AddOwnedComponent(UActorComponent* Component)
 	if (USceneComponent* SC = Cast<USceneComponent>(Component))
 	{
 		SceneComponents.AddUnique(SC);
-		// 루트가 없으면 자동 루트 지정
-		if (!RootComponent)
-		{
-			SetRootComponent(SC);
-		}
 	}
 
 	if (UShapeComponent* SHC = Cast<UShapeComponent>(Component))
@@ -422,6 +418,24 @@ FMatrix AActor::GetWorldMatrix() const
 		UE_LOG("RootComponent is nullptr");
 	}
 	return RootComponent ? RootComponent->GetWorldMatrix() : FMatrix::Identity();
+}
+
+FMinimalViewInfo AActor::CalcCamera()
+{
+	FMinimalViewInfo ViewInfo{};
+
+	if (UCameraComponent* CameraComponent = GetComponentByClass<UCameraComponent>())
+	{
+		ViewInfo.Aspect = CameraComponent->GetAspectRatio();
+		ViewInfo.Fov = CameraComponent->GetFOV();
+		ViewInfo.ZNear = CameraComponent->GetNearClip();
+		ViewInfo.ZFar = CameraComponent->GetFarClip();
+		ViewInfo.ProjectionMode = CameraComponent->GetProjectionMode();
+		ViewInfo.Location = CameraComponent->GetWorldLocation();
+		ViewInfo.Rotation = CameraComponent->GetWorldRotation();
+	}
+	// TODO: 카메라 컴포넌트가 없는 경우 처리
+	return ViewInfo;
 }
 
 void AActor::AddActorWorldRotation(const FQuat& DeltaRotation)

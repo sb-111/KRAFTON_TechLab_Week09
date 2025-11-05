@@ -128,6 +128,8 @@ function BeginPlay()
     InitialRotation = obj:GetActorRotation()
     PlayerController:Possess(Pawn)
     PlayerController:GetPlayerCameraManager():SetViewTarget(obj, 0)
+    PlayerController:GetPlayerCameraManager():StartFadeOut(0, Color(1,0,0,1))
+    PlayerController:GetPlayerCameraManager():StartFadeIn(2)
     print("[PlayerController] Possess Pawn")
 
     local ShapeComponent = obj:GetShapeComponent()

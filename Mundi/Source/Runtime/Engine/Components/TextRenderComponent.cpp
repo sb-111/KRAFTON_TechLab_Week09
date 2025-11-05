@@ -155,7 +155,7 @@ TArray<FBillboardVertexInfo_GPU> UTextRenderComponent::CreateVerticesForString(c
     //FVector CamUp = CameraActor->GetActorUp();
 
     //FVector cameraPosition = CameraActor->GetActorLocation();
-    //Renderer->GetRHIDevice()->SetAndUpdateConstantBuffer(ColorBufferType(FLinearColor(), this->InternalIndex));
+    //Renderer->GetRHIDevice()->SetAndUpdateConstantBuffer(FColorBufferType(FLinearColor(), this->InternalIndex));
 
     //Renderer->GetRHIDevice()->PrepareShader(Material->GetShader());
     //TArray<FBillboardVertexInfo_GPU> vertices = CreateVerticesForString(FString("UUID : ") + FString(std::to_string(Owner->UUID)), Owner->GetActorLocation());//TODO : HELLOWORLD를 멤버변수 TEXT로바꾸기

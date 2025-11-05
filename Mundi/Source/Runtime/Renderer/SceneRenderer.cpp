@@ -43,6 +43,7 @@
 #include "LineComponent.h"
 #include "ShadowSystem.h"
 #include "WorldPhysics.h"
+#include "PlayerCameraManager.h"
 
 FSceneRenderer::FSceneRenderer(UWorld* InWorld, FSceneView* InView, URenderer* InOwnerRenderer)
 	: World(InWorld)
@@ -162,6 +163,7 @@ void FSceneRenderer::Render()
 	// FXAA 등 화면에서 최종 이미지 품질을 위해 적용되는 효과를 적용
 	ApplyScreenEffectsPass();
 
+	ApplyCameraFadeInOut();
 	// 최종적으로 Scene에 그려진 텍스쳐를 Back 버퍼에 그힌다
 	CompositeToBackBuffer();
 }
@@ -1680,7 +1682,7 @@ void FSceneRenderer::DrawMeshBatches(TArray<FMeshBatchElement>& InMeshBatches, b
 
 		// --- 4️⃣ 오브젝트별 CBuffer ---
 		RHIDevice->SetAndUpdateConstantBuffer(ModelBufferType(Batch.WorldMatrix, Batch.WorldMatrix.InverseAffine().Transpose()));
-		RHIDevice->SetAndUpdateConstantBuffer(ColorBufferType(Batch.InstanceColor, Batch.ObjectID));
+		RHIDevice->SetAndUpdateConstantBuffer(FColorBufferType(Batch.InstanceColor, Batch.ObjectID));
 
 		// --- 5️⃣ Draw Call ---
 		RHIDevice->GetDeviceContext()->DrawIndexed(Batch.IndexCount, Batch.StartIndex, Batch.BaseVertexIndex);
@@ -1756,6 +1758,47 @@ void FSceneRenderer::ApplyScreenEffectsPass()
 	// 모든 작업이 성공적으로 끝났으므로 Commit 호출
 	// 이제 소멸자는 버퍼 스왑을 되돌리지 않고, SRV 해제 작업만 수행함
 	SwapGuard.Commit();
+}
+
+void FSceneRenderer::ApplyCameraFadeInOut()
+{
+	if (APlayerController* PlayerController = GWorld->GetPlayerController())
+	{
+		APlayerCameraManager* PlayerCameraManager = PlayerController->GetPlayerCameraManager();
+		if (PlayerCameraManager && PlayerCameraManager->IsFade())
+		{
+			FSwapGuard SwapGuard(RHIDevice, 0, 1);
+
+			RHIDevice->OMSetRenderTargets(ERTVMode::SceneColorTargetWithoutDepth);
+
+			ID3D11ShaderResourceView* SourceSRV = RHIDevice->GetSRV(RHI_SRV_Index::SceneColorSource);
+			if (!SourceSRV)
+			{
+				UE_LOG("[ApplyCameraFadeInOut] SourceSRV is null!\n");
+				return;
+			}
+
+			RHIDevice->GetDeviceContext()->PSSetShaderResources(0, 1, &SourceSRV);
+			RHIDevice->OMSetBlendState(true);
+
+			UShader* FullScreenTriangleVS = UResourceManager::GetInstance().Load<UShader>("Shaders/Utility/FullScreenTriangle_VS.hlsl");
+			UShader* CopyTexturePS = UResourceManager::GetInstance().Load<UShader>("Shaders/PostProcess/CameraFadeInOut_PS.hlsl");
+			if (!FullScreenTriangleVS || !FullScreenTriangleVS->GetVertexShader() || !CopyTexturePS || !CopyTexturePS->GetPixelShader())
+			{
+				UE_LOG("CameraFadeInOut 셰이더 없음!\n");
+				return;
+			}
+			const FLinearColor& FadeColor = PlayerCameraManager->GetFadeColor();
+			float FadeAmount = PlayerCameraManager->GetFadeAmount();
+
+			RHIDevice->UpdateConstantBuffer(FColorBufferType(FLinearColor(FadeColor.R, FadeColor.G, FadeColor.B, FadeAmount)));
+
+			RHIDevice->PrepareShader(FullScreenTriangleVS, CopyTexturePS);
+			RHIDevice->DrawFullScreenQuad();
+
+			SwapGuard.Commit();
+		}
+	}
 }
 
 // 최종 결과물의 실제 BackBuffer에 그리는 함수

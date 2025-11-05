@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include "Actor.h"
-#include "CameraComponent.h"
 
 class UCameraModifier;
 
@@ -51,10 +50,17 @@ class APlayerCameraManager : public AActor
 public:
 
     DECLARE_CLASS(APlayerCameraManager, AActor)
+    void Tick(float DeltaTime) override;
+
+    void StartFadeInOut(float InFadeTime, float InTargetAlpha);
+    void StartFadeOut(float InFadeTime, FLinearColor InFadeColor);
+    void StartFadeIn(float InFadeTime);
+    bool IsFade() { return FadeTimeRemaining > 0; }
+    const FLinearColor& GetFadeColor() const { return FadeColor; }
+    float GetFadeAmount() const { return FadeAmount; }
 
     void Tick(float DeltaTime) override;
     //void UpdateFadeInOut(float DeltaTime);
-    void UpdateViewInfo();
     void UpdateLetterboxBlend(float DeltaTime);
     void UpdateVignetteBlend(float DeltaTime);
     void UpdatePostProcess(float DeltaTime);
@@ -94,8 +100,8 @@ public:
        
 private:
     // Fade In Out 관련 변수들
-    FLinearColor FadeColor; // 페이드 색상
-    float FadeAmount;       // 셰이더로 최종 전달될 불투명도 (매 프레임 계산하는 현재 값)
+    FLinearColor FadeColor; // 페이드 인 아웃에 쓰일 배경색
+    float FadeAmount;       // 셰이더로 최종 전달될 불투명도 (매 프레임 계산하는 현재 값), 현재 페이드 알파값
     FVector2D FadeAlpha;    // x: 시작 Alpha, y: 목표 Alpha
     float FadeTime;         // 총 Fade 시간
     float FadeTimeRemaining;// 남은 Fade 시간

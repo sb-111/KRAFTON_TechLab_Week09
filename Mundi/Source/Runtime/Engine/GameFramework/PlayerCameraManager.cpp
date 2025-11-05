@@ -3,8 +3,10 @@
 #include "CameraComponent.h"
 #include "CameraModifier.h"
 #include "Actor.h"
+#include "math.h"
 
 IMPLEMENT_CLASS(APlayerCameraManager)
+
 void APlayerCameraManager::Tick(float DeltaTime)
 {
 	UpdateViewInfo();
@@ -12,53 +14,57 @@ void APlayerCameraManager::Tick(float DeltaTime)
 	UpdateVignetteBlend(DeltaTime); // VignetteIntensity/Radius 계산 (보간)
 	UpdateLetterboxBlend(DeltaTime); // LetterBoxSize 계산(보간)
 	UpdatePostProcess(DeltaTime); // Modifier들이 수정(선택)해서 GPU로 전송
-}
-
-//void APlayerCameraManager::UpdateFadeInOut(float DeltaTime)
-//{
-//	if (FadeTimeRemaining > 0.0f)
-//	{
-//		// Fade in out 처리
-//		FadeTimeRemaining -= DeltaTime;
-//
-//		if (FadeTime > 0.0f)
-//		{
-//			float RemainingRatio = FadeTimeRemaining / FadeTime;
-//			float ProgressRatio = FMath::Clamp(1.0f - RemainingRatio, 0.0f, 1.0f);
-//			// X to Y까지 Lerp (진행률 이용해서)
-//			FadeAmount = FMath::Lerp(FadeAlpha.X, FadeAlpha.Y, ProgressRatio);
-//			DefaultPostProcessSettings.FadeAmount = FadeAmount;
-//		}
-//		else // FadeTime이 0이면 즉시 페이드, 목표값 즉시 설정
-//		{
-//			FadeTimeRemaining = 0.0f; // 타이머 종료
-//			FadeAmount = FadeAlpha.Y;
-//			DefaultPostProcessSettings.FadeAmount = FadeAmount;
-//		}
-//	}
-//	else
-//	{
-//		// 페이드 진행 중 아니면 값을 마지막 목표 값으로 고정
-//		FadeAmount = FadeAlpha.Y;
-//		DefaultPostProcessSettings.FadeAmount = FadeAmount;
-//	}
-//}
-
-void APlayerCameraManager::UpdateViewInfo()
-{
-	if (ViewTarget.TargetActor.Get())
+	if (FadeTimeRemaining > 0)
 	{
-		if (UCameraComponent* CameraComponent = ViewTarget.TargetActor->GetComponentByClass<UCameraComponent>())
+		FadeTimeRemaining -= DeltaTime;
+
+		if (FadeTimeRemaining <= 0)
 		{
-			ViewTarget.ViewInfo.Aspect = CameraComponent->GetAspectRatio();
-			ViewTarget.ViewInfo.Fov = CameraComponent->GetFOV();
-			ViewTarget.ViewInfo.ZNear = CameraComponent->GetNearClip();
-			ViewTarget.ViewInfo.ZFar = CameraComponent->GetFarClip();
-			ViewTarget.ViewInfo.ProjectionMode = CameraComponent->GetProjectionMode();
-			ViewTarget.ViewInfo.Location = CameraComponent->GetWorldLocation();
-			ViewTarget.ViewInfo.Rotation = CameraComponent->GetWorldRotation();
+			FadeAmount = FadeAlpha.Y;
+			FadeTimeRemaining = 0.0f;
+		}
+		else
+		{
+			float TimePercentage = 1.0f - FadeTimeRemaining / FadeTime;
+			FadeAmount = FadeAlpha.X + (FadeAlpha.Y - FadeAlpha.X) * TimePercentage;
 		}
 	}
+}
+
+	if (ViewTarget.TargetActor.Get())
+	{
+		// 매번 새로 계산
+		ViewTarget.ViewInfo = ViewTarget.TargetActor->CalcCamera();
+	}
+	// TODO: 타겟 액터가 없는 경우 처리
+}
+
+void APlayerCameraManager::StartFadeInOut(float InFadeTime, float InTargetAlpha)
+{
+	FadeTime = InFadeTime;
+	// 시작 알파
+	FadeAlpha.X = FadeAmount;
+	FadeAlpha.Y = InTargetAlpha;
+
+	FadeTimeRemaining = FadeTime;
+
+	if (InFadeTime <= 0)
+	{
+		FadeAmount = FadeAlpha.Y;
+		FadeTime = 0.0f;
+	}
+}
+
+void APlayerCameraManager::StartFadeOut(float InFadeTime, FLinearColor InFadeColor)
+{
+	FadeColor = InFadeColor;
+
+	StartFadeInOut(InFadeTime, 1.0f);
+}
+
+void APlayerCameraManager::StartFadeIn(float InFadeTime)
+{
+	StartFadeInOut(InFadeTime, 0.0f);
 }
 
 void APlayerCameraManager::SetViewTarget(AActor* InTargetActor, float TransitionTime)
