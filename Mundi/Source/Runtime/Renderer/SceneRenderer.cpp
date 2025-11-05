@@ -4,6 +4,7 @@
 // FSceneRenderer가 사용하는 모든 헤더 포함
 #include "World.h"
 #include "CameraActor.h"
+#include "PlayerCameraManager.h"
 #include "FViewport.h"
 #include "FViewportClient.h"
 #include "Renderer.h"
@@ -1169,10 +1170,17 @@ void FSceneRenderer::RenderPostProcessChainPass()
 {
 	URenderSettings& RenderSettings = World->GetRenderSettings();
 
+	// PlayerCameraManager에서 PostProcess 설정 가져오기
+	APlayerCameraManager* PCM = nullptr;
+	if (World->bPie && World->GetPlayerController())
+	{
+		PCM = World->GetPlayerController()->GetPlayerCameraManager();
+	}
+
 	// 이 블록 끝나면 자동으로 RTV와 SRV가 원래대로 돌아감
 	// 입력으로 t0슬롯의 SRV 사용 후 작업 끝나고 해제
 	FSwapGuard SwapGuard(RHIDevice, 0, 1);
-	
+
 	// RTV 설정: 깊이 버퍼 없이 SceneColor 렌더 타겟에 그림
 	RHIDevice->OMSetRenderTargets(ERTVMode::SceneColorTargetWithoutDepth);
 
@@ -1204,13 +1212,32 @@ void FSceneRenderer::RenderPostProcessChainPass()
 	RHIDevice->GetDeviceContext()->PSSetSamplers(1, 1, &SamplerState);
 
 	PostProcessChainBufferType PPConstants;
-	PPConstants.bEnableGammaCorrection = RenderSettings.IsShowFlagEnabled(EEngineShowFlags::SF_GammaCorrection);
-	PPConstants.bEnableVignetting = true; // TODO: ShowFlag 추가 고려
-	PPConstants.bEnableLetterBox = true; // TODO: ShowFlag 추가 고려
-	PPConstants.Gamma = RenderSettings.GetGamma();
-	PPConstants.VignetteIntensity = RenderSettings.GetVignetteIntensity();
-	PPConstants.VignetteRadius = RenderSettings.GetVignetteRadius();
-	PPConstants.LetterBoxSize = RenderSettings.GetLetterboxSize();
+
+	// PCM이 있으면 PCM의 설정 사용, 없으면 RenderSettings 폴백
+	if (PCM)
+	{
+		// PCM이 가진 Chaed 세팅 가져와서 GPU로 보낸다.
+		const FPostProcessSettings& PPSettings = PCM->GetPostProcessSettings();
+		PPConstants.bEnableGammaCorrection = RenderSettings.IsShowFlagEnabled(EEngineShowFlags::SF_GammaCorrection);
+		PPConstants.bEnableVignetting = PPSettings.bEnableVignetting;
+		PPConstants.bEnableLetterBox = PPSettings.bEnableLetterbox;
+		PPConstants.Gamma = PPSettings.Gamma;
+		PPConstants.VignetteIntensity = PPSettings.VignetteIntensity;
+		PPConstants.VignetteRadius = PPSettings.VignetteRadius;
+		PPConstants.LetterBoxSize = PPSettings.LetterboxSize;
+	}
+	else
+	{
+		// 폴백: RenderSettings 사용 (에디터 모드)
+		PPConstants.bEnableGammaCorrection = RenderSettings.IsShowFlagEnabled(EEngineShowFlags::SF_GammaCorrection);
+		PPConstants.bEnableVignetting = true;
+		PPConstants.bEnableLetterBox = true;
+		PPConstants.Gamma = RenderSettings.GetGamma();
+		PPConstants.VignetteIntensity = RenderSettings.GetVignetteIntensity();
+		PPConstants.VignetteRadius = RenderSettings.GetVignetteRadius();
+		PPConstants.LetterBoxSize = RenderSettings.GetLetterboxSize();
+	}
+
 	RHIDevice->SetAndUpdateConstantBuffer(PPConstants);
 
 	// full screen quad 그리기
