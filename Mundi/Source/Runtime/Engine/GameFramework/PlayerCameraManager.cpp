@@ -19,7 +19,7 @@ void APlayerCameraManager::Tick(float DeltaTime)
 		else
 		{
 			float TimePercentage = 1.0f - FadeTimeRemaining / FadeTime;
-			FadeAmount = FadeAlpha.X + (FadeAlpha.Y - FadeAlpha.X) * TimePercentage;
+			FadeAmount =  std::lerp(FadeAlpha.X, FadeAlpha.Y, TimePercentage);
 		}
 	}
 
@@ -29,6 +29,21 @@ void APlayerCameraManager::Tick(float DeltaTime)
 		ViewTarget.ViewInfo = ViewTarget.TargetActor->CalcCamera();
 	}
 	// TODO: 타겟 액터가 없는 경우 처리
+
+	if (TransitionTimeRemaining > 0)
+	{
+		TransitionTimeRemaining -= DeltaTime;
+		
+		float TimePercentage = 1.0f - TransitionTimeRemaining / TransitionTime;
+		TimePercentage = TimePercentage * TimePercentage * (3.0f - 2.0f * TimePercentage);
+		const FMinimalViewInfo& ViewInfo = ViewTarget.ViewInfo;
+		ViewTarget.ViewInfo.Location = FVector::Lerp(PreviousViewInfo.Location, ViewInfo.Location, TimePercentage);
+		ViewTarget.ViewInfo.Rotation = FQuat::Slerp(PreviousViewInfo.Rotation, ViewInfo.Rotation, TimePercentage);
+		ViewTarget.ViewInfo.Aspect = std::lerp(PreviousViewInfo.Aspect, ViewInfo.Aspect, TimePercentage);
+		ViewTarget.ViewInfo.ZNear = std::lerp(PreviousViewInfo.ZNear, ViewInfo.ZNear, TimePercentage);
+		ViewTarget.ViewInfo.ZFar = std::lerp(PreviousViewInfo.ZFar, ViewInfo.ZFar, TimePercentage);
+		ViewTarget.ViewInfo.Fov = std::lerp(PreviousViewInfo.Fov, ViewInfo.Fov, TimePercentage);
+	}
 }
 
 void APlayerCameraManager::StartFadeInOut(float InFadeTime, float InTargetAlpha)
@@ -59,7 +74,11 @@ void APlayerCameraManager::StartFadeIn(float InFadeTime)
 	StartFadeInOut(InFadeTime, 0.0f);
 }
 
-void APlayerCameraManager::SetViewTarget(AActor* InTargetActor, float TransitionTime)
+void APlayerCameraManager::SetViewTarget(AActor* InTargetActor, float InTransitionTime)
 {
+	PreviousViewInfo = ViewTarget.ViewInfo;
 	ViewTarget.TargetActor = InTargetActor;
+	
+	TransitionTime = InTransitionTime;
+	TransitionTimeRemaining = TransitionTime;
 }

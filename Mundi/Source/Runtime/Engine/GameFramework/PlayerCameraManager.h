@@ -27,7 +27,7 @@ public:
     const FLinearColor& GetFadeColor() const { return FadeColor; }
     float GetFadeAmount() const { return FadeAmount; }
 
-    void SetViewTarget(AActor* InTargetActor, float TransitionTime = 0.0f);
+    void SetViewTarget(AActor* InTargetActor, float InTransitionTime = 0.0f);
     const FMinimalViewInfo& GetCameraViewInfo() { return ViewTarget.ViewInfo; }
 private:
     // 페이드 인 아웃에 쓰일 배경색
@@ -41,8 +41,14 @@ private:
     // 페이드 in out 남은 시간
     float FadeTimeRemaining = 0.0f;
 
+    float TransitionTime = 0.0f;
+    float TransitionTimeRemaining = 0.0f;
+
     FName CameraStyle;
     FViewTarget ViewTarget;
+
+    // Transition 전의 타겟에 대한 ViewInfo(보간 위해 저장)
+    FMinimalViewInfo PreviousViewInfo;
 
     TArray<UCameraModifier*> ModifierList;
 };
