@@ -210,7 +210,7 @@ end
 
 function BeginOverlap(Other)
     Velocity = Velocity * (-1.0)
-    
+
 
     obj:SetActorLocation(obj:GetActorLocation() + Velocity:GetNormalized())
     UI:SetAfterCollisionTime(3)
@@ -219,6 +219,18 @@ function BeginOverlap(Other)
     -- 카메라 쉐이크 시작
     CameraShakeTime = CameraShakeDuration
     print("[Car] Collision! Camera shake triggered")
+
+    if not audioComp then
+        audioComp = obj:GetAudioComponent()
+        if not audioComp then
+            return
+        end
+    end
+
+    audioComp:Stop(true)
+    audioComp:Play(false)
+    print("Car Crush started playing")
+
 end
 function EndOverlap(Other)
 
