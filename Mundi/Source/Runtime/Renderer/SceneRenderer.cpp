@@ -1168,12 +1168,7 @@ void FSceneRenderer::RenderPostProcessingPasses()
 void FSceneRenderer::RenderPostProcessChainPass()
 {
 	URenderSettings& RenderSettings = World->GetRenderSettings();
-	const bool bGammaEnabled = RenderSettings.IsShowFlagEnabled(EEngineShowFlags::SF_GammaCorrection);
-	if (!bGammaEnabled)
-	{
-		return;
-	}
-	
+
 	// 이 블록 끝나면 자동으로 RTV와 SRV가 원래대로 돌아감
 	// 입력으로 t0슬롯의 SRV 사용 후 작업 끝나고 해제
 	FSwapGuard SwapGuard(RHIDevice, 0, 1);
@@ -1209,9 +1204,9 @@ void FSceneRenderer::RenderPostProcessChainPass()
 	RHIDevice->GetDeviceContext()->PSSetSamplers(1, 1, &SamplerState);
 
 	PostProcessChainBufferType PPConstants;
-	PPConstants.bEnableGammaCorrection = bGammaEnabled;
-	PPConstants.bEnableVignetting = true; // 일단 true
-	PPConstants.bEnableLetterBox = true; // 일단 true
+	PPConstants.bEnableGammaCorrection = RenderSettings.IsShowFlagEnabled(EEngineShowFlags::SF_GammaCorrection);
+	PPConstants.bEnableVignetting = true; // TODO: ShowFlag 추가 고려
+	PPConstants.bEnableLetterBox = true; // TODO: ShowFlag 추가 고려
 	PPConstants.Gamma = RenderSettings.GetGamma();
 	PPConstants.VignetteIntensity = RenderSettings.GetVignetteIntensity();
 	PPConstants.VignetteRadius = RenderSettings.GetVignetteRadius();

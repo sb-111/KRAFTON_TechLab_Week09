@@ -1650,6 +1650,22 @@ void SViewportWindow::RenderShowFlagDropdownMenu()
 		{
 			ImGui::SetTooltip("바운딩 박스를 표시합니다.");
 		}
+		bool bGammaCorrection = RenderSettings.IsShowFlagEnabled(EEngineShowFlags::SF_GammaCorrection);
+		if (ImGui::Checkbox("##Gamma", &bGammaCorrection))
+		{
+			RenderSettings.ToggleShowFlag(EEngineShowFlags::SF_GammaCorrection);
+		}
+		ImGui::SameLine();
+		if (IconCollision && IconCollision->GetShaderResourceView())
+		{
+			ImGui::Image((void*)IconCollision->GetShaderResourceView(), IconSize);
+			ImGui::SameLine(0, 4);
+		}
+		ImGui::Text(" 감마");
+		if (ImGui::IsItemHovered())
+		{
+			ImGui::SetTooltip("감마를 적용합니다.");
+		}
 
 		// --- 섹션: 그래픽스 기능 ---
 		ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), "그래픽스 기능");
