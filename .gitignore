@@ -472,6 +472,7 @@ AGENTS.md
 .claude/settings.local.json
 nul
 CLAUDE.md
+Document/*
 
 # Untracked Data Files
 /Mundi/Data/untracked/**

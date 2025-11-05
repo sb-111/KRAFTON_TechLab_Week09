@@ -139,6 +139,15 @@ public:
 	void HandleThrustInput(float InValue);
 	void HandleSteerInput(float InValue);
 
+	// 오디오 제어 입력 핸들러
+	void HandleMuteInput();
+	void HandlePlayPauseInput();
+	void HandleStopInput();
+	void HandleLeftArrowInput();
+	void HandleRightArrowInput();
+	void HandleUpArrowInput();
+	void HandleDownArrowInput();
+
 	/// @brief 현재 컴포넌트에 연결된 Lua 스크립트 파일의 경로입니다.
 	FString ScriptFilePath;
 
@@ -161,6 +170,13 @@ private:
 	// 정말 자주, 매번 호출되는 함수들이라서 따로 캐싱해서 처리(테이블 서치 비용 절감)
 	sol::function OnThrustInput;
 	sol::function OnSteerInput;
+	sol::function OnMuteInput;
+	sol::function OnPlayPauseInput;
+	sol::function OnStopInput;
+	sol::function OnLeftArrowInput;
+	sol::function OnRightArrowInput;
+	sol::function OnUpArrowInput;
+	sol::function OnDownArrowInput;
 	/// @brief 스크립트 격리를 위한 독립적인 Lua 실행 환경. 각 스크립트는 자신만의 환경을 가집니다.
 	sol::environment Env;
 	/// @brief 스크립트가 성공적으로 로드되었는지 여부를 나타내는 플래그.

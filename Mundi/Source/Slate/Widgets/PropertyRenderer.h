@@ -36,6 +36,7 @@ private:
 	static bool RenderMaterialProperty(const FProperty& Prop, void* Instance);
 	static bool RenderMaterialArrayProperty(const FProperty& Prop, void* Instance);
 	static bool RenderSingleMaterialSlot(const char* Label, UMaterialInterface** MaterialPtr, UObject* OwningObject, uint32 MaterialIndex);	// 단일 UMaterial* 슬롯을 렌더링하는 헬퍼 함수.
+	static bool RenderAudioProperty(const FProperty& Prop, void* Instance);
 
 	static bool RenderTextureSelectionCombo(const char* Label, UTexture* CurrentTexture, UTexture*& OutNewTexture);
 
@@ -55,4 +56,6 @@ private:
 	static TArray<const char*> CachedShaderItems;
 	static TArray<FString> CachedTexturePaths;
 	static TArray<const char*> CachedTextureItems;
+	static TArray<FString> CachedAudioPaths;
+	static TArray<const char*> CachedAudioItems;
 };
