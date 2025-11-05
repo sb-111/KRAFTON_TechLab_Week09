@@ -1,11 +1,7 @@
 ﻿#pragma once
 #include "SceneComponent.h"
 
-enum class ECameraProjectionMode
-{
-    Perspective,
-    Orthographic
-};
+
 
 class UCameraComponent : public USceneComponent
 {
