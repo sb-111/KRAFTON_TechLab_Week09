@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Frustum.h"
 
 // 전방 선언 (헤더 파일 의존성 최소화)
@@ -114,6 +114,7 @@ private:
 	void RenderDecalPass();
 
 	void RenderPostProcessingPasses();
+	void RenderPostProcessChainPass();
 	void RenderSceneDepthPostProcess();
 	void RenderTileCullingDebug();
 
