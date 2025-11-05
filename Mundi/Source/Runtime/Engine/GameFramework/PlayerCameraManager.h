@@ -52,8 +52,13 @@ public:
     void UpdateLetterboxBlend(float DeltaTime);
     void UpdateVignetteBlend(float DeltaTime);
     void UpdatePostProcess(float DeltaTime);
+    void UpdateCameraModifiers(float DeltaTime);
     void SetViewTarget(AActor* InTargetActor, float InTransitionTime = 0.0f);
     const FMinimalViewInfo& GetCameraViewInfo() { return ViewTarget.ViewInfo; }
+
+    // Camera Modifier 관리
+    void AddCameraModifier(UCameraModifier* Modifier);
+    void RemoveCameraModifier(UCameraModifier* Modifier);
 
     // PostProcess 설정 접근자
     const FPostProcessSettings& GetPostProcessSettings() const { return CachedPostProcessSettings; }

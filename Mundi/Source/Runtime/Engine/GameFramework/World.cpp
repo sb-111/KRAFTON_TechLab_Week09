@@ -34,6 +34,7 @@
 #include "PlayerComponent.h"
 #include "PlayerController.h"
 #include "PlayerCameraManager.h"
+#include "CameraShakeModifier.h"
 
 #include "ShapeComponent.h"
 #include "BoxComponent.h"
@@ -509,8 +510,39 @@ void UWorld::InitializeLuaState()
 		"StopLetterboxBlend", &APlayerCameraManager::StopLetterboxBlend,
 
 		// Gamma
-		"SetGamma", &APlayerCameraManager::SetGamma
+		"SetGamma", &APlayerCameraManager::SetGamma,
+
+		// Camera Shake
+		"StartCameraShake", sol::overload(
+			// 기본: Frequency=10, Pattern=SineWave
+			[](APlayerCameraManager* PCM, float Duration,
+			   FVector LocAmp, FVector RotAmp, float FovAmp) {
+				UCameraShakeModifier* Shake = NewObject<UCameraShakeModifier>();
+				Shake->StartShake(Duration, LocAmp, RotAmp, FovAmp, 10.0f, EShakePattern::SineWave);
+				PCM->AddCameraModifier(Shake);
+			},
+			// Frequency 지정
+			[](APlayerCameraManager* PCM, float Duration,
+			   FVector LocAmp, FVector RotAmp, float FovAmp, float Frequency) {
+				UCameraShakeModifier* Shake = NewObject<UCameraShakeModifier>();
+				Shake->StartShake(Duration, LocAmp, RotAmp, FovAmp, Frequency, EShakePattern::SineWave);
+				PCM->AddCameraModifier(Shake);
+			},
+			// Frequency + Pattern 지정
+			[](APlayerCameraManager* PCM, float Duration,
+			   FVector LocAmp, FVector RotAmp, float FovAmp, float Frequency, int Pattern) {
+				UCameraShakeModifier* Shake = NewObject<UCameraShakeModifier>();
+				EShakePattern ShakePattern = static_cast<EShakePattern>(Pattern);
+				Shake->StartShake(Duration, LocAmp, RotAmp, FovAmp, Frequency, ShakePattern);
+				PCM->AddCameraModifier(Shake);
+			}
+		)
 		);
+
+	// ShakePattern Enum 테이블 생성
+	sol::table ShakePattern = LuaState.create_named_table("ShakePattern");
+	ShakePattern["SineWave"] = static_cast<int>(EShakePattern::SineWave);
+	ShakePattern["PerlinNoise"] = static_cast<int>(EShakePattern::PerlinNoise);
 
 	// Lua 스크립트 어디서나 접근할 수 있게전역 Input 객체 생성
 	LuaState["Input"] = &UInputManager::GetInstance();

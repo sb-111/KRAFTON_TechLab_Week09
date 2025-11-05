@@ -39,7 +39,7 @@ void APlayerCameraManager::Tick(float DeltaTime)
 	if (TransitionTimeRemaining > 0)
 	{
 		TransitionTimeRemaining -= DeltaTime;
-		
+
 		float TimePercentage = 1.0f - TransitionTimeRemaining / TransitionTime;
 		TimePercentage = TimePercentage * TimePercentage * (3.0f - 2.0f * TimePercentage);
 		const FMinimalViewInfo& ViewInfo = ViewTarget.ViewInfo;
@@ -50,6 +50,9 @@ void APlayerCameraManager::Tick(float DeltaTime)
 		ViewTarget.ViewInfo.ZFar = std::lerp(PreviousViewInfo.ZFar, ViewInfo.ZFar, TimePercentage);
 		ViewTarget.ViewInfo.Fov = std::lerp(PreviousViewInfo.Fov, ViewInfo.Fov, TimePercentage);
 	}
+
+	// 카메라 Modifier 적용 (쉐이크 등)
+	UpdateCameraModifiers(DeltaTime);
 }
 
 void APlayerCameraManager::StartFadeInOut(float InFadeTime, float InTargetAlpha)
@@ -107,6 +110,7 @@ void APlayerCameraManager::UpdatePostProcess(float DeltaTime)
 	
 	// SceneRender는 Cached를 읽어서 GPU로 전송
 }
+
 void APlayerCameraManager::UpdateLetterboxBlend(float DeltaTime)
 {
 	// Blend가 활성화되어 있을 때만 업데이트
@@ -229,4 +233,65 @@ void APlayerCameraManager::StartLetterboxBlend(float StartSize, float TargetSize
 	LetterboxBlendTimeRemaining = Duration;
 	bLetterboxBlendTargetEnable = bEnable;
 	DefaultPostProcessSettings.bEnableLetterbox = true;  // 보간 중에는 활성화
+}
+
+/**
+* @brief 카메라 Modifier들을 업데이트하여 카메라 Transform 수정 (쉐이크 등)
+*/
+void APlayerCameraManager::UpdateCameraModifiers(float DeltaTime)
+{
+	// Modifier 업데이트 및 disabled된 것 제거
+	for (auto it = ModifierList.begin(); it != ModifierList.end(); )
+	{
+		UCameraModifier* Modifier = *it;
+
+		if (Modifier)
+		{
+			if (!Modifier->IsDisabled())
+			{
+				// 활성화된 Modifier는 적용
+				Modifier->ModifyCamera(DeltaTime, ViewTarget.ViewInfo);
+				++it;
+			}
+			else
+			{
+				// Disabled된 Modifier는 제거 (메모리 관리는 ObjectFactory에서)
+				it = ModifierList.erase(it);
+			}
+		}
+		else
+		{
+			// nullptr인 경우도 제거
+			it = ModifierList.erase(it);
+		}
+	}
+}
+
+/**
+* @brief 카메라 Modifier 추가
+*/
+void APlayerCameraManager::AddCameraModifier(UCameraModifier* Modifier)
+{
+	if (Modifier)
+	{
+		ModifierList.push_back(Modifier);
+	}
+}
+
+/**
+* @brief 카메라 Modifier 제거
+*/
+void APlayerCameraManager::RemoveCameraModifier(UCameraModifier* Modifier)
+{
+	if (Modifier)
+	{
+		for (auto it = ModifierList.begin(); it != ModifierList.end(); ++it)
+		{
+			if (*it == Modifier)
+			{
+				ModifierList.erase(it);
+				break;
+			}
+		}
+	}
 }

@@ -57,6 +57,7 @@
     <FxCompile Include="Shaders\PostProcess\PostProcessChain_PS.hlsl">
       <Filter>Shaders\PostProcess</Filter>
     </FxCompile>
+    <FxCompile Include="Shaders\PostProcess\CameraFadeInOut_PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -462,6 +463,14 @@
     </ClCompile>
     <ClCompile Include="Source\Runtime\Engine\GameFramework\Pawn.cpp" />
     <ClCompile Include="Source\Runtime\Engine\GameFramework\CarPawn.cpp" />
+    <ClCompile Include="Source\Runtime\Engine\Components\SpringArmComponent.cpp" />
+    <ClCompile Include="Source\Runtime\Engine\GameFramework\CameraModifier.cpp" />
+    <ClCompile Include="Source\Runtime\Engine\GameFramework\PlayerCameraManager.cpp" />
+    <ClCompile Include="Source\Runtime\Engine\Audio\AudioManager.cpp" />
+    <ClCompile Include="Source\Runtime\Engine\Components\AudioComponent.cpp" />
+    <ClCompile Include="Source\Runtime\Engine\GameFramework\CameraShakeModifier.cpp">
+      <Filter>Source\Runtime\Engine\GameFramework</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -952,6 +961,15 @@
     </ClInclude>
     <ClInclude Include="Source\Runtime\Engine\GameFramework\Pawn.h" />
     <ClInclude Include="Source\Runtime\Engine\GameFramework\CarPawn.h" />
+    <ClInclude Include="Source\Runtime\Engine\Components\SpringArmComponent.h" />
+    <ClInclude Include="Source\Runtime\Core\EngineTypes\CameraType.h" />
+    <ClInclude Include="Source\Runtime\Engine\GameFramework\CameraModifier.h" />
+    <ClInclude Include="Source\Runtime\Engine\GameFramework\PlayerCameraManager.h" />
+    <ClInclude Include="Source\Runtime\Engine\Audio\AudioManager.h" />
+    <ClInclude Include="Source\Runtime\Engine\Components\AudioComponent.h" />
+    <ClInclude Include="Source\Runtime\Engine\GameFramework\CameraShakeModifier.h">
+      <Filter>Source\Runtime\Engine\GameFramework</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source">
@@ -1059,8 +1077,5 @@
     <Filter Include="ThirdParty\ImGui">
       <UniqueIdentifier>{727df326-43e5-4167-8e88-09dcd7f93f8a}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>
