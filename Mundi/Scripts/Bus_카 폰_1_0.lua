@@ -26,7 +26,8 @@ local CheckPointPass3 = false
 -- 카메라 쉐이크 변수
 local CameraShakeTime = 0       -- 남은 쉐이크 시간
 local CameraShakeDuration = 0.5 -- 쉐이크 지속 시간 (초)
-local CameraShakeIntensity = 2.0 -- 쉐이크 강도
+local CameraShakeIntensity = 7.0 -- 쉐이크 강도
+local CollisionVignetteDuration = 0
 
 local Inertia = 1
 -- z축만 회전할 거라서 flaot
@@ -54,6 +55,10 @@ end
 function OnBoosterInput()
     -- 쿨다운이 끝나고 부스터가 비활성 상태일 때만 활성화 가능
     if BoosterCooldownRemaining <= 0 and not BoosterActive then
+        CollisionVignetteDuration = 0
+        PlayerController:GetPlayerCameraManager():SetVignetteColor(Color(0,0,1,1))
+        PlayerController:GetPlayerCameraManager():EnableVignetting(true)
+
         BoosterActive = true
         BoosterTimeRemaining = BoosterDuration
         BoosterCooldownRemaining = BoosterCooldown
@@ -150,12 +155,11 @@ function BeginOverlap(Other)
     UI:SetAfterCollisionTime(3)
     UI:AddScore(-30)
 
-    -- 카메라 쉐이크 시작
-    CameraShakeTime = CameraShakeDuration
-    print("[Car] Collision! Camera shake triggered")
+    
 
     -- 부스터 비활성화
     if BoosterActive then
+        PlayerController:GetPlayerCameraManager():EnableVignetting(false)
         BoosterActive = false
         BoosterTimeRemaining = 0.0
 
@@ -167,6 +171,21 @@ function BeginOverlap(Other)
 
         print("[Car] Booster disabled due to collision")
     end
+
+    -- 카메라 쉐이크 시작
+    CameraShakeTime = CameraShakeDuration
+
+    PlayerController:GetPlayerCameraManager():SetVignetteColor(Color(1,0,0,1))
+    PlayerController:GetPlayerCameraManager():EnableVignetting(true)
+    CollisionVignetteDuration = 0.5
+    PlayerController:GetPlayerCameraManager():StartCameraShake(
+        CameraShakeTime,
+        Vector(1,1,1),
+        Vector(1,1,1),
+        2.0,
+        CameraShakeIntensity,
+        ShakePattern.SineWave
+    )
 
     -- 충돌 소리 재생
     local AudioComp = nil
@@ -206,6 +225,7 @@ function ResetCar()
     CameraShakeTime = 0
 
     -- 부스터 초기화
+    PlayerController:GetPlayerCameraManager():EnableVignetting(false)
     BoosterActive = false
     BoosterTimeRemaining = 0.0
     BoosterCooldownRemaining = 0.0
@@ -222,8 +242,8 @@ function BeginPlay()
     InitialRotation = obj:GetActorRotation()
     PlayerController:Possess(Pawn)
     PlayerController:GetPlayerCameraManager():SetViewTarget(obj, 0)
-    PlayerController:GetPlayerCameraManager():StartFadeOut(0, Color(1,0,0,1))
-    PlayerController:GetPlayerCameraManager():StartFadeIn(2)
+    PlayerController:GetPlayerCameraManager():StartFadeOut(0, Color(0.1,0.1,0.1,1))
+    PlayerController:GetPlayerCameraManager():StartFadeIn(3)
     print("[PlayerController] Possess Pawn")
 
     local ShapeComponent = obj:GetShapeComponent()
@@ -237,30 +257,6 @@ function BeginPlay()
     else
         print("[Audio] WARNING: AudioComponent NOT FOUND! Please add AudioComponent to this actor.")
     end
-end
-
-function SetCameraPos()
-    local CameraActor = GWorld:GetCameraActor()
-
-    local Forward = CameraActor:GetActorRight() * (-10)
-    local RelativeLocation = Forward
-
-    -- 카메라 쉐이크 오프셋 추가
-    local ShakeOffset = Vector(0, 0, 0)
-    if CameraShakeTime > 0 then
-        -- 시간이 지날수록 강도 감소 (감쇠)
-        local DecayFactor = CameraShakeTime / CameraShakeDuration
-        local CurrentIntensity = CameraShakeIntensity * DecayFactor
-
-        -- 랜덤 오프셋 생성 (-1 ~ 1 범위)
-        local RandomX = (math.random() * 2 - 1) * CurrentIntensity
-        local RandomY = (math.random() * 2 - 1) * CurrentIntensity
-        local RandomZ = (math.random() * 2 - 1) * CurrentIntensity * 0.5 -- Z축은 덜 흔들리게
-
-        ShakeOffset = Vector(RandomX, RandomY, RandomZ)
-    end
-
-    CameraActor:SetActorLocation(obj:GetActorLocation() + RelativeLocation + ShakeOffset)
 end
 
 function Tick(dt)
@@ -277,6 +273,13 @@ function Tick(dt)
         return
     end
 
+    if CollisionVignetteDuration > 0 then
+        CollisionVignetteDuration = CollisionVignetteDuration - dt
+        if CollisionVignetteDuration < 0 then
+            CollisionVignetteDuration = 0
+            PlayerController:GetPlayerCameraManager():EnableVignetting(false)
+        end
+    end
     -- 카메라 쉐이크 시간 감소
     if CameraShakeTime > 0 then
         CameraShakeTime = CameraShakeTime - dt
@@ -289,6 +292,7 @@ function Tick(dt)
     if BoosterActive then
         BoosterTimeRemaining = BoosterTimeRemaining - dt
         if BoosterTimeRemaining <= 0 then
+            PlayerController:GetPlayerCameraManager():EnableVignetting(false)
             BoosterActive = false
             BoosterTimeRemaining = 0
             print("Booster deactivated!")
