@@ -101,6 +101,8 @@ extern const FString GCacheDir;
 #include "EditorEngine.h"
 
 //CUR ENGINE MODE
+// Build Configuration으로 설정 가능 (Debug, Release, Release_StandAlone)
+// Release_StandAlone: auto PIE, no Editor UI
 #define _EDITOR
 
 #ifdef _EDITOR

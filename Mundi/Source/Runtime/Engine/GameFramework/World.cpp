@@ -691,8 +691,28 @@ UWorld* UWorld::DuplicateWorldForPIE(UWorld* InEditorWorld)
 		}
 		PIEWorld->AddActorToLevel(NewActor);
 		NewActor->SetWorld(PIEWorld);
-		
+
 	}
+
+	// PIE World에 카메라 액터 설정 (복제된 액터 중 첫 번째 카메라를 메인 카메라로 설정)
+	if (PIEWorld->GetLevel())
+	{
+		for (AActor* Actor : PIEWorld->GetLevel()->GetActors())
+		{
+			if (ACameraActor* CameraActor = Cast<ACameraActor>(Actor))
+			{
+				PIEWorld->SetCameraActor(CameraActor);
+				UE_LOG("DuplicateWorldForPIE: Set MainCameraActor to %s", CameraActor->GetName().ToString().c_str());
+				break; // 첫 번째 카메라만 설정
+			}
+		}
+
+		if (!PIEWorld->GetCameraActor())
+		{
+			UE_LOG("DuplicateWorldForPIE: Warning - No CameraActor found in duplicated world!");
+		}
+	}
+
 	PIEWorld->PlayerController = std::make_unique<APlayerController>();
 	PIEWorld->InitializeLuaState();
 

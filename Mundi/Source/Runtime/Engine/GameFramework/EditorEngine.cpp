@@ -4,6 +4,11 @@
 #include "SelectionManager.h"
 #include "AudioComponent.h"
 #include <ObjManager.h>
+#include "Level.h"
+#include "JsonSerializer.h"
+#include "FViewport.h"
+#include "FViewportClient.h"
+#include "CameraActor.h"
 
 
 float UEditorEngine::ClientWidth = 1024.0f;
@@ -78,9 +83,11 @@ LRESULT CALLBACK UEditorEngine::WndProc(HWND hWnd, UINT message, WPARAM wParam, 
     // Input first
     INPUT.ProcessMessage(hWnd, message, wParam, lParam);
 
-    // ImGui next
+#ifndef _RELEASE_STANDALONE
+    // ImGui next (Release_StandAlone 모드에서는 호출하지 않음)
     if (ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
         return true;
+#endif
 
     switch (message)
     {
@@ -99,14 +106,22 @@ LRESULT CALLBACK UEditorEngine::WndProc(HWND hWnd, UINT message, WPARAM wParam, 
             EditorINI["WindowWidth"] = std::to_string(NewWidth);
             EditorINI["WindowHeight"] = std::to_string(NewHeight);
 
-            if (ImGui::GetCurrentContext() != nullptr) 
+#ifdef _RELEASE_STANDALONE
+            // Release_StandAlone 모드: 뷰포트 크기 조정
+            if (GEngine.StandaloneViewport)
+            {
+                GEngine.StandaloneViewport->Resize(0, 0, NewWidth, NewHeight);
+            }
+#else
+            if (ImGui::GetCurrentContext() != nullptr)
             {
                 ImGuiIO& io = ImGui::GetIO();
-                if (io.DisplaySize.x > 0 && io.DisplaySize.y > 0) 
+                if (io.DisplaySize.x > 0 && io.DisplaySize.y > 0)
                 {
                     UI.RepositionImGuiWindows();
                 }
             }
+#endif
         }
     }
     break;
@@ -175,6 +190,13 @@ bool UEditorEngine::CreateMainWindow(HINSTANCE hInstance)
 
 bool UEditorEngine::Startup(HINSTANCE hInstance)
 {
+    UE_LOG("=== EditorEngine::Startup BEGIN ===");
+#ifdef _RELEASE_STANDALONE
+    UE_LOG("Build Configuration: RELEASE_STANDALONE");
+#else
+    UE_LOG("Build Configuration: EDITOR");
+#endif
+
     LoadIniFile();
 
     if (!CreateMainWindow(hInstance))
@@ -184,8 +206,26 @@ bool UEditorEngine::Startup(HINSTANCE hInstance)
     RHIDevice.Initialize(HWnd);
     Renderer = std::make_unique<URenderer>(&RHIDevice);
 
+#ifdef _RELEASE_STANDALONE
+    // Release_StandAlone 모드: 풀스크린 뷰포트 및 뷰포트 클라이언트 생성
+    StandaloneViewport = std::make_unique<FViewport>();
+    StandaloneViewportClient = std::make_unique<FViewportClient>();
+
+    // 뷰포트 초기화 (전체 화면)
+    if (!StandaloneViewport->Initialize(0.0f, 0.0f, ClientWidth, ClientHeight, RHIDevice.GetDevice()))
+    {
+        UE_LOG("EditorEngine: Failed to initialize standalone viewport");
+        return false;
+    }
+
+    // 뷰포트에 클라이언트 연결
+    StandaloneViewport->SetViewportClient(StandaloneViewportClient.get());
+#endif
+
     //매니저 초기화
+#ifndef _RELEASE_STANDALONE
     UI.Initialize(HWnd, RHIDevice.GetDevice(), RHIDevice.GetDeviceContext());
+#endif
     INPUT.Initialize(HWnd);
 
     FObjManager::Preload();
@@ -196,14 +236,26 @@ bool UEditorEngine::Startup(HINSTANCE hInstance)
     WorldContexts[0].World->Initialize();
     ///////////////////////////////////
 
+#ifndef _RELEASE_STANDALONE
     // 슬레이트 매니저 (singleton)
     FRect ScreenRect(0, 0, ClientWidth, ClientHeight);
     SLATE.Initialize(RHIDevice.GetDevice(), GWorld, ScreenRect);
 
     //스폰을 위한 월드셋
     UI.SetWorld(WorldContexts[0].World);
+#endif
 
     bRunning = true;
+
+#ifdef _RELEASE_STANDALONE
+    // Release_StandAlone 모드: Bus.Scene 로드 후 자동으로 PIE 시작
+    UE_LOG("=== RELEASE_STANDALONE MODE: Starting LoadSceneAndStartPIE ===");
+    LoadSceneAndStartPIE("Scene/Bus.Scene");
+    UE_LOG("=== RELEASE_STANDALONE MODE: LoadSceneAndStartPIE completed ===");
+#else
+    UE_LOG("=== EDITOR MODE (not standalone) ===");
+#endif
+
     return true;
 }
 
@@ -225,9 +277,13 @@ void UEditorEngine::Tick(float DeltaSeconds)
         //    WorldContext.World->Tick(DeltaSeconds, WorldContext.WorldType);
         //}
     }
-    
+
+#ifndef _RELEASE_STANDALONE
+    // Release_StandAlone 모드에서는 EditorUI를 업데이트하지 않음
     SLATE.Update(DeltaSeconds);
     UI.Update(DeltaSeconds);
+#endif
+
     INPUT.Update();
 }
 
@@ -235,9 +291,23 @@ void UEditorEngine::Render()
 {
     Renderer->BeginFrame();
 
+#ifdef _RELEASE_STANDALONE
+    // Release_StandAlone 모드: 게임 화면만 전체 화면으로 렌더링
+    if (StandaloneViewport && StandaloneViewportClient && GWorld)
+    {
+        // 뷰포트 클라이언트에 현재 월드 설정
+        // 카메라는 FViewportClient가 생성자에서 만든 자체 카메라를 사용
+        StandaloneViewportClient->SetWorld(GWorld);
+
+        // 뷰포트 렌더링 (내부적으로 ViewportClient->Draw()를 호출)
+        StandaloneViewport->Render();
+    }
+#else
+    // 에디터 모드: EditorUI 렌더링
     UI.Render();
     SLATE.Render();
     UI.EndFrame();
+#endif
 
     Renderer->EndFrame();
 }
@@ -292,6 +362,8 @@ void UEditorEngine::MainLoop()
 
         if (!bRunning) break;
 
+#ifndef _RELEASE_STANDALONE
+        // Release_StandAlone 모드에서는 PIE를 종료할 수 없으므로 이 블록을 건너뜀
         if (bChangedPieToEditor)
         {
             if (GWorld && bPIEActive)
@@ -309,6 +381,7 @@ void UEditorEngine::MainLoop()
 
             bChangedPieToEditor = false;
         }
+#endif
 
         Tick(DeltaSeconds);
         Render();
@@ -323,8 +396,10 @@ void UEditorEngine::MainLoop()
 
 void UEditorEngine::Shutdown()
 {
+#ifndef _RELEASE_STANDALONE
     // Release ImGui first (it may hold D3D11 resources)
     UUIManager::GetInstance().Release();
+#endif
     for (FWorldContext Context : WorldContexts)
     {
         DeleteObject(Context.World);
@@ -364,6 +439,18 @@ void UEditorEngine::StartPIE()
 
     UWorld* EditorWorld = WorldContexts[0].World;
 
+    if (!EditorWorld)
+    {
+        UE_LOG("StartPIE: EditorWorld is null!");
+        return;
+    }
+
+    if (!EditorWorld->GetLevel())
+    {
+        UE_LOG("StartPIE: EditorWorld Level is null!");
+        return;
+    }
+
     // PIE 시작 전 에디터 World의 모든 AudioComponent 정지
     if (EditorWorld && EditorWorld->GetLevel())
     {
@@ -388,9 +475,22 @@ void UEditorEngine::StartPIE()
 
     UWorld* PIEWorld = UWorld::DuplicateWorldForPIE(EditorWorld);
 
+    if (!PIEWorld)
+    {
+        UE_LOG("StartPIE: Failed to duplicate PIE World!");
+        return;
+    }
+
+    if (!PIEWorld->GetLevel())
+    {
+        UE_LOG("StartPIE: PIE World Level is null!");
+        return;
+    }
 
     GWorld = PIEWorld;
+#ifndef _RELEASE_STANDALONE
     SLATE.SetPIEWorld(GWorld);
+#endif
 
     bPIEActive = true;
 
@@ -401,10 +501,21 @@ void UEditorEngine::StartPIE()
     ////스폰을 위한 월드셋
     //UI.SetWorld(PIEWorld);
 
-    for (AActor* Actor : GWorld->GetLevel()->GetActors())
+    // BeginPlay 호출
+    if (GWorld && GWorld->GetLevel())
     {
-        Actor->BeginPlay();
+        const TArray<AActor*>& Actors = GWorld->GetLevel()->GetActors();
+        UE_LOG("StartPIE: Calling BeginPlay on %d actors", Actors.size());
+
+        for (AActor* Actor : Actors)
+        {
+            if (Actor)
+            {
+                Actor->BeginPlay();
+            }
+        }
     }
+
     UE_LOG("START PIE CLICKED");
 }
 
@@ -423,4 +534,95 @@ void UEditorEngine::EndPIE()
 
     bPIEActive = false;
     UE_LOG("END PIE CLICKED");*/
+}
+
+void UEditorEngine::LoadSceneAndStartPIE(const FString& ScenePath)
+{
+    try
+    {
+        // 씬 이름 추출
+        FString SceneName = ScenePath;
+        size_t LastSlash = SceneName.find_last_of("\\/");
+        if (LastSlash != std::string::npos)
+        {
+            SceneName = SceneName.substr(LastSlash + 1);
+        }
+        size_t LastDot = SceneName.find_last_of(".");
+        if (LastDot != std::string::npos)
+        {
+            SceneName = SceneName.substr(0, LastDot);
+        }
+
+        // World 가져오기
+        UWorld* CurrentWorld = WorldContexts[0].World;
+        if (!CurrentWorld)
+        {
+            UE_LOG("EditorEngine: Cannot find World for loading scene!");
+            return;
+        }
+
+        // Update World's scene name
+        CurrentWorld->SetSceneName(SceneName);
+
+        // 새 레벨 생성 및 로드
+        std::unique_ptr<ULevel> NewLevel = ULevelService::CreateDefaultLevel();
+        JSON LevelJsonData;
+        if (FJsonSerializer::LoadJsonFromFile(LevelJsonData, ScenePath))
+        {
+            NewLevel->Serialize(true, LevelJsonData);
+        }
+        else
+        {
+            UE_LOG("EditorEngine: Failed to load scene from: %s", ScenePath.c_str());
+            return;
+        }
+
+        // 현재 레벨 교체
+        CurrentWorld->SetLevel(std::move(NewLevel));
+
+        // 레벨이 제대로 로드되었는지 확인
+        if (!CurrentWorld->GetLevel())
+        {
+            UE_LOG("EditorEngine: Level is null after SetLevel!");
+            return;
+        }
+
+        UE_LOG("EditorEngine: Scene '%s' loaded successfully with %d actors",
+               SceneName.c_str(),
+               CurrentWorld->GetLevel()->GetActors().size());
+
+        // EditorWorld에 카메라 액터 설정 (씬에서 로드된 액터 중 첫 번째 카메라를 메인 카메라로 설정)
+        ACameraActor* FoundCamera = nullptr;
+        UE_LOG("EditorEngine: Searching for CameraActor in %d actors...", CurrentWorld->GetLevel()->GetActors().size());
+
+        for (AActor* Actor : CurrentWorld->GetLevel()->GetActors())
+        {
+            if (Actor)
+            {
+                UE_LOG("EditorEngine: Checking actor '%s' (class: %s)",
+                       Actor->GetName().ToString().c_str(),
+                       Actor->GetClass() ? Actor->GetClass()->Name : "null");
+
+                if (ACameraActor* CameraActor = Cast<ACameraActor>(Actor))
+                {
+                    FoundCamera = CameraActor;
+                    CurrentWorld->SetCameraActor(CameraActor);
+                    UE_LOG("EditorEngine: Set EditorWorld MainCameraActor to %s", CameraActor->GetName().ToString().c_str());
+                    break;
+                }
+            }
+        }
+
+        if (!FoundCamera)
+        {
+            UE_LOG("EditorEngine: ERROR - No CameraActor found in loaded scene!");
+        }
+
+        // PIE 시작
+        StartPIE();
+    }
+    catch (const std::exception& e)
+    {
+        UE_LOG("EditorEngine: Exception during scene load: %s", e.what());
+    }
 }
