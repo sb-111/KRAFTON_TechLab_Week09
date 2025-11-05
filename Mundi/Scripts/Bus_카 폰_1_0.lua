@@ -34,6 +34,14 @@ local Torque = 500
 -- 각속도에 따른 저항
 local AngularRegistance = 5
 
+-- 부스터 관련 변수
+local BoosterActive = false
+local BoosterForce = 5000  -- 부스터 추가 힘
+local BoosterDuration = 2.0  -- 부스터 지속 시간 (초)
+local BoosterTimeRemaining = 0.0
+local BoosterCooldown = 5.0  -- 부스터 재사용 대기 시간 (초)
+local BoosterCooldownRemaining = 0.0
+
 function OnThrustInput(InValue)
     ThrustInput = InValue
 end
@@ -42,132 +50,31 @@ function OnSteerInput(InValue)
     SteerInput = InValue
 end
 
-local audioComp = nil
-local savedVolume = 100.0  -- 뮤트 해제 시 복원할 볼륨
+-- 부스터
+function OnBoosterInput()
+    -- 쿨다운이 끝나고 부스터가 비활성 상태일 때만 활성화 가능
+    if BoosterCooldownRemaining <= 0 and not BoosterActive then
+        BoosterActive = true
+        BoosterTimeRemaining = BoosterDuration
+        BoosterCooldownRemaining = BoosterCooldown
 
--- M키: 뮤트/뮤트 해제 토글
-function OnMuteInput()
-    if not audioComp then
-        audioComp = obj:GetAudioComponent()
-        if not audioComp then
-            print("AudioComponent not found")
-            return
+        print(string.format("Booster activated! (Duration: %.1fs, Cooldown: %.1fs)", BoosterDuration, BoosterCooldown))
+
+        -- 소리 재생
+        local AudioComp = obj:GetAudioComponentByName("Booster")
+        if AudioComp then
+            AudioComp:Stop(true)
+            AudioComp:Play(false)
         end
-    end
-
-    local currentVolume = audioComp:GetVolume()
-    if currentVolume > 0.0 then
-        -- 뮤트: 현재 볼륨 저장하고 0으로 설정
-        savedVolume = currentVolume
-        audioComp:SetVolume(0.0)
-        print("Audio muted")
     else
-        -- 뮤트 해제: 저장된 볼륨으로 복원
-        audioComp:SetVolume(savedVolume)
-        print("Audio unmuted (Volume: " .. savedVolume .. ")")
-    end
-end
-
--- 스페이스바: 재생/일시정지 토글
-function OnPlayPauseInput()
-    if not audioComp then
-        audioComp = obj:GetAudioComponent()
-        if not audioComp then
-            print("AudioComponent not found")
-            return
-        end
-    end
-
-    if audioComp:IsPlaying() then
-        audioComp:Pause(true)
-        print("Audio paused")
-    else
-        -- 재생 위치가 0이면 처음부터, 아니면 이어서 재생
-        if audioComp:GetPlaybackPosition() > 0.0 then
-            audioComp:Resume()
-            print("Audio resumed")
+        if BoosterActive then
+            print("Booster already active!")
         else
-            audioComp:Play(false)
-            print("Audio started playing")
+            print(string.format("Booster on cooldown: %.1fs remaining", BoosterCooldownRemaining))
         end
     end
 end
 
--- P키: 정지
-function OnStopInput()
-    if not audioComp then
-        audioComp = obj:GetAudioComponent()
-        if not audioComp then
-            print("AudioComponent not found")
-            return
-        end
-    end
-
-    audioComp:Stop(true)
-    print("Audio stopped")
-end
-
--- 왼쪽 화살표: 5초 뒤로
-function OnLeftArrowInput()
-    if not audioComp then
-        audioComp = obj:GetAudioComponent()
-        if not audioComp then
-            return
-        end
-    end
-
-    audioComp:SeekRelative(-5.0)
-    local newPos = audioComp:GetPlaybackPosition()
-    print(string.format("Seeked backward to %.2f seconds", newPos))
-end
-
--- 오른쪽 화살표: 5초 앞으로
-function OnRightArrowInput()
-    if not audioComp then
-        audioComp = obj:GetAudioComponent()
-        if not audioComp then
-            return
-        end
-    end
-
-    audioComp:SeekRelative(5.0)
-    local newPos = audioComp:GetPlaybackPosition()
-    print(string.format("Seeked forward to %.2f seconds", newPos))
-end
-
--- 위쪽 화살표: 볼륨 증가
-function OnUpArrowInput()
-    if not audioComp then
-        audioComp = obj:GetAudioComponent()
-        if not audioComp then
-            return
-        end
-    end
-
-    local currentVolume = audioComp:GetVolume()
-    local newVolume = math.min(currentVolume + 10.0, 100.0)
-    audioComp:SetVolume(newVolume)
-    savedVolume = newVolume  -- 뮤트 해제 시 복원할 볼륨도 업데이트
-    print(string.format("Volume: %.0f", newVolume))
-end
-
--- 아래쪽 화살표: 볼륨 감소
-function OnDownArrowInput()
-    if not audioComp then
-        audioComp = obj:GetAudioComponent()
-        if not audioComp then
-            return
-        end
-    end
-
-    local currentVolume = audioComp:GetVolume()
-    local newVolume = math.max(currentVolume - 10.0, 0.0)
-    audioComp:SetVolume(newVolume)
-    if newVolume > 0.0 then
-        savedVolume = newVolume  -- 뮤트 해제 시 복원할 볼륨도 업데이트
-    end
-    print(string.format("Volume: %.0f", newVolume))
-end
 -- 코루틴 에러때문에 boolean으로 처리
 function UpdateScore()
     local CurrentLocation = obj:GetActorLocation().x
@@ -209,16 +116,71 @@ function UpdateScore()
 end
 
 function BeginOverlap(Other)
-    Velocity = Velocity * (-1.0)
-    
+    -- 충돌 법선 = 진행 방향의 반대 (실제 충돌 접점 방향과 유사)
+    local CollisionNormal = Velocity:GetNormalized() * (-1.0)
 
-    obj:SetActorLocation(obj:GetActorLocation() + Velocity:GetNormalized())
+    -- Z축 제거 (XY 평면에서만 충돌 처리)
+    CollisionNormal.z = 0
+    if CollisionNormal:Size() > 0 then
+        CollisionNormal = CollisionNormal:GetNormalized()
+    else
+        -- 속도가 0이면 오브젝트 중심 방향 사용
+        local MyPos = obj:GetActorLocation()
+        local OtherPos = Other:GetOwner():GetActorLocation()
+        CollisionNormal = (MyPos - OtherPos)
+        CollisionNormal.z = 0
+        CollisionNormal = CollisionNormal:GetNormalized()
+    end
+
+    -- 충돌 법선 방향으로 밀어냄 (겹침 해제)
+    local SeparationDistance = 2.0
+    local MyPos = obj:GetActorLocation()
+    obj:SetActorLocation(MyPos + CollisionNormal * SeparationDistance)
+
+    -- 속도를 충돌 면에 반사 (법선 방향으로 튕김)
+    local VelocityDotNormal = Vector.Dot(Velocity, CollisionNormal)
+    if VelocityDotNormal < 0 then
+        -- 충돌 면으로 향하고 있을 때만 반사
+        Velocity = Velocity - CollisionNormal * (VelocityDotNormal * 2.0)
+    end
+
+    -- Z축 속도 제거 (XY 평면에서만 움직임)
+    Velocity.z = 0
+
     UI:SetAfterCollisionTime(3)
     UI:AddScore(-30)
 
     -- 카메라 쉐이크 시작
     CameraShakeTime = CameraShakeDuration
     print("[Car] Collision! Camera shake triggered")
+
+    -- 부스터 비활성화
+    if BoosterActive then
+        BoosterActive = false
+        BoosterTimeRemaining = 0.0
+
+        -- 부스터 오디오 중단
+        local BoosterAudioComp = obj:GetAudioComponentByName("Booster")
+        if BoosterAudioComp then
+            BoosterAudioComp:Stop(true)
+        end
+
+        print("[Car] Booster disabled due to collision")
+    end
+
+    -- 충돌 소리 재생
+    local AudioComp = nil
+    if not AudioComp then
+        AudioComp = obj:GetAudioComponentByName("CarCrush")
+        if not AudioComp then
+            return
+        end
+    end
+
+    AudioComp:Stop(true)
+    AudioComp:Play(false)
+    print("Car Crush started playing")
+
 end
 function EndOverlap(Other)
 
@@ -242,6 +204,11 @@ function ResetCar()
 
     -- 카메라 쉐이크 초기화
     CameraShakeTime = 0
+
+    -- 부스터 초기화
+    BoosterActive = false
+    BoosterTimeRemaining = 0.0
+    BoosterCooldownRemaining = 0.0
 
     print("[Car] Reset to initial state")
 end
@@ -318,6 +285,24 @@ function Tick(dt)
         end
     end
 
+    -- 부스터 타이머 업데이트
+    if BoosterActive then
+        BoosterTimeRemaining = BoosterTimeRemaining - dt
+        if BoosterTimeRemaining <= 0 then
+            BoosterActive = false
+            BoosterTimeRemaining = 0
+            print("Booster deactivated!")
+        end
+    end
+
+    -- 부스터 쿨다운 업데이트
+    if BoosterCooldownRemaining > 0 then
+        BoosterCooldownRemaining = BoosterCooldownRemaining - dt
+        if BoosterCooldownRemaining < 0 then
+            BoosterCooldownRemaining = 0
+        end
+    end
+
     -- Update logic here
 
     local NetForce = Vector(0,0,0)
@@ -350,12 +335,21 @@ function Tick(dt)
         end
     end
 
+    -- 부스터 힘 적용 (속도 제한 무시, 최대 속도 돌파 가능)
+    if BoosterActive then
+        NetForce = NetForce + ForwardVector * BoosterForce
+    end
+
     local AirResistanceForce = Vector(0,0,0)
     AirResistanceForce = Velocity:GetNormalized() * AirResistance * Velocity:SizeSquared()
     NetForce = NetForce - AirResistanceForce
 
     local Acceleration = NetForce / Mass
     Velocity = Velocity + Acceleration * dt
+
+    -- Z축 속도 제거 (XY 평면에서만 움직임)
+    Velocity.z = 0
+
     obj:AddActorWorldLocation(Velocity * dt)
 
 
