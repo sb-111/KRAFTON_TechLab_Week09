@@ -298,6 +298,7 @@ xcopy /Y /D "$(ProjectDir)Scripts\*.*" "$(OutDir)Scripts\"</Command>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Source\Runtime\Engine\Components\SpringArmComponent.cpp" />
     <ClCompile Include="Source\Runtime\Engine\GameFramework\CameraModifier.cpp" />
+    <ClCompile Include="Source\Runtime\Engine\GameFramework\CameraShakeModifier.cpp" />
     <ClCompile Include="Source\Runtime\Engine\GameFramework\CarPawn.cpp" />
     <ClCompile Include="Source\Runtime\Engine\GameFramework\Pawn.cpp" />
     <ClCompile Include="Source\Runtime\Engine\GameFramework\PlayerCameraManager.cpp" />
@@ -340,6 +341,7 @@ xcopy /Y /D "$(ProjectDir)Scripts\*.*" "$(OutDir)Scripts\"</Command>
       <DeploymentContent>false</DeploymentContent>
     </ClCompile>
     <ClCompile Include="Source\Runtime\Renderer\TileLightCuller.cpp" />
+    <ClCompile Include="Source\Slate\Bezier.cpp" />
     <ClCompile Include="Source\Slate\Widgets\GameOverWidget.cpp" />
     <ClCompile Include="Source\Slate\Widgets\GameUIWidget.cpp" />
     <ClCompile Include="Source\Slate\Widgets\PropertyRenderer.cpp" />
@@ -637,6 +639,7 @@ xcopy /Y /D "$(ProjectDir)Scripts\*.*" "$(OutDir)Scripts\"</Command>
     <ClInclude Include="Source\Runtime\Engine\Components\SpringArmComponent.h" />
     <ClInclude Include="Source\Runtime\Core\EngineTypes\CameraType.h" />
     <ClInclude Include="Source\Runtime\Engine\GameFramework\CameraModifier.h" />
+    <ClInclude Include="Source\Runtime\Engine\GameFramework\CameraShakeModifier.h" />
     <ClInclude Include="Source\Runtime\Engine\GameFramework\CarPawn.h" />
     <ClInclude Include="Source\Runtime\Engine\GameFramework\Pawn.h" />
     <ClInclude Include="Source\Runtime\Engine\GameFramework\PlayerCameraManager.h" />
@@ -691,6 +694,7 @@ xcopy /Y /D "$(ProjectDir)Scripts\*.*" "$(OutDir)Scripts\"</Command>
     <ClInclude Include="Source\Runtime\Renderer\TileLightCuller.h" />
     <ClInclude Include="Source\Runtime\RHI\SwapGuard.h" />
     <ClInclude Include="Source\Runtime\RHI\ConstantBufferType.h" />
+    <ClInclude Include="Source\Slate\Bezier.h" />
     <ClInclude Include="Source\Slate\Widgets\GameOverWidget.h" />
     <ClInclude Include="Source\Slate\Widgets\GameUIWidget.h" />
     <ClInclude Include="Source\Slate\Widgets\PropertyRenderer.h" />

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "SceneComponent.h"
 
 class USpringArmComponent : public USceneComponent
@@ -35,4 +35,11 @@ private:
 
 	FQuat InitialRotation;
 	bool bUseControllerRotation = true;		// 컨트롤러의 Rotation 사용
+
+	// 랙 상태
+	bool bInitLag = false;
+	bool  bEnableLag = true;
+	float LagSpeed = 15.0f;
+	float MaxLagDistance = 10.0f;
+	FVector SmoothedSocketPosWS;
 };

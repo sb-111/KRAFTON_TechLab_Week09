@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "SpringArmComponent.h"
 #include "World.h"
 #include "WorldPartitionManager.h"
@@ -15,6 +15,9 @@ BEGIN_PROPERTIES(USpringArmComponent)
 	ADD_PROPERTY(FVector, SocketOffset, "SpringArm", true, "소켓 오프셋입니다.")
 	ADD_PROPERTY(FVector, TargetOffset, "SpringArm", true, "피벗 보정 오프셋입니다.")
 	ADD_PROPERTY_RANGE(float, BackoffEpsilon, "SpringArm", 0.0f, 5.0f, true, "충돌 시 떨림을 완화하기 위해 추가로 당기는 오프셋입니다.")
+	ADD_PROPERTY(bool, bEnableLag, "SpringArm", true, "소켓 위치에 랙(부드러운 이동)을 적용할지 여부입니다.")
+	ADD_PROPERTY_RANGE(float, LagSpeed, "SpringArm", 0.1f, 100.0f, true, "랙이 적용될 때의 속도입니다. 값이 클수록 더 빨리 따라갑니다.")
+	ADD_PROPERTY_RANGE(float, MaxLagDistance, "SpringArm", 0.0f, 100.0f, true, "랙이 적용될 때 스무딩된 위치와 목표 위치 간 최대 거리입니다.")
 	ADD_PROPERTY(bool, bUseControllerRotation, "SpringArm", true, "플레이어 컨트롤러의 회전값을 적용합니다")
 END_PROPERTIES()
 
@@ -30,6 +33,8 @@ void USpringArmComponent::OnRegister(UWorld* InWorld)
 	Super_t::OnRegister(InWorld);
 	if(Owner)
 		Owner->SetTickInEditor(true);
+	bSocketValid = false;
+	bInitLag = false;
 }
 
 void USpringArmComponent::BeginPlay()
@@ -72,68 +77,107 @@ void USpringArmComponent::RenderDebugVolume(URenderer* Renderer) const
 
 void USpringArmComponent::EvaluateArm(float DeltaTime)
 {
-	const FTransform worldTransform = GetWorldTransform();
-	const FQuat worldRotation = worldTransform.Rotation;
-	const FVector worldLocation = worldTransform.Translation;
+	const FTransform WorldTransform = GetWorldTransform();
+	const FQuat WorldRotation = WorldTransform.Rotation;
+	const FVector WorldLocation = WorldTransform.Translation;
 
 	
 	// 피벗 위치: 부모 기준 TargetOffset 적용
-	const FVector pivotWorld = worldLocation + worldRotation.RotateVector(TargetOffset);
+	const FVector PivotWorld = WorldLocation + WorldRotation.RotateVector(TargetOffset);
 
 	// 암이 뻗어 나갈 방향 (기본은 -X 축)
-	FVector armDirection = worldRotation.RotateVector(FVector(-1.0f, 0.0f, 0.0f)).GetSafeNormal();
-	if (armDirection.IsZero())
+	FVector ArmDirection = WorldRotation.RotateVector(FVector(-1.0f, 0.0f, 0.0f)).GetSafeNormal();
+	if (ArmDirection.IsZero())
 	{
-		armDirection = FVector(-1.0f, 0.0f, 0.0f);
+		ArmDirection = FVector(-1.0f, 0.0f, 0.0f);
 	}
 
-	const float desiredLength = FMath::Max(0.0f, TargetArmLength);
-	float resolvedLength = desiredLength;
+	const float DesiredLength = FMath::Max(0.0f, TargetArmLength);
+	float ResolvedLength = DesiredLength;
 
 	// 정밀 레이캐스트로 충돌 검사
-	if (desiredLength > KINDA_SMALL_NUMBER)
+	if (DesiredLength > KINDA_SMALL_NUMBER)
 	{
-		UWorld* world = GetWorld();
-		if (!world)
+		UWorld* World = GetWorld();
+		if (!World)
 		{
-			world = GWorld;
+			World = GWorld;
 		}
 
-		if (world)
+		if (World)
 		{
-			if (UWorldPartitionManager* partition = world->GetPartitionManager())
+			if (UWorldPartitionManager* Partition = World->GetPartitionManager())
 			{
-				if (FBVHierarchy* bvh = partition->GetBVH())
+				if (FBVHierarchy* BVH = Partition->GetBVH())
 				{
-					bvh->FlushRebuild();
+					BVH->FlushRebuild();
 
-					FRay ray;
-					ray.Origin = pivotWorld;
-					ray.Direction = armDirection;
+					FRay Ray;
+					Ray.Origin = PivotWorld;
+					Ray.Direction = ArmDirection;
 
-					float bestT = desiredLength;
-					AActor* hitActor = nullptr;
-					bvh->QueryRayClosestStrict(ray, hitActor, bestT);
+					float BestT = DesiredLength;
+					AActor* HitActor = nullptr;
+					TArray<AActor*> ExcludeList = { GetOwner() };
+					BVH->QueryRayClosestStrict(Ray, HitActor, BestT, ExcludeList);
 
-					if (hitActor && hitActor != GetOwner() && bestT < resolvedLength)
+					if (HitActor && HitActor != GetOwner() && BestT < ResolvedLength)
 					{
-						resolvedLength = FMath::Max(0.0f, bestT - BackoffEpsilon);
+						ResolvedLength = FMath::Max(0.0f, BestT - BackoffEpsilon);
 					}
 				}
 			}
 		}
 	}
 
-	const FVector socketWorldLocation =
-		pivotWorld +
-		armDirection * resolvedLength +
-		worldRotation.RotateVector(SocketOffset);
+	const FVector RawSocketWorldLocation = PivotWorld + ArmDirection * ResolvedLength + WorldRotation.RotateVector(SocketOffset);
 
-	CachedSocketWorld = FTransform(socketWorldLocation, worldRotation, worldTransform.Scale3D);
+	FVector FinalSocketPos = RawSocketWorldLocation;
+
+	if (bEnableLag && DeltaTime > 0.0f)
+	{
+		// 첫 프레임 초기화
+		if (!bInitLag) {
+			SmoothedSocketPosWS = RawSocketWorldLocation;
+			bInitLag = true;
+		}
+
+		const bool bHit = (ResolvedLength + BackoffEpsilon) < DesiredLength; // 히트 중일 때는 랙 적용 안 함
+		if (bHit)
+		{
+			SmoothedSocketPosWS = RawSocketWorldLocation;
+		}
+		else
+		{
+			// alpha: 1 - exp(-k*dt)
+			const float alpha = FMath::Clamp(-std::expm1f(-LagSpeed * DeltaTime), 0.0f, 1.0f);
+			SmoothedSocketPosWS = FMath::Lerp(SmoothedSocketPosWS, RawSocketWorldLocation, alpha);
+			
+		}
+
+		if ((SmoothedSocketPosWS - RawSocketWorldLocation).SizeSquared() > MaxLagDistance * MaxLagDistance)
+		{
+			// 최대 거리 제한
+			FVector Dir = (RawSocketWorldLocation - SmoothedSocketPosWS).GetSafeNormal();
+			SmoothedSocketPosWS = RawSocketWorldLocation - Dir * MaxLagDistance;
+		}
+
+		FinalSocketPos = SmoothedSocketPosWS;
+	}
+
+	CachedSocketWorld = FTransform(FinalSocketPos, WorldRotation, WorldTransform.Scale3D);
 	bSocketValid = true;
 }
 
 void USpringArmComponent::DuplicateSubObjects()
 {
 	Super_t::DuplicateSubObjects();
+
+	// 캐시 무효화
+	bSocketValid = false;
+	CachedSocketWorld = FTransform();
+
+	// 랙 상태 초기화 (부드러운 시작을 위해)
+	bInitLag = false;
+	SmoothedSocketPosWS = FVector();
 }

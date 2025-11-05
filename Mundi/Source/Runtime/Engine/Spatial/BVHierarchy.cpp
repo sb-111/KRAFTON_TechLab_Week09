@@ -486,7 +486,7 @@ void FBVHierarchy::QueryRayClosest(const FRay& Ray, AActor*& OutActor, OUT float
     }
 }
 
-void FBVHierarchy::QueryRayClosestStrict(const FRay& Ray, AActor*& OutActor, OUT float& OutBestT) const
+void FBVHierarchy::QueryRayClosestStrict(const FRay& Ray, AActor*& OutActor, OUT float& OutBestT, TArray<AActor*> ExcludeList) const
 {
     OutActor = nullptr;
     if (!(std::isfinite(OutBestT) && OutBestT > 0.0f))
@@ -542,6 +542,11 @@ void FBVHierarchy::QueryRayClosestStrict(const FRay& Ray, AActor*& OutActor, OUT
 
                 AActor* Owner = Component->GetOwner();
                 if (!Owner || Owner->GetActorHiddenInEditor())
+                {
+                    continue;
+                }
+                // ExcludeList에 Owner가 포함되어 있으면 스킵
+                if (std::find(ExcludeList.begin(), ExcludeList.end(), Owner) != ExcludeList.end())
                 {
                     continue;
                 }

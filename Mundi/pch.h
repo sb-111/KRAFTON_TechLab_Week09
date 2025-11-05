@@ -1,5 +1,5 @@
 ﻿#pragma once
-
+#define IMGUI_DEFINE_MATH_OPERATORS
 // Feature Flags
 // Uncomment to enable DDS texture caching (faster loading, uses Data/TextureCache/)
 #define USE_DDS_CACHE
