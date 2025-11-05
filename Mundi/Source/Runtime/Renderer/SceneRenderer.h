@@ -114,6 +114,7 @@ private:
 	void RenderDecalPass();
 
 	void RenderPostProcessingPasses();
+	void RenderPostProcessChainPass();
 	void RenderSceneDepthPostProcess();
 	void RenderTileCullingDebug();
 

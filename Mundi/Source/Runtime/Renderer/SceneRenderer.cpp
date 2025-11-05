@@ -4,6 +4,7 @@
 // FSceneRenderer가 사용하는 모든 헤더 포함
 #include "World.h"
 #include "CameraActor.h"
+#include "PlayerCameraManager.h"
 #include "FViewport.h"
 #include "FViewportClient.h"
 #include "Renderer.h"
@@ -131,6 +132,7 @@ void FSceneRenderer::Render()
         
 		RenderLitPath();
 		RenderPostProcessingPasses();	// 후처리 체인 실행
+		RenderPostProcessChainPass(); //  Letter Box, Gamma Correction, Vignetting을 위한 후처리 체인 실행
 		RenderTileCullingDebug();	// 타일 컬링 디버그 시각화 draw
 
 	}
@@ -1171,6 +1173,92 @@ void FSceneRenderer::RenderPostProcessingPasses()
 
 	// 모든 작업이 성공적으로 끝났으므로 Commit 호출
 	// 이제 소멸자는 버퍼 스왑을 되돌리지 않고, SRV 해제 작업만 수행함
+	SwapGuard.Commit();
+}
+
+void FSceneRenderer::RenderPostProcessChainPass()
+{
+	URenderSettings& RenderSettings = World->GetRenderSettings();
+
+	// PlayerCameraManager에서 PostProcess 설정 가져오기
+	APlayerCameraManager* PCM = nullptr;
+	if (World->bPie && World->GetPlayerController())
+	{
+		PCM = World->GetPlayerController()->GetPlayerCameraManager();
+	}
+
+	// 이 블록 끝나면 자동으로 RTV와 SRV가 원래대로 돌아감
+	// 입력으로 t0슬롯의 SRV 사용 후 작업 끝나고 해제
+	FSwapGuard SwapGuard(RHIDevice, 0, 1);
+
+	// RTV 설정: 깊이 버퍼 없이 SceneColor 렌더 타겟에 그림
+	RHIDevice->OMSetRenderTargets(ERTVMode::SceneColorTargetWithoutDepth);
+
+	// 깊이 테스트/쓰기 비활성화
+	RHIDevice->OMSetDepthStencilState(EComparisonFunc::Always);
+	RHIDevice->OMSetBlendState(false);
+
+	// 셰이더 로드
+	UShader* FullScreenTriangleVS = UResourceManager::GetInstance().Load<UShader>("Shaders/Utility/FullScreenTriangle_VS.hlsl");
+	UShader* PostProcessChainPS = UResourceManager::GetInstance().Load<UShader>("Shaders/PostProcess/PostProcessChain_PS.hlsl");
+
+	if (!FullScreenTriangleVS || !FullScreenTriangleVS->GetVertexShader() || !PostProcessChainPS || !PostProcessChainPS->GetPixelShader())
+	{
+		UE_LOG("PostProcessChain 셰이더 로드 실패!\n");
+		return;
+		// 셰이더 없으면 SwapGuard가 자동으로 리소스 정리하고 종료
+	}
+	RHIDevice->PrepareShader(FullScreenTriangleVS, PostProcessChainPS);
+
+	// SRV 바인딩: 이전 패스 결과물인 Source SRV를 가져와 t0 슬롯 바인딩
+	ID3D11ShaderResourceView* SourceSRV = RHIDevice->GetCurrentSourceSRV();
+	ID3D11SamplerState* SamplerState = RHIDevice->GetSamplerState(RHI_Sampler_Index::LinearClamp);
+	if (!SourceSRV || !SamplerState)
+	{
+		UE_LOG("PostProcessChain에 필요한 리소스 없음!");
+		return;
+	}
+	RHIDevice->GetDeviceContext()->PSSetShaderResources(0, 1, &SourceSRV);
+	RHIDevice->GetDeviceContext()->PSSetSamplers(1, 1, &SamplerState);
+
+	PostProcessChainBufferType PPConstants;
+
+	// PCM이 있으면 PCM의 설정 사용, 없으면 RenderSettings 폴백
+	if (PCM)
+	{
+		// PCM이 가진 Chaed 세팅 가져와서 GPU로 보낸다.
+		const FPostProcessSettings& PPSettings = PCM->GetPostProcessSettings();
+		PPConstants.bEnableGammaCorrection = RenderSettings.IsShowFlagEnabled(EEngineShowFlags::SF_GammaCorrection);
+		PPConstants.bEnableVignetting = PPSettings.bEnableVignetting;
+		PPConstants.bEnableLetterBox = PPSettings.bEnableLetterbox;
+		PPConstants.Gamma = PPSettings.Gamma;
+		PPConstants.VignetteIntensity = PPSettings.VignetteIntensity;
+		PPConstants.VignetteRadius = PPSettings.VignetteRadius;
+		PPConstants.LetterBoxSize = PPSettings.LetterboxSize;
+		PPConstants.VignetteColor = FVector4(PPSettings.VignetteColor.R, PPSettings.VignetteColor.G, PPSettings.VignetteColor.B, PPSettings.VignetteColor.A);
+		PPConstants.LetterboxColor = FVector4(PPSettings.LetterboxColor.R, PPSettings.LetterboxColor.G, PPSettings.LetterboxColor.B, PPSettings.LetterboxColor.A);
+	}
+	else
+	{
+		// 폴백: RenderSettings 사용 (에디터 모드)
+		PPConstants.bEnableGammaCorrection = RenderSettings.IsShowFlagEnabled(EEngineShowFlags::SF_GammaCorrection);
+		PPConstants.bEnableVignetting = false;
+		PPConstants.bEnableLetterBox = false;
+		PPConstants.Gamma = RenderSettings.GetGamma();
+		PPConstants.VignetteIntensity = RenderSettings.GetVignetteIntensity();
+		PPConstants.VignetteRadius = RenderSettings.GetVignetteRadius();
+		PPConstants.LetterBoxSize = RenderSettings.GetLetterboxSize();
+		PPConstants.VignetteColor = FVector4(0.0f, 0.0f, 0.0f, 1.0f);  // 기본값: 검은색
+		PPConstants.LetterboxColor = FVector4(0.0f, 0.0f, 0.0f, 1.0f); // 기본값: 검은색
+	}
+
+	RHIDevice->SetAndUpdateConstantBuffer(PPConstants);
+
+	// full screen quad 그리기
+	RHIDevice->DrawFullScreenQuad();
+	
+	// 스왑 커밋: 모든 작업이 성공했으므로 스왑을 확정
+	// 이 패스의 결과물이 다음 패스의 입력(Source)이 됨.
 	SwapGuard.Commit();
 }
 

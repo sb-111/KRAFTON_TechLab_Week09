@@ -75,6 +75,22 @@ struct FXAABufferType // b2
     float QualitySubPix; // 서브픽셀 품질 (낮을수록 부드러움, 0.75 권장)
     int32_t QualityIterations; // 엣지 탐색 반복 횟수 (12 권장)
 };
+struct PostProcessChainBufferType
+{
+    float Gamma = 2.2f;
+    float VignetteIntensity = 1.0f;
+    float VignetteRadius = 0.0f;
+    float LetterBoxSize = 0.1f;
+
+    FVector4 VignetteColor = FVector4(0.0f, 0.0f, 0.0f, 1.0f);  // 기본값: 검은색
+    FVector4 LetterboxColor = FVector4(0.0f, 0.0f, 0.0f, 1.0f); // 기본값: 검은색
+
+    int32 bEnableGammaCorrection = false;
+    int32 bEnableVignetting = false;
+    int32 bEnableLetterBox = false;
+    float Pad = 0.0f;
+    PostProcessChainBufferType() = default;
+};
 
 // b0 in PS
 struct FMaterialInPs
@@ -240,7 +256,8 @@ MACRO(FViewportConstants)           \
 MACRO(FTileCullingBufferType)       \
 MACRO(FClusterCullingBufferType)    \
 MACRO(FShadowBufferIndexType)       \
-MACRO(FCSMConstants)                
+MACRO(FCSMConstants)                \
+MACRO(PostProcessChainBufferType)
 
 // 16 바이트 패딩 어썰트
 #define STATIC_ASSERT_CBUFFER_ALIGNMENT(Type) \
@@ -265,4 +282,5 @@ CONSTANT_BUFFER_INFO(FTileCullingBufferType, 11, false, true)  // b11, PS only (
 CONSTANT_BUFFER_INFO(FClusterCullingBufferType, 13, false, true) // b13, PS only (LightingBuffers.hlsl과 일치)
 CONSTANT_BUFFER_INFO(FShadowBufferType, 12, true, true)
 CONSTANT_BUFFER_INFO(FShadowBufferIndexType, 9, true, true) // b9 used by DepthOnly VS+PS
+CONSTANT_BUFFER_INFO(PostProcessChainBufferType, 0, false, true) // 포스트 프로세스용 (Letter Box, Bignetting, Gamma), PS only이므로 b0 공유 가능
 // (Removed global shadow filter constant buffer; per-light sharpen is used.)

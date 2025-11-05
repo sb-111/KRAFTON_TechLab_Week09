@@ -45,6 +45,12 @@ void AActor::BeginPlay()
 		if (Comp) Comp->BeginPlay();
 }
 
+// 시간 배율 적용 후 틱을 호출합니다. 하위 클래스에서 Tick 함수를 오버라이드 할 때 시간 배율 적용을 신경쓰지 않아도 됩니다.
+void AActor::ExecuteTick(float GlobalAdjustedDeltaSeconds)
+{
+	Tick(GlobalAdjustedDeltaSeconds * CustomTimeDilation);
+}
+
 void AActor::Tick(float DeltaSeconds)
 {
 	// 에디터에서 틱 Off면 스킵

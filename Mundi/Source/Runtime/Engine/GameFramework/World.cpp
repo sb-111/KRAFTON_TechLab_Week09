@@ -494,11 +494,39 @@ void UWorld::InitializeLuaState()
 		sol::base_classes, sol::bases<AActor>(),
 		"Possess", &APlayerController::Possess,
 		"GetPlayerCameraManager", &APlayerController::GetPlayerCameraManager);
+	
 	LuaState.new_usertype<APlayerCameraManager>("PlayerCameraManager",
 		sol::base_classes, sol::bases<AActor>(),
 		"SetViewTarget", &APlayerCameraManager::SetViewTarget,
+
+		// Fade In/Out
 		"StartFadeIn", &APlayerCameraManager::StartFadeIn,
-		"StartFadeOut", &APlayerCameraManager::StartFadeOut);
+		"StartFadeOut", &APlayerCameraManager::StartFadeOut,
+		"GetFadeAmount", &APlayerCameraManager::GetFadeAmount,
+		"IsFade", &APlayerCameraManager::IsFade,
+
+		// Vignette (즉시 적용)
+		"SetVignetteIntensity", &APlayerCameraManager::SetVignetteIntensity,
+		"SetVignetteRadius", &APlayerCameraManager::SetVignetteRadius,
+		"SetVignetteColor", &APlayerCameraManager::SetVignetteColor,
+		"EnableVignetting", &APlayerCameraManager::EnableVignetting,
+
+		// Vignette (보간)
+		"StartVignetteBlend", &APlayerCameraManager::StartVignetteBlend,
+		"StopVignetteBlend", &APlayerCameraManager::StopVignetteBlend,
+
+		// Letterbox (즉시 적용)
+		"SetLetterboxSize", &APlayerCameraManager::SetLetterboxSize,
+		"SetLetterboxColor", &APlayerCameraManager::SetLetterboxColor,
+		"EnableLetterbox", &APlayerCameraManager::EnableLetterbox,
+
+		// Letterbox (보간)
+		"StartLetterboxBlend", &APlayerCameraManager::StartLetterboxBlend,
+		"StopLetterboxBlend", &APlayerCameraManager::StopLetterboxBlend,
+
+		// Gamma
+		"SetGamma", &APlayerCameraManager::SetGamma
+		);
 
 	// Lua 스크립트 어디서나 접근할 수 있게전역 Input 객체 생성
 	LuaState["Input"] = &UInputManager::GetInstance();
@@ -591,6 +619,8 @@ void UWorld::InitializeLuaState()
 
 void UWorld::Tick(float DeltaSeconds)
 {
+	DeltaSeconds *= GlobalTimeDeliation;
+
 	Partition->Update(DeltaSeconds, /*budget*/256);
 	Physics->Update(DeltaSeconds);
 
@@ -602,7 +632,7 @@ void UWorld::Tick(float DeltaSeconds)
 
 	if (PlayerController)
 	{
-		PlayerController->Tick(DeltaSeconds);
+		PlayerController->ExecuteTick(DeltaSeconds);
 	}
 //순서 바꾸면 안댐
 	if (Level)
@@ -611,13 +641,13 @@ void UWorld::Tick(float DeltaSeconds)
 		{
 			if (Actor && (Actor->CanTickInEditor() || bPie))
 			{
-				Actor->Tick(DeltaSeconds);
+				Actor->ExecuteTick(DeltaSeconds);
 			}
 		}
 	}
 	for (AActor* EditorActor : EditorActors)
 	{
-		if (EditorActor && !bPie) EditorActor->Tick(DeltaSeconds);
+		if (EditorActor && !bPie) EditorActor->ExecuteTick(DeltaSeconds);
 	}
 }
 

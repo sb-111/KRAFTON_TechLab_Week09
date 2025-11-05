@@ -62,7 +62,23 @@ public:
     // Directional shadow resolution
     void SetDirectionalShadowResolution(uint32 Value) { DirectionalShadowResolution = Value; }
     uint32 GetDirectionalShadowResolution() const { return DirectionalShadowResolution; }
-    
+
+
+    // ========== About Post-processing ===============
+    // Gamma Correction
+    void SetGamma(float Value) { GammaValue = Value; }
+    float GetGamma() const { return GammaValue; }
+
+    // Vignetting
+    void SetVignetteIntensity(float Value) { VignetteIntensity = Value; }
+    float GetVignetteIntensity() const { return VignetteIntensity; }
+    void SetVignetteRadius(float Value) { VignetteRadius = Value; }
+    float GetVignetteRadius() const { return VignetteRadius; }
+
+    // Letterbox
+    void SetLetterboxSize(float Value) { LetterboxSize = Value; }
+    float GetLetterboxSize() const { return LetterboxSize; }
+
 private:
     EEngineShowFlags ShowFlags = EEngineShowFlags::SF_DefaultEnabled;
     EViewModeIndex ViewModeIndex = EViewModeIndex::VMI_Lit_Phong;
@@ -84,4 +100,10 @@ private:
     uint32 SpotShadowResolution = 1024;
     uint32 PointShadowResolution = 1024;
     uint32 DirectionalShadowResolution = 4096;
+
+    // Post-processing parameters
+    float GammaValue = 2.2f;
+    float VignetteIntensity = 0.6f; // 0.0 = 효과 없음, 1.0 = 완전히 검게
+    float VignetteRadius = 0.7f;    // 밝은 영역 반경 (0.0~1.4, 0.5~0.9 권장)
+    float LetterboxSize = 0.1f;     // 화면 높이의 비율
 };

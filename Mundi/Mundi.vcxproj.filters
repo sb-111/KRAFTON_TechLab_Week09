@@ -53,6 +53,10 @@
       <Filter>Shaders\Effects</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\Utility\LightTilesComputeShader.hlsl" />
+    <FxCompile Include="PostProcessChain_PS.hlsl" />
+    <FxCompile Include="Shaders\PostProcess\PostProcessChain_PS.hlsl">
+      <Filter>Shaders\PostProcess</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
