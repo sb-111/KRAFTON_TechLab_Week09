@@ -233,6 +233,7 @@ function ResetCar()
 
     -- 부스터 초기화
     PlayerController:GetPlayerCameraManager():EnableVignetting(false)
+    PlayerController:GetPlayerCameraManager():SetViewTarget(obj, 2)
     BoosterActive = false
     BoosterTimeRemaining = 0.0
     BoosterCooldownRemaining = 0.0
