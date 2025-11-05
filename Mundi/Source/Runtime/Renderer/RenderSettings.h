@@ -103,7 +103,7 @@ private:
 
     // Post-processing parameters
     float GammaValue = 2.2f;
-    float VignetteIntensity = 0.5f; // 기본값 설정
-    float VignetteRadius = 0.7f;    // 기본값 설정
-    float LetterboxSize = 0.1f;     // 기본값 설정 (화면 높이의 비율)
+    float VignetteIntensity = 0.7f; // 0.0 = 효과 없음, 1.0 = 완전히 어두움
+    float VignetteRadius = 0.5f;    // 밝은 영역 반경 (0.0~0.8 권장)
+    float LetterboxSize = 0.1f;     // 화면 높이의 비율
 };
