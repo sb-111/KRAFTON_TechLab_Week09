@@ -9,6 +9,7 @@ IMPLEMENT_CLASS(UActorComponent)
 BEGIN_PROPERTIES(UActorComponent)
     ADD_PROPERTY(bool, bIsActive, "컴포넌트", true, "컴포넌트를 활성화합니다")
     ADD_PROPERTY(bool, bTickEnabled, "컴포넌트", true, "틱을 확성화합니다. 기본적으로 틱이 가능한 컴포넌트만 영향이 있습니다.")
+	ADD_PROPERTY(bool, bTickInEditor, "컴포넌트", true, "에디터에서 틱을 활성화합니다.")
 END_PROPERTIES()
     
 UActorComponent::UActorComponent()
@@ -97,6 +98,21 @@ void UActorComponent::MarkPendingDestroy()
     {
         GWorld->MarkPendingDestroy(this);
     }
+}
+
+bool UActorComponent::IsComponentTickEnabled() const
+{
+    // 틱을 진짜 돌릴지 최종 판단(액터 Tick에서 이걸로 거른다)
+    if (!Owner)
+        return false;
+
+    if (UWorld* World = Owner->GetWorld())
+    {
+        if (!bTickInEditor && World->bPie == false)
+            return false;
+    }
+
+    return bIsActive && bCanEverTick && bTickEnabled && bRegistered;
 }
 
 // ─────────────── Lifecycle (게임 수명)
