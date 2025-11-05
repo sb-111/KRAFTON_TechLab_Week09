@@ -1,9 +1,10 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "PlayerCameraManager.h"
 #include "CameraComponent.h"
 #include "CameraModifier.h"
 #include "Actor.h"
 #include "math.h"
+#include "Bezier.h"
 
 IMPLEMENT_CLASS(APlayerCameraManager)
 
@@ -43,7 +44,8 @@ void APlayerCameraManager::Tick(float DeltaTime)
 		TransitionTimeRemaining -= DeltaTime;
 		
 		float TimePercentage = 1.0f - TransitionTimeRemaining / TransitionTime;
-		TimePercentage = TimePercentage * TimePercentage * (3.0f - 2.0f * TimePercentage);
+		//TimePercentage = TimePercentage * TimePercentage * (3.0f - 2.0f * TimePercentage);
+		TimePercentage = ImGui::BezierValue(TimePercentage, BezierValue);
 		const FMinimalViewInfo& ViewInfo = ViewTarget.ViewInfo;
 		ViewTarget.ViewInfo.Location = FVector::Lerp(PreviousViewInfo.Location, ViewInfo.Location, TimePercentage);
 		ViewTarget.ViewInfo.Rotation = FQuat::Slerp(PreviousViewInfo.Rotation, ViewInfo.Rotation, TimePercentage);

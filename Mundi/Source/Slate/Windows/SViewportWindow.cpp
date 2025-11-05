@@ -17,6 +17,8 @@
 #include "CameraComponent.h"
 #include "CameraActor.h"
 #include "StatsOverlayD2D.h"
+#include "PlayerCameraManager.h"
+#include "Bezier.h"
 
 extern float CLIENTWIDTH;
 extern float CLIENTHEIGHT;
@@ -945,6 +947,15 @@ void SViewportWindow::RenderCameraOptionDropdownMenu()
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::SetTooltip("카메라에서 가장 먼 렌더링 거리 (100-10000)\n이 값보다 먼 오브젝트는 보이지 않습니다");
+			}
+			ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), "Camera Shake");
+			ImGui::Separator();
+			static bool ShowBezier = false;
+			ImGui::Checkbox("Edit BezierValue", &ShowBezier);
+			if (ShowBezier)
+			{
+				ImGui::Bezier("easeOutSine", BezierValue);
+				//float Y = ImGui::BezierValue(0.5f, BezierValue);
 			}
 		}
 
