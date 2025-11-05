@@ -15,6 +15,7 @@ BEGIN_PROPERTIES(USpringArmComponent)
 	ADD_PROPERTY(FVector, SocketOffset, "SpringArm", true, "소켓 오프셋입니다.")
 	ADD_PROPERTY(FVector, TargetOffset, "SpringArm", true, "피벗 보정 오프셋입니다.")
 	ADD_PROPERTY_RANGE(float, BackoffEpsilon, "SpringArm", 0.0f, 5.0f, true, "충돌 시 떨림을 완화하기 위해 추가로 당기는 오프셋입니다.")
+	ADD_PROPERTY(bool, bUseControllerRotation, "SpringArm", true, "플레이어 컨트롤러의 회전값을 적용합니다")
 END_PROPERTIES()
 
 USpringArmComponent::USpringArmComponent()
@@ -31,12 +32,22 @@ void USpringArmComponent::OnRegister(UWorld* InWorld)
 		Owner->SetTickInEditor(true);
 }
 
+void USpringArmComponent::BeginPlay()
+{
+	InitialRotation = GetRelativeRotation();
+}
+
 void USpringArmComponent::TickComponent(float DeltaTime)
 {
 	if (!IsComponentTickEnabled()) return;
 
 	Super_t::TickComponent(DeltaTime);
 
+	APlayerController* PlayerController = GWorld->GetPlayerController();
+	if (bUseControllerRotation && PlayerController)
+	{
+		SetWorldRotation(PlayerController->GetControlRotation());
+	}
 	EvaluateArm(DeltaTime);
 }
 
@@ -65,6 +76,7 @@ void USpringArmComponent::EvaluateArm(float DeltaTime)
 	const FQuat worldRotation = worldTransform.Rotation;
 	const FVector worldLocation = worldTransform.Translation;
 
+	
 	// 피벗 위치: 부모 기준 TargetOffset 적용
 	const FVector pivotWorld = worldLocation + worldRotation.RotateVector(TargetOffset);
 

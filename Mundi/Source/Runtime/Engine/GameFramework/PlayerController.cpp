@@ -52,6 +52,10 @@ void APlayerController::ProcessInput()
 
 	UInputManager& InputManager = UInputManager::GetInstance();
 
+
+	// 마우스 회전
+	ProcessMouseInput();
+	
 	if (InputManager.IsKeyDown('W'))
 	{
 		Pawn->HandleThrustInput(1.0f);
@@ -90,5 +94,32 @@ void APlayerController::ProcessInput()
 	if (InputManager.IsKeyPressed(VK_SPACE))
 	{
 		Pawn->HandleBoosterInput();
+	}
+}
+
+static inline float Clamp(float v, float a, float b) { return v < a ? a : (v > b ? b : v); }
+
+void APlayerController::ProcessMouseInput()
+{
+	UInputManager& InputManager = UInputManager::GetInstance();
+	if (InputManager.IsMouseButtonDown(EMouseButton::RightButton))
+	{
+		FVector2D MouseDelta = InputManager.GetMouseDelta();
+
+		if (MouseDelta.X == 0.0f && MouseDelta.Y == 0.0f) return;
+
+		CameraYawDeg += MouseDelta.X * MouseSensitivity;
+		CameraPitchDeg += MouseDelta.Y * MouseSensitivity;
+
+		// 각도 정규화 및 Pitch 제한
+		CameraYawDeg = NormalizeAngleDeg(CameraYawDeg); // -180 ~ 180 범위로 정규화
+		CameraPitchDeg = Clamp(CameraPitchDeg, -89.0f, 89.0f); // Pitch는 짐벌락 방지를 위해 제한
+
+		FQuat PitchQuat = FQuat::FromAxisAngle(FVector(0, 1, 0), DegreesToRadians(CameraPitchDeg));
+		FQuat YawQuat = FQuat::FromAxisAngle(FVector(0, 0, 1), DegreesToRadians(CameraYawDeg));
+
+		FQuat FinalRotation = YawQuat * PitchQuat;
+		FinalRotation.Normalize();
+		ControlRotation = FinalRotation;
 	}
 }
