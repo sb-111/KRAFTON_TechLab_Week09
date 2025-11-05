@@ -1232,8 +1232,8 @@ void FSceneRenderer::RenderPostProcessChainPass()
 	{
 		// 폴백: RenderSettings 사용 (에디터 모드)
 		PPConstants.bEnableGammaCorrection = RenderSettings.IsShowFlagEnabled(EEngineShowFlags::SF_GammaCorrection);
-		PPConstants.bEnableVignetting = true;
-		PPConstants.bEnableLetterBox = true;
+		PPConstants.bEnableVignetting = false;
+		PPConstants.bEnableLetterBox = false;
 		PPConstants.Gamma = RenderSettings.GetGamma();
 		PPConstants.VignetteIntensity = RenderSettings.GetVignetteIntensity();
 		PPConstants.VignetteRadius = RenderSettings.GetVignetteRadius();

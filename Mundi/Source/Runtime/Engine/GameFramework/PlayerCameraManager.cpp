@@ -9,7 +9,6 @@ IMPLEMENT_CLASS(APlayerCameraManager)
 
 void APlayerCameraManager::Tick(float DeltaTime)
 {
-	UpdateViewInfo();
 	//UpdateFadeInOut(DeltaTime); // FadeAmount 계산 (보간)
 	UpdateVignetteBlend(DeltaTime); // VignetteIntensity/Radius 계산 (보간)
 	UpdateLetterboxBlend(DeltaTime); // LetterBoxSize 계산(보간)
@@ -29,7 +28,6 @@ void APlayerCameraManager::Tick(float DeltaTime)
 			FadeAmount = FadeAlpha.X + (FadeAlpha.Y - FadeAlpha.X) * TimePercentage;
 		}
 	}
-}
 
 	if (ViewTarget.TargetActor.Get())
 	{
@@ -70,8 +68,6 @@ void APlayerCameraManager::StartFadeIn(float InFadeTime)
 void APlayerCameraManager::SetViewTarget(AActor* InTargetActor, float TransitionTime)
 {
 	ViewTarget.TargetActor = InTargetActor;
-
-	UpdateViewInfo();
 }
 
 void APlayerCameraManager::UpdatePostProcess(float DeltaTime)
@@ -95,6 +91,7 @@ void APlayerCameraManager::UpdatePostProcess(float DeltaTime)
 }
 void APlayerCameraManager::UpdateLetterboxBlend(float DeltaTime)
 {
+	// Blend가 활성화되어 있을 때만 업데이트
 	if (LetterboxBlendTimeRemaining > 0.0f)
 	{
 		LetterboxBlendTimeRemaining -= DeltaTime;
@@ -110,16 +107,18 @@ void APlayerCameraManager::UpdateLetterboxBlend(float DeltaTime)
 			LetterboxBlendTimeRemaining = 0.0f;
 			DefaultPostProcessSettings.LetterboxSize = LetterboxSizeAlpha.Y;
 		}
+
+		// 보간 완료 시 최종 상태 적용
+		if (LetterboxBlendTimeRemaining <= 0.0f)
+		{
+			DefaultPostProcessSettings.bEnableLetterbox = bLetterboxBlendTargetEnable;
+		}
 	}
-	else
-	{
-		// 보간 완료 후 목표값 유지
-		DefaultPostProcessSettings.LetterboxSize = LetterboxSizeAlpha.Y;
-		DefaultPostProcessSettings.bEnableLetterbox = bLetterboxBlendTargetEnable;
-	}
+	// Blend가 시작되지 않았으면 아무것도 하지 않음 (즉시 설정된 값 유지)
 }
 void APlayerCameraManager::UpdateVignetteBlend(float DeltaTime)
 {
+	// Blend가 활성화되어 있을 때만 업데이트
 	if (VignetteBlendTimeRemaining > 0.0f)
 	{
 		VignetteBlendTimeRemaining -= DeltaTime;
@@ -139,28 +138,44 @@ void APlayerCameraManager::UpdateVignetteBlend(float DeltaTime)
 			DefaultPostProcessSettings.VignetteIntensity = VignetteIntensityAlpha.Y;
 			DefaultPostProcessSettings.VignetteRadius = VignetteRadiusAlpha.Y;
 		}
+
+		// 보간 완료 시 최종 상태 적용
+		if (VignetteBlendTimeRemaining <= 0.0f)
+		{
+			DefaultPostProcessSettings.bEnableVignetting = bVignetteBlendTargetEnable;
+		}
 	}
-	else
-	{
-		// 보간 완료 후 목표값 유지
-		DefaultPostProcessSettings.VignetteIntensity = VignetteIntensityAlpha.Y;
-		DefaultPostProcessSettings.VignetteRadius = VignetteRadiusAlpha.Y;
-		DefaultPostProcessSettings.bEnableVignetting = bVignetteBlendTargetEnable;
-	}
+	// Blend가 시작되지 않았으면 아무것도 하지 않음 (즉시 설정된 값 유지)
 }
 
-
-
-
+/**
+* @brief Vignette Blend 시작 (현재값에서 목표값으로 시간에 따라 서서히 변화)
+*/
+//void APlayerCameraManager::StartVignetteBlend(float TargetIntensity, float TargetRadius, float Duration, bool bEnable)
+//{
+//	VignetteIntensityAlpha.X = DefaultPostProcessSettings.VignetteIntensity;
+//	VignetteIntensityAlpha.Y = TargetIntensity;
+//	VignetteRadiusAlpha.X = DefaultPostProcessSettings.VignetteRadius;
+//	VignetteRadiusAlpha.Y = TargetRadius;
+//	VignetteBlendTime = Duration;
+//	VignetteBlendTimeRemaining = Duration;
+//	bVignetteBlendTargetEnable = bEnable;
+//	DefaultPostProcessSettings.bEnableVignetting = true;  // 보간 중에는 활성화
+//}
 
 /**
-* @brief Vignette Blend 시작 (시간에 따라 서서히 변화)
+* @brief Vignette Blend 시작 (시작값과 끝값을 모두 명시적으로 지정)
 */
-void APlayerCameraManager::StartVignetteBlend(float TargetIntensity, float TargetRadius, float Duration, bool bEnable)
+void APlayerCameraManager::StartVignetteBlend(float StartIntensity, float StartRadius, float TargetIntensity, float TargetRadius, float Duration, bool bEnable)
 {
-	VignetteIntensityAlpha.X = DefaultPostProcessSettings.VignetteIntensity;
+	// 시작값을 즉시 적용
+	DefaultPostProcessSettings.VignetteIntensity = StartIntensity;
+	DefaultPostProcessSettings.VignetteRadius = StartRadius;
+
+	// 보간 설정
+	VignetteIntensityAlpha.X = StartIntensity;
 	VignetteIntensityAlpha.Y = TargetIntensity;
-	VignetteRadiusAlpha.X = DefaultPostProcessSettings.VignetteRadius;
+	VignetteRadiusAlpha.X = StartRadius;
 	VignetteRadiusAlpha.Y = TargetRadius;
 	VignetteBlendTime = Duration;
 	VignetteBlendTimeRemaining = Duration;
@@ -169,11 +184,28 @@ void APlayerCameraManager::StartVignetteBlend(float TargetIntensity, float Targe
 }
 
 /**
-* @brief Letterbox Blend 시작 (시간에 따라 서서히 변화)
+* @brief Letterbox Blend 시작 (현재값에서 목표값으로 시간에 따라 서서히 변화)
 */
-void APlayerCameraManager::StartLetterboxBlend(float TargetSize, float Duration, bool bEnable)
+//void APlayerCameraManager::StartLetterboxBlend(float TargetSize, float Duration, bool bEnable)
+//{
+//	LetterboxSizeAlpha.X = DefaultPostProcessSettings.LetterboxSize;
+//	LetterboxSizeAlpha.Y = TargetSize;
+//	LetterboxBlendTime = Duration;
+//	LetterboxBlendTimeRemaining = Duration;
+//	bLetterboxBlendTargetEnable = bEnable;
+//	DefaultPostProcessSettings.bEnableLetterbox = true;  // 보간 중에는 활성화
+//}
+
+/**
+* @brief Letterbox Blend 시작 (시작값과 끝값을 모두 명시적으로 지정)
+*/
+void APlayerCameraManager::StartLetterboxBlend(float StartSize, float TargetSize, float Duration, bool bEnable)
 {
-	LetterboxSizeAlpha.X = DefaultPostProcessSettings.LetterboxSize;
+	// 시작값을 즉시 적용
+	DefaultPostProcessSettings.LetterboxSize = StartSize;
+
+	// 보간 설정
+	LetterboxSizeAlpha.X = StartSize;
 	LetterboxSizeAlpha.Y = TargetSize;
 	LetterboxBlendTime = Duration;
 	LetterboxBlendTimeRemaining = Duration;

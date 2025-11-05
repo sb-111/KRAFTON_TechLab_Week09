@@ -19,20 +19,8 @@ struct FPostProcessSettings
     float Gamma = 2.2f;
 
     // Enable flags
-    bool bEnableVignetting = true;
-    bool bEnableLetterbox = true;
-};
-
-struct FMinimalViewInfo
-{
-    FVector Location;
-    FQuat Rotation;
-    // 이번 발제에서는 뷰포트 aspect를 그대로 쓸 것 같은데 일단 추가함
-    float Aspect;
-    float ZNear;
-    float ZFar;
-    float Fov;
-    ECameraProjectionMode ProjectionMode = ECameraProjectionMode::Perspective;
+    bool bEnableVignetting = false;
+    bool bEnableLetterbox = false;
 };
 
 struct FViewTarget
@@ -41,7 +29,6 @@ struct FViewTarget
     TWeakPtr<AActor> TargetActor;
 
     FMinimalViewInfo ViewInfo;
-
 };
 
 
@@ -59,7 +46,6 @@ public:
     const FLinearColor& GetFadeColor() const { return FadeColor; }
     float GetFadeAmount() const { return FadeAmount; }
 
-    void Tick(float DeltaTime) override;
     //void UpdateFadeInOut(float DeltaTime);
     void UpdateLetterboxBlend(float DeltaTime);
     void UpdateVignetteBlend(float DeltaTime);
@@ -87,11 +73,17 @@ public:
     // ========= Post Process 효과 보간 =============
 
     // Vignette Blend (시간에 따른 보간)
-    void StartVignetteBlend(float TargetIntensity, float TargetRadius, float Duration, bool bEnable = true);
+    // 현재  값에서 목표값으로 보간
+    //void StartVignetteBlend(float TargetIntensity, float TargetRadius, float Duration, bool bEnable = true);
+    // 시작값과 끝값을 모두 명시적으로 지정
+    void StartVignetteBlend(float StartIntensity, float StartRadius, float TargetIntensity, float TargetRadius, float Duration, bool bEnable = true);
     void StopVignetteBlend() { VignetteBlendTimeRemaining = 0.0f; }
 
     // Letterbox Blend (시간에 따른 보간)
-    void StartLetterboxBlend(float TargetSize, float Duration, bool bEnable = true);
+    // 현재값에서 목표값으로 보간
+    //void StartLetterboxBlend(float TargetSize, float Duration, bool bEnable = true);
+    // 시작값과 끝값을 모두 명시적으로 지정
+    void StartLetterboxBlend(float StartSize, float TargetSize, float Duration, bool bEnable = true);
     void StopLetterboxBlend() { LetterboxBlendTimeRemaining = 0.0f; }
 
     // ============= 계산된 Cached를 GPU에서 읽어가는데 사용
