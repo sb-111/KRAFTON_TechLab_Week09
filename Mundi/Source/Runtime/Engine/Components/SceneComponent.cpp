@@ -157,7 +157,7 @@ FTransform USceneComponent::GetWorldTransform() const
     // Dangling pointer 방지를 위한 체크
     if (AttachParent && !AttachParent->IsPendingDestroy())
     {
-        return AttachParent->GetWorldTransform().GetWorldTransform(RelativeTransform);
+        return AttachParent->GetSocketWorldTransform().GetWorldTransform(RelativeTransform);
     }
 
     return RelativeTransform;
@@ -168,7 +168,7 @@ void USceneComponent::SetWorldTransform(const FTransform& W)
     // Dangling pointer 방지를 위한 체크
     if (AttachParent && !AttachParent->IsPendingDestroy())
     {
-        const FTransform ParentWorld = AttachParent->GetWorldTransform();
+        const FTransform ParentWorld = AttachParent->GetSocketWorldTransform();
         RelativeTransform = ParentWorld.GetRelativeTransform(W);
     }
     else
@@ -271,6 +271,26 @@ FMatrix USceneComponent::GetWorldMatrix() const
     return GetWorldTransform().ToMatrix();
 }
 
+FTransform USceneComponent::GetSocketWorldTransform() const
+{
+    return GetWorldTransform();
+}
+
+FVector USceneComponent::GetSocketWorldLocation() const
+{
+    return GetSocketWorldTransform().Translation;
+}
+
+FQuat USceneComponent::GetSocketWorldRotation() const
+{
+    return GetSocketWorldTransform().Rotation;
+}
+
+FVector USceneComponent::GetSocketWorldScale() const
+{
+    return GetSocketWorldTransform().Scale3D;
+}
+
 // ──────────────────────────────
 // Attach / Detach
 // ──────────────────────────────
@@ -296,7 +316,7 @@ void USceneComponent::SetupAttachment(USceneComponent* InParent, EAttachmentRule
         AttachParent->AttachChildren.push_back(this);
         if (Rule == EAttachmentRule::KeepWorld)
         {
-            const FTransform ParentWorld = AttachParent->GetWorldTransform();
+            const FTransform ParentWorld = AttachParent->GetSocketWorldTransform();
             RelativeTransform = ParentWorld.GetRelativeTransform(OldWorld);
         }
         // KeepRelative: 기존 RelativeTransform 유지

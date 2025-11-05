@@ -25,5 +25,5 @@ private:
 	// 빙의 대상
 	TWeakPtr<APawn> Pawn;
 
-	TWeakPtr<APlayerCameraManager> PlayerCameraManager;
+	APlayerCameraManager* PlayerCameraManager = nullptr;
 };

@@ -14,10 +14,10 @@ APlayerController::APlayerController()
 
 APlayerController::~APlayerController()
 {
-	if (PlayerCameraManager.IsValid())
+	if (PlayerCameraManager)
 	{
 		//PlayerCameraManager->Destroy();
-		ObjectFactory::DeleteObject(PlayerCameraManager.Get());
+		ObjectFactory::DeleteObject(PlayerCameraManager);
 	}
 }
 
@@ -30,7 +30,7 @@ void APlayerController::Possess(APawn* InPawn)
 void APlayerController::Tick(float DeltaSecond)
 {
 	ProcessInput();
-	if (PlayerCameraManager.IsValid())
+	if (PlayerCameraManager)
 	{
 		PlayerCameraManager->Tick(DeltaSecond);
 	}
@@ -38,7 +38,7 @@ void APlayerController::Tick(float DeltaSecond)
 
 APlayerCameraManager* APlayerController::GetPlayerCameraManager()
 {
-	return PlayerCameraManager.Get();
+	return PlayerCameraManager;
 }
 
 void APlayerController::ProcessInput()
