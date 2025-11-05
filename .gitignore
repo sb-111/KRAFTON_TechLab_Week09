@@ -91,6 +91,8 @@ nunit-*.xml
 [Dd]ebugPS/
 [Rr]eleasePS/
 dlldata.c
+Binaries/Release_StandAlone/
+Intermediate/
 
 # Benchmark Results
 BenchmarkDotNet.Artifacts/
