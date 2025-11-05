@@ -7,6 +7,7 @@
 #include "LightManager.h"
 #include "sol/sol.hpp"
 #include "CoroutineManager.h"
+#include "PlayerController.h"
 
 // Forward Declarations
 class UResourceManager;
@@ -99,6 +100,7 @@ public:
     AGridActor* GetGridActor() const { return GridActor; }
     UWorldPartitionManager* GetPartitionManager() const { return Partition.get(); }
     UWorldPhysics* GetWorldPhysics() const { return Physics.get(); }
+    APlayerController* GetPlayerController() const { return PlayerController.get(); }
 
     // Per-world render settings
     URenderSettings& GetRenderSettings() { return RenderSettings; }
@@ -160,6 +162,9 @@ private:
 
     // Lua Coroutine Manager
     FCoroutineManager CoroutineManager;
+
+    // Pie에서 생성
+    std::unique_ptr<APlayerController> PlayerController = nullptr;
 
     // Pending Destory List
     TArray<AActor*> ActorsToDestroy;

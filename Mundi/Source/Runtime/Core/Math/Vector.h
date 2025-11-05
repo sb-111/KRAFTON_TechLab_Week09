@@ -846,6 +846,7 @@ struct alignas(16) FMatrix
 
 	// View/Proj (L H)
 	static FMatrix LookAtLH(const FVector& Eye, const FVector& At, const FVector& Up);
+	static FMatrix GetViewMatrix(const FTransform& Transform);
 	static FMatrix PerspectiveFovLH(float FovY, float Aspect, float Zn, float Zf);
 	static FMatrix OrthoLH(float Width, float Height, float Zn, float Zf);
 	static FMatrix OrthoOffCenterLH(float Left, float Right, float Bottom, float Top, float Near, float Far);
@@ -1179,6 +1180,19 @@ inline FMatrix FMatrix::LookAtLH(const FVector& Eye, const FVector& At, const FV
 	View.Rows[3] = _mm_set_ps(1.0f, -FVector::Dot(Eye, ZAxis), -FVector::Dot(Eye, YAxis), -FVector::Dot(Eye, XAxis));
 
 	return View; // get the final row-major matrix
+}
+
+inline FMatrix FMatrix::GetViewMatrix(const FTransform& Transform)
+{
+	// View 행렬을 Y-Up에서 Z-Up으로 변환하기 위한 행렬
+	static const FMatrix YUpToZUp(
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		1, 0, 0, 0,
+		0, 0, 0, 1
+	);
+
+	return (YUpToZUp * Transform.ToMatrix()).InverseAffine();
 }
 
 inline FMatrix FMatrix::PerspectiveFovLH(float FovY, float Aspect, float Zn, float Zf)

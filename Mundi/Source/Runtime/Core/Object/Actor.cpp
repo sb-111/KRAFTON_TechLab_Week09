@@ -627,28 +627,60 @@ void AActor::Serialize(const bool bInIsLoading, JSON& InOutHandle)
 			for (uint32 i = 0; i < static_cast<uint32>(ComponentsJson.size()); ++i)
 			{
 				JSON ComponentJson = ComponentsJson.at(i);
-				
+
 				FString TypeString;
 				FJsonSerializer::ReadString(ComponentJson, "Type", TypeString);
-	
-				UClass* NewClass = UClass::FindClass(TypeString);
-	
-				UActorComponent* NewComponent = Cast<UActorComponent>(ObjectFactory::NewObject(NewClass));
-	
-				NewComponent->Serialize(bInIsLoading, ComponentJson);
-	
-				// RootComponent 설정
-				if (USceneComponent* NewSceneComponent = Cast<USceneComponent>(NewComponent))
+
+				// IsNative 플래그 읽기 (없으면 false)
+				bool bIsNative = false;
+				FJsonSerializer::ReadBool(ComponentJson, "IsNative", bIsNative);
+
+				UActorComponent* ComponentToLoad = nullptr;
+
+				if (bIsNative)
 				{
-					if (RootUUID == NewSceneComponent->GetSceneId())
+					// Native 컴포넌트는 생성자에서 이미 생성되었으므로 기존 것을 찾음
+					UClass* ComponentClass = UClass::FindClass(TypeString);
+					if (ComponentClass)
 					{
-						assert(NewSceneComponent);
-						SetRootComponent(NewSceneComponent);
+						for (UActorComponent* ExistingComp : OwnedComponents)
+						{
+							if (ExistingComp && ExistingComp->IsNative() && ExistingComp->IsA(ComponentClass))
+							{
+								ComponentToLoad = ExistingComp;
+								break;
+							}
+						}
+					}
+
+					if (!ComponentToLoad)
+					{
+						UE_LOG("[Actor::Serialize] Warning: Native component '%s' not found in constructor. Skipping.", TypeString.c_str());
+						continue;
 					}
 				}
-	
-				// OwnedComponents와 SceneComponents에 Component 추가
-				AddOwnedComponent(NewComponent);
+				else
+				{
+					// Native가 아닌 컴포넌트는 새로 생성
+					UClass* NewClass = UClass::FindClass(TypeString);
+					ComponentToLoad = Cast<UActorComponent>(ObjectFactory::NewObject(NewClass));
+
+					// OwnedComponents에 추가 (Native는 생성자에서 이미 추가됨)
+					AddOwnedComponent(ComponentToLoad);
+				}
+
+				// 컴포넌트 데이터 로드
+				ComponentToLoad->Serialize(bInIsLoading, ComponentJson);
+
+				// RootComponent 설정
+				if (USceneComponent* SceneComp = Cast<USceneComponent>(ComponentToLoad))
+				{
+					if (RootUUID == SceneComp->GetSceneId())
+					{
+						assert(SceneComp);
+						SetRootComponent(SceneComp);
+					}
+				}
 			}
 	
 			// 2) 컴포넌트 간 부모 자식 관계 설정
@@ -683,11 +715,12 @@ void AActor::Serialize(const bool bInIsLoading, JSON& InOutHandle)
 			{
 				continue;
 			}
-	
+
 			JSON ComponentJson;
-	
+
 			ComponentJson["Type"] = Component->GetClass()->Name;
-	
+			ComponentJson["IsNative"] = Component->IsNative(); // Native 플래그 저장
+
 			Component->Serialize(bInIsLoading, ComponentJson);
 			Components.append(ComponentJson);
 		}

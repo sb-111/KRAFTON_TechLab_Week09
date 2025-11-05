@@ -30,6 +30,8 @@
 #include "InputManager.h"
 #include "UIManager.h"
 #include "PlayerComponent.h"
+#include "PlayerController.h"
+#include "PlayerCameraManager.h"
 
 #include "ShapeComponent.h"
 #include "BoxComponent.h"
@@ -433,8 +435,26 @@ void UWorld::InitializeLuaState()
 		"GetMouseDelta", &UInputManager::GetMouseDelta
 	);
 
+	LuaState.new_usertype<APlayerController>("PlayerController",
+		sol::base_classes, sol::bases<AActor>(),
+		"Possess", &APlayerController::Possess,
+		"GetPlayerCameraManager", &APlayerController::GetPlayerCameraManager);
+	LuaState.new_usertype<APlayerCameraManager>("PlayerCameraManager",
+		sol::base_classes, sol::bases<AActor>(),
+		"SetViewTarget", &APlayerCameraManager::SetViewTarget);
+
 	// Lua 스크립트 어디서나 접근할 수 있게전역 Input 객체 생성
 	LuaState["Input"] = &UInputManager::GetInstance();
+
+	if (PlayerController)
+	{
+		
+		LuaState["PlayerController"] = PlayerController.get();
+	}
+	else
+	{
+		UE_LOG("[경고] PlayerController가 생성되지 않았습니다. 플레이어를 조작할 수 없습니다.");
+	}
 
 	// =================================================================
 	// UI Manager 바인딩 (게임 UI 관련)
@@ -520,6 +540,10 @@ void UWorld::Tick(float DeltaSeconds)
 	// Coroutine Manager 업데이트
 	CoroutineManager.Update(DeltaSeconds);
 
+	if (PlayerController)
+	{
+		PlayerController->Tick(DeltaSeconds);
+	}
 //순서 바꾸면 안댐
 	if (Level)
 	{
@@ -550,7 +574,7 @@ UWorld* UWorld::DuplicateWorldForPIE(UWorld* InEditorWorld)
 	PIEWorld->bPie = true;
 
 	// PIE World의 Lua State 초기화 (스크립트 실행을 위해 필수)
-	PIEWorld->InitializeLuaState();
+	
 
 	// PIE World의 Coroutine Manager 초기화
 	PIEWorld->CoroutineManager.Initialize(&PIEWorld->LuaState);
@@ -579,6 +603,8 @@ UWorld* UWorld::DuplicateWorldForPIE(UWorld* InEditorWorld)
 		NewActor->SetWorld(PIEWorld);
 		
 	}
+	PIEWorld->PlayerController = std::make_unique<APlayerController>();
+	PIEWorld->InitializeLuaState();
 
 	return PIEWorld;
 }

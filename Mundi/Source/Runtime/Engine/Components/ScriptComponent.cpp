@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <fstream>
 #include "tchar.h"
+#include "Pawn.h"
 
 // UTF-8 string을 Wide string으로 변환 (Windows 한글 경로 지원)
 static std::wstring Utf8ToWide(const std::string& utf8str)
@@ -99,6 +100,22 @@ void UScriptComponent::PostDuplicate()
 	// (BeginPlay에서 자동으로 로드되므로 여기서는 초기화만 수행)
 }
 
+void UScriptComponent::HandleThrustInput(float InValue)
+{
+	if (OnThrustInput.valid())
+	{
+		OnThrustInput(InValue);
+	}
+}
+
+void UScriptComponent::HandleSteerInput(float InValue)
+{
+	if (OnSteerInput.valid())
+	{
+		OnSteerInput(InValue);
+	}
+}
+
 void UScriptComponent::InitializeEnvironment()
 {
 	if (bEnvironmentInitialized) return;
@@ -116,6 +133,11 @@ void UScriptComponent::InitializeEnvironment()
 	// 핵심: 각 스크립트마다 독립적인 'obj' 변수
 	// 이 스크립트의 obj는 이 컴포넌트의 주인(Owner) Actor를 가리킴
 	Env["obj"] = Owner;
+
+	if (APawn* Pawn = Cast<APawn>(Owner))
+	{
+		Env["Pawn"] = Pawn;
+	}
 
 	// 전역 print 함수를 UE_LOG로 리다이렉트
 	// 타입별로 직접 처리하여 환경 불일치 문제 방지 (코루틴 지원)
@@ -284,6 +306,9 @@ void UScriptComponent::LoadScript(const FString& FilePath)
 	{
 		UE_LOG("[ScriptComponent] WARNING: BeginPlay function NOT found in script!");
 	}
+
+	OnThrustInput = Env["OnThrustInput"];
+	OnSteerInput = Env["OnSteerInput"];
 }
 
 void UScriptComponent::ReloadScript()

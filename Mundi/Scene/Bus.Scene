@@ -5,6 +5,7 @@
       "OwnedComponents" : [{
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
           "Id" : 1008,
+          "IsNative" : false,
           "ParentId" : 1009,
           "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
@@ -18,6 +19,7 @@
           "bTickEnabled" : true
         }, {
           "Id" : 1009,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [-265.573303, 13.160510, 3.087589],
@@ -36,21 +38,8 @@
     "1010" : {
       "Name" : "AStaticMeshActor_7",
       "OwnedComponents" : [{
-          "BoxExtent" : [1.000000, 1.000000, 1.000000],
           "Id" : 1012,
-          "ParentId" : 1013,
-          "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
-          "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
-          "RelativeScale" : [1.000000, 1.000000, 1.000000],
-          "ShapeColor" : [1.000000, 0.340000, 0.280000, 1.000000],
-          "Type" : "UBoxComponent",
-          "bDrawOnlyIfSelected" : false,
-          "bHiddenInGame" : false,
-          "bIsActive" : true,
-          "bIsVisible" : true,
-          "bTickEnabled" : true
-        }, {
-          "Id" : 1013,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [-200.246689, -16.587347, 6.234782],
@@ -62,14 +51,30 @@
           "bIsActive" : true,
           "bIsVisible" : true,
           "bTickEnabled" : true
+        }, {
+          "BoxExtent" : [1.000000, 1.000000, 1.000000],
+          "Id" : 1013,
+          "IsNative" : false,
+          "ParentId" : 1012,
+          "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
+          "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
+          "RelativeScale" : [1.000000, 1.000000, 1.000000],
+          "ShapeColor" : [1.000000, 0.340000, 0.280000, 1.000000],
+          "Type" : "UBoxComponent",
+          "bDrawOnlyIfSelected" : false,
+          "bHiddenInGame" : false,
+          "bIsActive" : true,
+          "bIsVisible" : true,
+          "bTickEnabled" : true
         }],
-      "RootComponentId" : 1013,
+      "RootComponentId" : 1012,
       "Type" : "AStaticMeshActor"
     },
     "1014" : {
       "Name" : "AStaticMeshActor_8",
       "OwnedComponents" : [{
           "Id" : 1016,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [-156.217361, -21.308559, 4.106193],
@@ -84,6 +89,7 @@
         }, {
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
           "Id" : 1017,
+          "IsNative" : false,
           "ParentId" : 1016,
           "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
@@ -104,6 +110,7 @@
       "OwnedComponents" : [{
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
           "Id" : 1020,
+          "IsNative" : false,
           "ParentId" : 1021,
           "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
@@ -117,6 +124,7 @@
           "bTickEnabled" : true
         }, {
           "Id" : 1021,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [-159.576706, -7.948863, 3.386227],
@@ -136,6 +144,7 @@
       "Name" : "AStaticMeshActor_10",
       "OwnedComponents" : [{
           "Id" : 1024,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [-146.697189, 12.676085, 3.386227],
@@ -150,6 +159,7 @@
         }, {
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
           "Id" : 1025,
+          "IsNative" : false,
           "ParentId" : 1024,
           "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
@@ -169,6 +179,7 @@
       "Name" : "AStaticMeshActor_11",
       "OwnedComponents" : [{
           "Id" : 1028,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [-106.602821, -5.613832, 2.999682],
@@ -183,6 +194,7 @@
         }, {
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
           "Id" : 1029,
+          "IsNative" : false,
           "ParentId" : 1028,
           "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
@@ -201,21 +213,9 @@
     "1030" : {
       "Name" : "AStaticMeshActor_12",
       "OwnedComponents" : [{
-          "Id" : 1032,
-          "MaterialSlots" : [],
-          "ParentId" : 0,
-          "RelativeLocation" : [-106.602821, -10.193640, 2.851278],
-          "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
-          "RelativeScale" : [17.008438, 0.201553, 1.393846],
-          "StaticMesh" : "",
-          "Type" : "UStaticMeshComponent",
-          "bHiddenInGame" : false,
-          "bIsActive" : true,
-          "bIsVisible" : true,
-          "bTickEnabled" : true
-        }, {
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
           "Id" : 1033,
+          "IsNative" : false,
           "ParentId" : 1032,
           "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
@@ -223,6 +223,20 @@
           "ShapeColor" : [1.000000, 0.340000, 0.280000, 1.000000],
           "Type" : "UBoxComponent",
           "bDrawOnlyIfSelected" : false,
+          "bHiddenInGame" : false,
+          "bIsActive" : true,
+          "bIsVisible" : true,
+          "bTickEnabled" : true
+        }, {
+          "Id" : 1032,
+          "IsNative" : false,
+          "MaterialSlots" : [],
+          "ParentId" : 0,
+          "RelativeLocation" : [-106.602821, -10.193640, 2.851278],
+          "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
+          "RelativeScale" : [17.008438, 0.201553, 1.393846],
+          "StaticMesh" : "",
+          "Type" : "UStaticMeshComponent",
           "bHiddenInGame" : false,
           "bIsActive" : true,
           "bIsVisible" : true,
@@ -236,6 +250,7 @@
       "OwnedComponents" : [{
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
           "Id" : 1036,
+          "IsNative" : false,
           "ParentId" : 1037,
           "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
@@ -249,6 +264,7 @@
           "bTickEnabled" : true
         }, {
           "Id" : 1037,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [-422.829407, 12.713161, 3.099993],
@@ -268,6 +284,7 @@
       "Name" : "AStaticMeshActor_14",
       "OwnedComponents" : [{
           "Id" : 1040,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [-496.214020, -7.072709, 8.336875],
@@ -282,6 +299,7 @@
         }, {
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
           "Id" : 1041,
+          "IsNative" : false,
           "ParentId" : 1040,
           "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
@@ -301,6 +319,7 @@
       "Name" : "AStaticMeshActor_15",
       "OwnedComponents" : [{
           "Id" : 1044,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [-104.395058, 13.146512, 3.386227],
@@ -315,6 +334,7 @@
         }, {
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
           "Id" : 1045,
+          "IsNative" : false,
           "ParentId" : 1044,
           "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
@@ -335,6 +355,7 @@
       "OwnedComponents" : [{
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
           "Id" : 1048,
+          "IsNative" : false,
           "ParentId" : 1049,
           "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
@@ -348,6 +369,7 @@
           "bTickEnabled" : true
         }, {
           "Id" : 1049,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [-90.347878, 13.391649, 2.143671],
@@ -367,6 +389,7 @@
       "Name" : "AStaticMeshActor_17",
       "OwnedComponents" : [{
           "Id" : 1052,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [-87.044624, -9.262643, 2.475762],
@@ -381,6 +404,7 @@
         }, {
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
           "Id" : 1053,
+          "IsNative" : false,
           "ParentId" : 1052,
           "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
@@ -399,21 +423,8 @@
     "1054" : {
       "Name" : "AStaticMeshActor_18",
       "OwnedComponents" : [{
-          "BoxExtent" : [1.000000, 1.000000, 1.000000],
-          "Id" : 1057,
-          "ParentId" : 1056,
-          "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
-          "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
-          "RelativeScale" : [1.000000, 1.000000, 1.000000],
-          "ShapeColor" : [1.000000, 0.340000, 0.280000, 1.000000],
-          "Type" : "UBoxComponent",
-          "bDrawOnlyIfSelected" : false,
-          "bHiddenInGame" : false,
-          "bIsActive" : true,
-          "bIsVisible" : true,
-          "bTickEnabled" : true
-        }, {
           "Id" : 1056,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [-85.374123, -9.168821, 2.475762],
@@ -425,6 +436,21 @@
           "bIsActive" : true,
           "bIsVisible" : true,
           "bTickEnabled" : true
+        }, {
+          "BoxExtent" : [1.000000, 1.000000, 1.000000],
+          "Id" : 1057,
+          "IsNative" : false,
+          "ParentId" : 1056,
+          "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
+          "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
+          "RelativeScale" : [1.000000, 1.000000, 1.000000],
+          "ShapeColor" : [1.000000, 0.340000, 0.280000, 1.000000],
+          "Type" : "UBoxComponent",
+          "bDrawOnlyIfSelected" : false,
+          "bHiddenInGame" : false,
+          "bIsActive" : true,
+          "bIsVisible" : true,
+          "bTickEnabled" : true
         }],
       "RootComponentId" : 1056,
       "Type" : "AStaticMeshActor"
@@ -432,7 +458,23 @@
     "1058" : {
       "Name" : "AStaticMeshActor_19",
       "OwnedComponents" : [{
+          "BoxExtent" : [1.000000, 1.000000, 1.000000],
           "Id" : 1061,
+          "IsNative" : false,
+          "ParentId" : 1060,
+          "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
+          "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
+          "RelativeScale" : [1.000000, 1.000000, 1.000000],
+          "ShapeColor" : [1.000000, 0.340000, 0.280000, 1.000000],
+          "Type" : "UBoxComponent",
+          "bDrawOnlyIfSelected" : false,
+          "bHiddenInGame" : false,
+          "bIsActive" : true,
+          "bIsVisible" : true,
+          "bTickEnabled" : true
+        }, {
+          "Id" : 1060,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [-76.550308, -8.001725, 2.272338],
@@ -444,42 +486,15 @@
           "bIsActive" : true,
           "bIsVisible" : true,
           "bTickEnabled" : true
-        }, {
-          "BoxExtent" : [1.000000, 1.000000, 1.000000],
-          "Id" : 1060,
-          "ParentId" : 1061,
-          "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
-          "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
-          "RelativeScale" : [1.000000, 1.000000, 1.000000],
-          "ShapeColor" : [1.000000, 0.340000, 0.280000, 1.000000],
-          "Type" : "UBoxComponent",
-          "bDrawOnlyIfSelected" : false,
-          "bHiddenInGame" : false,
-          "bIsActive" : true,
-          "bIsVisible" : true,
-          "bTickEnabled" : true
         }],
-      "RootComponentId" : 1061,
+      "RootComponentId" : 1060,
       "Type" : "AStaticMeshActor"
     },
     "1062" : {
       "Name" : "AStaticMeshActor_20",
       "OwnedComponents" : [{
-          "BoxExtent" : [1.000000, 1.000000, 1.000000],
-          "Id" : 1064,
-          "ParentId" : 1065,
-          "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
-          "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
-          "RelativeScale" : [1.000000, 1.000000, 1.000000],
-          "ShapeColor" : [1.000000, 0.340000, 0.280000, 1.000000],
-          "Type" : "UBoxComponent",
-          "bDrawOnlyIfSelected" : false,
-          "bHiddenInGame" : false,
-          "bIsActive" : true,
-          "bIsVisible" : true,
-          "bTickEnabled" : true
-        }, {
           "Id" : 1065,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [-73.561256, -8.105310, 2.272338],
@@ -487,6 +502,21 @@
           "RelativeScale" : [0.612708, 0.269422, 1.352460],
           "StaticMesh" : "",
           "Type" : "UStaticMeshComponent",
+          "bHiddenInGame" : false,
+          "bIsActive" : true,
+          "bIsVisible" : true,
+          "bTickEnabled" : true
+        }, {
+          "BoxExtent" : [1.000000, 1.000000, 1.000000],
+          "Id" : 1064,
+          "IsNative" : false,
+          "ParentId" : 1065,
+          "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
+          "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
+          "RelativeScale" : [1.000000, 1.000000, 1.000000],
+          "ShapeColor" : [1.000000, 0.340000, 0.280000, 1.000000],
+          "Type" : "UBoxComponent",
+          "bDrawOnlyIfSelected" : false,
           "bHiddenInGame" : false,
           "bIsActive" : true,
           "bIsVisible" : true,
@@ -499,6 +529,7 @@
       "Name" : "AStaticMeshActor_21",
       "OwnedComponents" : [{
           "Id" : 1068,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [-26.525166, -8.105310, 2.272338],
@@ -513,6 +544,7 @@
         }, {
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
           "Id" : 1069,
+          "IsNative" : false,
           "ParentId" : 1068,
           "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
@@ -533,6 +565,7 @@
       "OwnedComponents" : [{
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
           "Id" : 1072,
+          "IsNative" : false,
           "ParentId" : 1073,
           "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
@@ -546,6 +579,7 @@
           "bTickEnabled" : true
         }, {
           "Id" : 1073,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [4.461361, -10.019454, 2.948747],
@@ -566,6 +600,7 @@
       "OwnedComponents" : [{
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
           "Id" : 1076,
+          "IsNative" : false,
           "ParentId" : 1077,
           "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
@@ -579,6 +614,7 @@
           "bTickEnabled" : true
         }, {
           "Id" : 1077,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [4.461361, -5.532504, 2.948747],
@@ -599,6 +635,7 @@
       "OwnedComponents" : [{
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
           "Id" : 1080,
+          "IsNative" : false,
           "ParentId" : 1081,
           "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
@@ -612,6 +649,7 @@
           "bTickEnabled" : true
         }, {
           "Id" : 1081,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [-2.887214, 12.886603, 2.948747],
@@ -632,6 +670,7 @@
       "OwnedComponents" : [{
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
           "Id" : 1084,
+          "IsNative" : false,
           "ParentId" : 1085,
           "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
@@ -645,6 +684,7 @@
           "bTickEnabled" : true
         }, {
           "Id" : 1085,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [-24.987690, 12.886603, 2.399894],
@@ -663,21 +703,8 @@
     "1086" : {
       "Name" : "AStaticMeshActor_26",
       "OwnedComponents" : [{
-          "BoxExtent" : [1.000000, 1.000000, 1.000000],
           "Id" : 1089,
-          "ParentId" : 1088,
-          "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
-          "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
-          "RelativeScale" : [1.000000, 1.000000, 1.000000],
-          "ShapeColor" : [1.000000, 0.340000, 0.280000, 1.000000],
-          "Type" : "UBoxComponent",
-          "bDrawOnlyIfSelected" : false,
-          "bHiddenInGame" : false,
-          "bIsActive" : true,
-          "bIsVisible" : true,
-          "bTickEnabled" : true
-        }, {
-          "Id" : 1088,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [25.367647, 12.886603, 2.948747],
@@ -689,14 +716,30 @@
           "bIsActive" : true,
           "bIsVisible" : true,
           "bTickEnabled" : true
+        }, {
+          "BoxExtent" : [1.000000, 1.000000, 1.000000],
+          "Id" : 1088,
+          "IsNative" : false,
+          "ParentId" : 1089,
+          "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
+          "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
+          "RelativeScale" : [1.000000, 1.000000, 1.000000],
+          "ShapeColor" : [1.000000, 0.340000, 0.280000, 1.000000],
+          "Type" : "UBoxComponent",
+          "bDrawOnlyIfSelected" : false,
+          "bHiddenInGame" : false,
+          "bIsActive" : true,
+          "bIsVisible" : true,
+          "bTickEnabled" : true
         }],
-      "RootComponentId" : 1088,
+      "RootComponentId" : 1089,
       "Type" : "AStaticMeshActor"
     },
     "1090" : {
       "Name" : "AStaticMeshActor_27",
       "OwnedComponents" : [{
           "Id" : 1092,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [35.722385, 12.941469, 3.439309],
@@ -711,6 +754,7 @@
         }, {
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
           "Id" : 1093,
+          "IsNative" : false,
           "ParentId" : 1092,
           "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
@@ -729,21 +773,8 @@
     "1094" : {
       "Name" : "AStaticMeshActor_28",
       "OwnedComponents" : [{
-          "BoxExtent" : [1.000000, 1.000000, 1.000000],
-          "Id" : 1096,
-          "ParentId" : 1097,
-          "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
-          "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
-          "RelativeScale" : [1.000000, 1.000000, 1.000000],
-          "ShapeColor" : [1.000000, 0.340000, 0.280000, 1.000000],
-          "Type" : "UBoxComponent",
-          "bDrawOnlyIfSelected" : false,
-          "bHiddenInGame" : false,
-          "bIsActive" : true,
-          "bIsVisible" : true,
-          "bTickEnabled" : true
-        }, {
           "Id" : 1097,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [59.852131, -7.830465, 3.752535],
@@ -751,6 +782,21 @@
           "RelativeScale" : [1.201264, 0.472421, 1.801272],
           "StaticMesh" : "",
           "Type" : "UStaticMeshComponent",
+          "bHiddenInGame" : false,
+          "bIsActive" : true,
+          "bIsVisible" : true,
+          "bTickEnabled" : true
+        }, {
+          "BoxExtent" : [1.000000, 1.000000, 1.000000],
+          "Id" : 1096,
+          "IsNative" : false,
+          "ParentId" : 1097,
+          "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
+          "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
+          "RelativeScale" : [1.000000, 1.000000, 1.000000],
+          "ShapeColor" : [1.000000, 0.340000, 0.280000, 1.000000],
+          "Type" : "UBoxComponent",
+          "bDrawOnlyIfSelected" : false,
           "bHiddenInGame" : false,
           "bIsActive" : true,
           "bIsVisible" : true,
@@ -763,6 +809,7 @@
       "Name" : "AStaticMeshActor_29",
       "OwnedComponents" : [{
           "Id" : 1100,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [75.933746, 12.918350, 3.752535],
@@ -777,6 +824,7 @@
         }, {
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
           "Id" : 1101,
+          "IsNative" : false,
           "ParentId" : 1100,
           "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
@@ -797,6 +845,7 @@
       "OwnedComponents" : [{
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
           "Id" : 1104,
+          "IsNative" : false,
           "ParentId" : 1105,
           "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
@@ -810,6 +859,7 @@
           "bTickEnabled" : true
         }, {
           "Id" : 1105,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [133.530762, -8.423667, 3.222259],
@@ -828,7 +878,8 @@
     "1106" : {
       "Name" : "AStaticMeshActor_31",
       "OwnedComponents" : [{
-          "Id" : 1109,
+          "Id" : 1108,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [142.978058, -8.174972, 3.222259],
@@ -842,8 +893,9 @@
           "bTickEnabled" : true
         }, {
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
-          "Id" : 1108,
-          "ParentId" : 1109,
+          "Id" : 1109,
+          "IsNative" : false,
+          "ParentId" : 1108,
           "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
           "RelativeScale" : [1.000000, 1.000000, 1.000000],
@@ -855,13 +907,14 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1109,
+      "RootComponentId" : 1108,
       "Type" : "AStaticMeshActor"
     },
     "1110" : {
       "Name" : "AStaticMeshActor_32",
       "OwnedComponents" : [{
           "Id" : 1112,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [170.162369, 12.930395, 3.065287],
@@ -876,6 +929,7 @@
         }, {
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
           "Id" : 1113,
+          "IsNative" : false,
           "ParentId" : 1112,
           "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
@@ -896,6 +950,7 @@
       "OwnedComponents" : [{
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
           "Id" : 1116,
+          "IsNative" : false,
           "ParentId" : 1117,
           "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
@@ -909,6 +964,7 @@
           "bTickEnabled" : true
         }, {
           "Id" : 1117,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [227.165405, -8.158812, 3.065287],
@@ -929,6 +985,7 @@
       "OwnedComponents" : [{
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
           "Id" : 1120,
+          "IsNative" : false,
           "ParentId" : 1121,
           "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
@@ -942,6 +999,7 @@
           "bTickEnabled" : true
         }, {
           "Id" : 1121,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [228.641113, -8.665725, 3.065287],
@@ -961,6 +1019,7 @@
       "Name" : "AStaticMeshActor_35",
       "OwnedComponents" : [{
           "Id" : 1124,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [313.348206, -9.304433, 3.065287],
@@ -975,6 +1034,7 @@
         }, {
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
           "Id" : 1125,
+          "IsNative" : false,
           "ParentId" : 1124,
           "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
@@ -993,7 +1053,8 @@
     "1126" : {
       "Name" : "AStaticMeshActor_36",
       "OwnedComponents" : [{
-          "Id" : 1128,
+          "Id" : 1129,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [311.179871, -8.142874, 3.065287],
@@ -1007,8 +1068,9 @@
           "bTickEnabled" : true
         }, {
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
-          "Id" : 1129,
-          "ParentId" : 1128,
+          "Id" : 1128,
+          "IsNative" : false,
+          "ParentId" : 1129,
           "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
           "RelativeScale" : [1.000000, 1.000000, 1.000000],
@@ -1020,13 +1082,29 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1128,
+      "RootComponentId" : 1129,
       "Type" : "AStaticMeshActor"
     },
     "1130" : {
       "Name" : "AStaticMeshActor_37",
       "OwnedComponents" : [{
+          "BoxExtent" : [1.000000, 1.000000, 1.000000],
           "Id" : 1133,
+          "IsNative" : false,
+          "ParentId" : 1132,
+          "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
+          "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
+          "RelativeScale" : [1.000000, 1.000000, 1.000000],
+          "ShapeColor" : [1.000000, 0.340000, 0.280000, 1.000000],
+          "Type" : "UBoxComponent",
+          "bDrawOnlyIfSelected" : false,
+          "bHiddenInGame" : false,
+          "bIsActive" : true,
+          "bIsVisible" : true,
+          "bTickEnabled" : true
+        }, {
+          "Id" : 1132,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [286.319977, 14.961786, 7.049127],
@@ -1038,28 +1116,15 @@
           "bIsActive" : true,
           "bIsVisible" : true,
           "bTickEnabled" : true
-        }, {
-          "BoxExtent" : [1.000000, 1.000000, 1.000000],
-          "Id" : 1132,
-          "ParentId" : 1133,
-          "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
-          "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
-          "RelativeScale" : [1.000000, 1.000000, 1.000000],
-          "ShapeColor" : [1.000000, 0.340000, 0.280000, 1.000000],
-          "Type" : "UBoxComponent",
-          "bDrawOnlyIfSelected" : false,
-          "bHiddenInGame" : false,
-          "bIsActive" : true,
-          "bIsVisible" : true,
-          "bTickEnabled" : true
         }],
-      "RootComponentId" : 1133,
+      "RootComponentId" : 1132,
       "Type" : "AStaticMeshActor"
     },
     "1134" : {
       "Name" : "AStaticMeshActor_38",
       "OwnedComponents" : [{
           "Id" : 1136,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [386.665894, -5.263349, 9.204147],
@@ -1074,6 +1139,7 @@
         }, {
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
           "Id" : 1137,
+          "IsNative" : false,
           "ParentId" : 1136,
           "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
@@ -1093,6 +1159,7 @@
       "Name" : "AEmptyActor_11",
       "OwnedComponents" : [{
           "Id" : 1139,
+          "IsNative" : false,
           "ParentId" : 0,
           "RelativeLocation" : [-114.754013, 12.811312, 2.501226],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
@@ -1110,6 +1177,7 @@
       "Name" : "AEmptyActor_28",
       "OwnedComponents" : [{
           "Id" : 1141,
+          "IsNative" : false,
           "ParentId" : 0,
           "RelativeLocation" : [387.067383, -4.715559, 2.997723],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
@@ -1126,97 +1194,8 @@
     "1142" : {
       "Name" : "스태틱 메시_0",
       "OwnedComponents" : [{
-          "AttenuationRadius" : 5.000000,
-          "FalloffExponent" : 2.000000,
-          "Id" : 1975,
-          "InnerConeAngle" : 30.000000,
-          "Intensity" : 1.000000,
-          "LightColor" : [1.000000, 1.000000, 1.000000, 1.000000],
-          "MaxSlopeDepthBias" : 1.000000,
-          "OuterConeAngle" : 45.000000,
-          "ParentId" : 1147,
-          "RelativeLocation" : [0.000000, 0.000000, -2.455548],
-          "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
-          "RelativeScale" : [1.000000, 1.000000, 1.000000],
-          "ShadowBias" : 0.000100,
-          "ShadowSharpen" : 0.500000,
-          "ShadowSlopeBias" : 0.001000,
-          "SourceRadius" : 0.000000,
-          "Temperature" : 6500.000000,
-          "Type" : "USpotLightComponent",
-          "bCastShadows" : true,
-          "bHiddenInGame" : false,
-          "bIsActive" : true,
-          "bIsVisible" : true,
-          "bOverrideLightPerspective" : false,
-          "bTickEnabled" : true,
-          "bUseInverseSquareFalloff" : true
-        }, {
-          "CapsuleHalfHeight" : 2.700000,
-          "CapsuleRadius" : 1.400000,
-          "Id" : 1146,
-          "ParentId" : 1147,
-          "RelativeLocation" : [-0.363764, 0.000000, 0.359111],
-          "RelativeRotationEuler" : [0.000000, -90.000000, -0.000005],
-          "RelativeScale" : [1.000000, 1.170783, 1.842235],
-          "ShapeColor" : [1.000000, 0.340000, 0.280000, 1.000000],
-          "Type" : "UCapsuleComponent",
-          "bDrawOnlyIfSelected" : false,
-          "bHiddenInGame" : false,
-          "bIsActive" : true,
-          "bIsVisible" : true,
-          "bTickEnabled" : true
-        }, {
-          "ScriptFilePath" : "Scripts/Bus_스태틱 메시_0_0.lua",
-          "Type" : "UScriptComponent",
-          "bIsActive" : true,
-          "bTickEnabled" : true
-        }, {
-          "Type" : "UPlayerComponent",
-          "bIsActive" : true,
-          "bTickEnabled" : false
-        }, {
-          "Id" : 1147,
-          "MaterialSlots" : [{
-              "AssetPath" : "Material_Redbull",
-              "Type" : "UMaterial"
-            }, {
-              "AssetPath" : "Material_Redbull",
-              "Type" : "UMaterial"
-            }, {
-              "AssetPath" : "Material_Redbull",
-              "Type" : "UMaterial"
-            }, {
-              "AssetPath" : "Material_Redbull",
-              "Type" : "UMaterial"
-            }, {
-              "AssetPath" : "Material_Redbull",
-              "Type" : "UMaterial"
-            }, {
-              "AssetPath" : "Material_Redbull",
-              "Type" : "UMaterial"
-            }, {
-              "AssetPath" : "Material_Redbull",
-              "Type" : "UMaterial"
-            }],
-          "ParentId" : 0,
-          "RelativeLocation" : [-480.000000, 0.690840, 1.654447],
-          "RelativeRotationEuler" : [0.000000, -0.000000, -179.999969],
-          "RelativeScale" : [2.000000, 2.000000, 2.000000],
-          "StaticMesh" : "Data/Model/Redbull/Redbull.obj",
-          "Type" : "UStaticMeshComponent",
-          "bHiddenInGame" : false,
-          "bIsActive" : true,
-          "bIsVisible" : true,
-          "bTickEnabled" : true
-        }],
-      "RootComponentId" : 1147,
-      "Type" : "AStaticMeshActor"
-    },
-    "1148" : {
-      "Name" : "스태틱 메시_0",
-      "OwnedComponents" : [{
-          "Id" : 1150,
+          "Id" : 1144,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "AssetPath" : "Props1_u2NWBuild9_1",
               "Type" : "UMaterial"
@@ -1838,10 +1817,10 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1150,
+      "RootComponentId" : 1144,
       "Type" : "AStaticMeshActor"
     },
-    "1151" : {
+    "1145" : {
       "Name" : "하이트 포그 액터_0",
       "OwnedComponents" : [{
           "FogCutoffDistance" : 6000.000000,
@@ -1850,7 +1829,8 @@
           "FogInscatteringColor" : [0.356345, 0.575937, 0.961390, 1.000000],
           "FogMaxOpacity" : 1.000000,
           "HeightFogShader" : "Shaders/PostProcess/HeightFog_PS.hlsl",
-          "Id" : 1154,
+          "Id" : 1148,
+          "IsNative" : false,
           "ParentId" : 0,
           "RelativeLocation" : [-73.636047, 11.462835, -2.521000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
@@ -1862,13 +1842,14 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1154,
+      "RootComponentId" : 1148,
       "Type" : "AHeightFogActor"
     },
-    "1155" : {
+    "1149" : {
       "Name" : "스태틱 메시_0",
       "OwnedComponents" : [{
-          "Id" : 1157,
+          "Id" : 1151,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "AssetPath" : "Shaders/Materials/UberLit.hlsl_LIGHTING_MODEL_PHONG=1",
               "Type" : "UMaterial"
@@ -1885,8 +1866,9 @@
           "bTickEnabled" : true
         }, {
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
-          "Id" : 1158,
-          "ParentId" : 1157,
+          "Id" : 1152,
+          "IsNative" : false,
+          "ParentId" : 1151,
           "RelativeLocation" : [37.387001, -0.081478, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
           "RelativeScale" : [37.500000, 1.000000, 0.305111],
@@ -1898,13 +1880,14 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1157,
+      "RootComponentId" : 1151,
       "Type" : "AStaticMeshActor"
     },
-    "1159" : {
+    "1153" : {
       "Name" : "AStaticMeshActor_0",
       "OwnedComponents" : [{
-          "Id" : 1161,
+          "Id" : 1155,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "AssetPath" : "Shaders/Materials/UberLit.hlsl_LIGHTING_MODEL_PHONG=1",
               "Type" : "UMaterial"
@@ -1921,8 +1904,9 @@
           "bTickEnabled" : true
         }, {
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
-          "Id" : 1162,
-          "ParentId" : 1161,
+          "Id" : 1156,
+          "IsNative" : false,
+          "ParentId" : 1155,
           "RelativeLocation" : [37.900002, -0.081478, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
           "RelativeScale" : [37.700001, 1.000000, 0.305111],
@@ -1934,13 +1918,14 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1161,
+      "RootComponentId" : 1155,
       "Type" : "AStaticMeshActor"
     },
-    "1163" : {
+    "1157" : {
       "Name" : "스태틱 메시_1",
       "OwnedComponents" : [{
-          "Id" : 1165,
+          "Id" : 1159,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "AssetPath" : "EYES",
               "Type" : "UMaterial"
@@ -1965,13 +1950,14 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1165,
+      "RootComponentId" : 1159,
       "Type" : "AStaticMeshActor"
     },
-    "1166" : {
+    "1160" : {
       "Name" : "AStaticMeshActor_1",
       "OwnedComponents" : [{
-          "Id" : 1168,
+          "Id" : 1162,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "AssetPath" : "EYES",
               "Type" : "UMaterial"
@@ -1996,13 +1982,14 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1168,
+      "RootComponentId" : 1162,
       "Type" : "AStaticMeshActor"
     },
-    "1169" : {
+    "1163" : {
       "Name" : "AStaticMeshActor_2",
       "OwnedComponents" : [{
-          "Id" : 1171,
+          "Id" : 1165,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "AssetPath" : "EYES",
               "Type" : "UMaterial"
@@ -2027,13 +2014,14 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1171,
+      "RootComponentId" : 1165,
       "Type" : "AStaticMeshActor"
     },
-    "1172" : {
+    "1166" : {
       "Name" : "AStaticMeshActor_3",
       "OwnedComponents" : [{
-          "Id" : 1174,
+          "Id" : 1168,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "AssetPath" : "EYES",
               "Type" : "UMaterial"
@@ -2058,13 +2046,14 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1174,
+      "RootComponentId" : 1168,
       "Type" : "AStaticMeshActor"
     },
-    "1175" : {
+    "1169" : {
       "Name" : "AStaticMeshActor_4",
       "OwnedComponents" : [{
-          "Id" : 1177,
+          "Id" : 1171,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "AssetPath" : "EYES",
               "Type" : "UMaterial"
@@ -2089,13 +2078,14 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1177,
+      "RootComponentId" : 1171,
       "Type" : "AStaticMeshActor"
     },
-    "1178" : {
+    "1172" : {
       "Name" : "AStaticMeshActor_5",
       "OwnedComponents" : [{
-          "Id" : 1180,
+          "Id" : 1174,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "AssetPath" : "EYES",
               "Type" : "UMaterial"
@@ -2120,22 +2110,16 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1180,
+      "RootComponentId" : 1174,
       "Type" : "AStaticMeshActor"
     },
-    "1181" : {
+    "1175" : {
       "Name" : "AStaticMeshActor_0",
       "OwnedComponents" : [{
-          "PivotTranslation" : [0.000000, 0.000000, 0.000000],
-          "RotationRate" : [0.000000, 0.000000, 90.000000],
-          "Type" : "URotatingMovementComponent",
-          "bIsActive" : true,
-          "bRotationInLocalSpace" : true,
-          "bTickEnabled" : true
-        }, {
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
-          "Id" : 1184,
-          "ParentId" : 1185,
+          "Id" : 1178,
+          "IsNative" : false,
+          "ParentId" : 1180,
           "RelativeLocation" : [0.000000, 0.000000, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
           "RelativeScale" : [1.000000, 1.436427, 0.873607],
@@ -2147,12 +2131,22 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }, {
+          "IsNative" : false,
           "ScriptFilePath" : "Scripts/Bus_AStaticMeshActor_0_0.lua",
           "Type" : "UScriptComponent",
           "bIsActive" : true,
           "bTickEnabled" : true
         }, {
-          "Id" : 1185,
+          "IsNative" : false,
+          "PivotTranslation" : [0.000000, 0.000000, 0.000000],
+          "RotationRate" : [0.000000, 0.000000, 90.000000],
+          "Type" : "URotatingMovementComponent",
+          "bIsActive" : true,
+          "bRotationInLocalSpace" : true,
+          "bTickEnabled" : true
+        }, {
+          "Id" : 1180,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "AssetPath" : "Barrier_red",
               "Type" : "UMaterial"
@@ -2177,13 +2171,14 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1185,
+      "RootComponentId" : 1180,
       "Type" : "AStaticMeshActor"
     },
-    "1187" : {
+    "1181" : {
       "Name" : "스태틱 메시_2",
       "OwnedComponents" : [{
-          "Id" : 1189,
+          "Id" : 1183,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "AssetPath" : "Body",
               "Type" : "UMaterial"
@@ -2221,8 +2216,9 @@
           "bTickEnabled" : true
         }, {
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
-          "Id" : 1190,
-          "ParentId" : 1189,
+          "Id" : 1184,
+          "IsNative" : false,
+          "ParentId" : 1183,
           "RelativeLocation" : [0.000000, 0.000000, 1.023559],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
           "RelativeScale" : [2.342641, 1.000000, 0.981577],
@@ -2234,15 +2230,16 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1189,
+      "RootComponentId" : 1183,
       "Type" : "AStaticMeshActor"
     },
-    "1191" : {
+    "1185" : {
       "Name" : "AStaticMeshActor_1",
       "OwnedComponents" : [{
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
-          "Id" : 1193,
-          "ParentId" : 1194,
+          "Id" : 1187,
+          "IsNative" : false,
+          "ParentId" : 1188,
           "RelativeLocation" : [0.000000, 0.000000, 1.023559],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
           "RelativeScale" : [2.342641, 1.000000, 0.981577],
@@ -2254,7 +2251,8 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }, {
-          "Id" : 1194,
+          "Id" : 1188,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "AssetPath" : "Body",
               "Type" : "UMaterial"
@@ -2291,15 +2289,16 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1194,
+      "RootComponentId" : 1188,
       "Type" : "AStaticMeshActor"
     },
-    "1195" : {
+    "1189" : {
       "Name" : "스태틱 메시_3",
       "OwnedComponents" : [{
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
-          "Id" : 1197,
-          "ParentId" : 1198,
+          "Id" : 1191,
+          "IsNative" : false,
+          "ParentId" : 1192,
           "RelativeLocation" : [0.000000, 0.000000, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
           "RelativeScale" : [0.507918, 1.322857, 1.000000],
@@ -2311,7 +2310,8 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }, {
-          "Id" : 1198,
+          "Id" : 1192,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "AssetPath" : "Barrier_red",
               "Type" : "UMaterial"
@@ -2336,13 +2336,14 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1198,
+      "RootComponentId" : 1192,
       "Type" : "AStaticMeshActor"
     },
-    "1199" : {
+    "1193" : {
       "Name" : "스태틱 메시_4",
       "OwnedComponents" : [{
-          "Id" : 1201,
+          "Id" : 1195,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "Overrides" : {
                 "Scalars" : {
@@ -2370,8 +2371,9 @@
           "bTickEnabled" : true
         }, {
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
-          "Id" : 1203,
-          "ParentId" : 1201,
+          "Id" : 1197,
+          "IsNative" : false,
+          "ParentId" : 1195,
           "RelativeLocation" : [0.000000, -0.008057, -0.031910],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
           "RelativeScale" : [1.000000, 0.505038, 0.513733],
@@ -2383,15 +2385,16 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1201,
+      "RootComponentId" : 1195,
       "Type" : "AStaticMeshActor"
     },
-    "1204" : {
+    "1198" : {
       "Name" : "스태틱 메시_5",
       "OwnedComponents" : [{
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
-          "Id" : 1206,
-          "ParentId" : 1207,
+          "Id" : 1200,
+          "IsNative" : false,
+          "ParentId" : 1201,
           "RelativeLocation" : [0.000000, 2.890257, 1.509692],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
           "RelativeScale" : [2.869121, 3.062038, 7.201093],
@@ -2403,7 +2406,8 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }, {
-          "Id" : 1207,
+          "Id" : 1201,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "AssetPath" : "M18_Smoke",
               "Type" : "UMaterial"
@@ -2419,13 +2423,29 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1207,
+      "RootComponentId" : 1201,
       "Type" : "AStaticMeshActor"
     },
-    "1208" : {
+    "1202" : {
       "Name" : "스태틱 메시_6",
       "OwnedComponents" : [{
-          "Id" : 1210,
+          "BoxExtent" : [1.000000, 1.000000, 1.000000],
+          "Id" : 1204,
+          "IsNative" : false,
+          "ParentId" : 1205,
+          "RelativeLocation" : [0.093051, 0.000001, -0.000000],
+          "RelativeRotationEuler" : [0.000001, 0.000002, 0.000000],
+          "RelativeScale" : [22.538206, 6.282478, 16.786848],
+          "ShapeColor" : [1.000000, 0.340000, 0.280000, 1.000000],
+          "Type" : "UBoxComponent",
+          "bDrawOnlyIfSelected" : false,
+          "bHiddenInGame" : false,
+          "bIsActive" : true,
+          "bIsVisible" : true,
+          "bTickEnabled" : true
+        }, {
+          "Id" : 1205,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "AssetPath" : "bus_ussr1",
               "Type" : "UMaterial"
@@ -2440,28 +2460,15 @@
           "bIsActive" : true,
           "bIsVisible" : true,
           "bTickEnabled" : true
-        }, {
-          "BoxExtent" : [1.000000, 1.000000, 1.000000],
-          "Id" : 1211,
-          "ParentId" : 1210,
-          "RelativeLocation" : [0.093051, 0.000001, -0.000000],
-          "RelativeRotationEuler" : [0.000001, 0.000002, 0.000000],
-          "RelativeScale" : [22.538206, 6.282478, 16.786848],
-          "ShapeColor" : [1.000000, 0.340000, 0.280000, 1.000000],
-          "Type" : "UBoxComponent",
-          "bDrawOnlyIfSelected" : false,
-          "bHiddenInGame" : false,
-          "bIsActive" : true,
-          "bIsVisible" : true,
-          "bTickEnabled" : true
         }],
-      "RootComponentId" : 1210,
+      "RootComponentId" : 1205,
       "Type" : "AStaticMeshActor"
     },
-    "1212" : {
+    "1206" : {
       "Name" : "AStaticMeshActor_6",
       "OwnedComponents" : [{
-          "Id" : 1214,
+          "Id" : 1208,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "AssetPath" : "EYES",
               "Type" : "UMaterial"
@@ -2486,18 +2493,14 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1214,
+      "RootComponentId" : 1208,
       "Type" : "AStaticMeshActor"
     },
-    "1215" : {
+    "1209" : {
       "Name" : "액터_0",
       "OwnedComponents" : [{
-          "ScriptFilePath" : "Scripts/Bus_액터_0_0.lua",
-          "Type" : "UScriptComponent",
-          "bIsActive" : true,
-          "bTickEnabled" : true
-        }, {
-          "Id" : 1216,
+          "Id" : 1210,
+          "IsNative" : false,
           "ParentId" : 0,
           "RelativeLocation" : [-470.667725, -3.502194, 11.563097],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
@@ -2507,14 +2510,21 @@
           "bIsActive" : true,
           "bIsVisible" : true,
           "bTickEnabled" : true
+        }, {
+          "IsNative" : false,
+          "ScriptFilePath" : "Scripts/Bus_액터_0_0.lua",
+          "Type" : "UScriptComponent",
+          "bIsActive" : true,
+          "bTickEnabled" : true
         }],
-      "RootComponentId" : 1216,
+      "RootComponentId" : 1210,
       "Type" : "AEmptyActor"
     },
-    "1218" : {
+    "1212" : {
       "Name" : "AStaticMeshActor_7",
       "OwnedComponents" : [{
-          "Id" : 1220,
+          "Id" : 1214,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "AssetPath" : "EYES",
               "Type" : "UMaterial"
@@ -2539,13 +2549,14 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1220,
+      "RootComponentId" : 1214,
       "Type" : "AStaticMeshActor"
     },
-    "1221" : {
+    "1215" : {
       "Name" : "AStaticMeshActor_8",
       "OwnedComponents" : [{
-          "Id" : 1223,
+          "Id" : 1217,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "AssetPath" : "EYES",
               "Type" : "UMaterial"
@@ -2570,13 +2581,14 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1223,
+      "RootComponentId" : 1217,
       "Type" : "AStaticMeshActor"
     },
-    "1224" : {
+    "1218" : {
       "Name" : "AStaticMeshActor_9",
       "OwnedComponents" : [{
-          "Id" : 1226,
+          "Id" : 1220,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "AssetPath" : "EYES",
               "Type" : "UMaterial"
@@ -2601,13 +2613,14 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1226,
+      "RootComponentId" : 1220,
       "Type" : "AStaticMeshActor"
     },
-    "1227" : {
+    "1221" : {
       "Name" : "AStaticMeshActor_12",
       "OwnedComponents" : [{
-          "Id" : 1229,
+          "Id" : 1223,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "AssetPath" : "Material__30.001",
               "Type" : "UMaterial"
@@ -2633,8 +2646,9 @@
           "bTickEnabled" : true
         }, {
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
-          "Id" : 1230,
-          "ParentId" : 1229,
+          "Id" : 1224,
+          "IsNative" : false,
+          "ParentId" : 1223,
           "RelativeLocation" : [0.000000, 0.000000, 1.306170],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
           "RelativeScale" : [1.939913, 1.875072, 1.519864],
@@ -2646,13 +2660,14 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1229,
+      "RootComponentId" : 1223,
       "Type" : "AStaticMeshActor"
     },
-    "1231" : {
+    "1225" : {
       "Name" : "AStaticMeshActor_13",
       "OwnedComponents" : [{
-          "Id" : 1233,
+          "Id" : 1227,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "AssetPath" : "Material__30.001",
               "Type" : "UMaterial"
@@ -2678,8 +2693,9 @@
           "bTickEnabled" : true
         }, {
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
-          "Id" : 1234,
-          "ParentId" : 1233,
+          "Id" : 1228,
+          "IsNative" : false,
+          "ParentId" : 1227,
           "RelativeLocation" : [0.000000, 0.000000, 1.306170],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
           "RelativeScale" : [1.939913, 1.875072, 1.519864],
@@ -2691,13 +2707,14 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1233,
+      "RootComponentId" : 1227,
       "Type" : "AStaticMeshActor"
     },
-    "1235" : {
+    "1229" : {
       "Name" : "AStaticMeshActor_14",
       "OwnedComponents" : [{
-          "Id" : 1238,
+          "Id" : 1231,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "AssetPath" : "Material__30.001",
               "Type" : "UMaterial"
@@ -2723,8 +2740,9 @@
           "bTickEnabled" : true
         }, {
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
-          "Id" : 1237,
-          "ParentId" : 1238,
+          "Id" : 1232,
+          "IsNative" : false,
+          "ParentId" : 1231,
           "RelativeLocation" : [0.000000, 0.000000, 1.306170],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
           "RelativeScale" : [1.939913, 1.875072, 1.519864],
@@ -2736,27 +2754,14 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1238,
+      "RootComponentId" : 1231,
       "Type" : "AStaticMeshActor"
     },
-    "1239" : {
+    "1233" : {
       "Name" : "AStaticMeshActor_15",
       "OwnedComponents" : [{
-          "BoxExtent" : [1.000000, 1.000000, 1.000000],
-          "Id" : 1241,
-          "ParentId" : 1242,
-          "RelativeLocation" : [0.000000, 0.000000, 1.306170],
-          "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
-          "RelativeScale" : [1.939913, 1.875072, 1.519864],
-          "ShapeColor" : [1.000000, 0.340000, 0.280000, 1.000000],
-          "Type" : "UBoxComponent",
-          "bDrawOnlyIfSelected" : false,
-          "bHiddenInGame" : false,
-          "bIsActive" : true,
-          "bIsVisible" : true,
-          "bTickEnabled" : true
-        }, {
-          "Id" : 1242,
+          "Id" : 1236,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "AssetPath" : "Material__30.001",
               "Type" : "UMaterial"
@@ -2780,14 +2785,30 @@
           "bIsActive" : true,
           "bIsVisible" : true,
           "bTickEnabled" : true
+        }, {
+          "BoxExtent" : [1.000000, 1.000000, 1.000000],
+          "Id" : 1235,
+          "IsNative" : false,
+          "ParentId" : 1236,
+          "RelativeLocation" : [0.000000, 0.000000, 1.306170],
+          "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
+          "RelativeScale" : [1.939913, 1.875072, 1.519864],
+          "ShapeColor" : [1.000000, 0.340000, 0.280000, 1.000000],
+          "Type" : "UBoxComponent",
+          "bDrawOnlyIfSelected" : false,
+          "bHiddenInGame" : false,
+          "bIsActive" : true,
+          "bIsVisible" : true,
+          "bTickEnabled" : true
         }],
-      "RootComponentId" : 1242,
+      "RootComponentId" : 1236,
       "Type" : "AStaticMeshActor"
     },
-    "1243" : {
+    "1237" : {
       "Name" : "액터_0",
       "OwnedComponents" : [{
-          "Id" : 1244,
+          "Id" : 1238,
+          "IsNative" : false,
           "ParentId" : 0,
           "RelativeLocation" : [-201.107452, -15.495220, 6.704556],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
@@ -2798,13 +2819,14 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1244,
+      "RootComponentId" : 1238,
       "Type" : "AEmptyActor"
     },
-    "1245" : {
+    "1239" : {
       "Name" : "액터_1",
       "OwnedComponents" : [{
-          "Id" : 1246,
+          "Id" : 1240,
+          "IsNative" : false,
           "ParentId" : 0,
           "RelativeLocation" : [-157.684906, -21.504507, 4.647461],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
@@ -2815,13 +2837,14 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1246,
+      "RootComponentId" : 1240,
       "Type" : "AEmptyActor"
     },
-    "1247" : {
+    "1241" : {
       "Name" : "액터_2",
       "OwnedComponents" : [{
-          "Id" : 1248,
+          "Id" : 1242,
+          "IsNative" : false,
           "ParentId" : 0,
           "RelativeLocation" : [388.833160, -7.264619, 4.340306],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
@@ -2832,15 +2855,16 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1248,
+      "RootComponentId" : 1242,
       "Type" : "AEmptyActor"
     },
-    "1249" : {
+    "1243" : {
       "Name" : "스태틱 메시_0",
       "OwnedComponents" : [{
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
-          "Id" : 1251,
-          "ParentId" : 1252,
+          "Id" : 1245,
+          "IsNative" : false,
+          "ParentId" : 1246,
           "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
           "RelativeScale" : [1.000000, 1.000000, 1.000000],
@@ -2852,7 +2876,8 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }, {
-          "Id" : 1252,
+          "Id" : 1246,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [-328.803223, -8.093444, 3.085216],
@@ -2865,15 +2890,16 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1252,
+      "RootComponentId" : 1246,
       "Type" : "AStaticMeshActor"
     },
-    "1253" : {
+    "1247" : {
       "Name" : "스태틱 메시_0",
       "OwnedComponents" : [{
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
-          "Id" : 1255,
-          "ParentId" : 1256,
+          "Id" : 1249,
+          "IsNative" : false,
+          "ParentId" : 1250,
           "RelativeLocation" : [0.000000, 0.000000, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
           "RelativeScale" : [26.310230, 31.623632, 48.053326],
@@ -2885,7 +2911,8 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }, {
-          "Id" : 1256,
+          "Id" : 1250,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "AssetPath" : "02_-_Default",
               "Type" : "UMaterial"
@@ -2919,13 +2946,14 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1256,
+      "RootComponentId" : 1250,
       "Type" : "AStaticMeshActor"
     },
-    "1257" : {
+    "1251" : {
       "Name" : "AStaticMeshActor_0",
       "OwnedComponents" : [{
-          "Id" : 1259,
+          "Id" : 1253,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [-330.311188, -8.642026, 3.085216],
@@ -2939,8 +2967,9 @@
           "bTickEnabled" : true
         }, {
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
-          "Id" : 1260,
-          "ParentId" : 1259,
+          "Id" : 1254,
+          "IsNative" : false,
+          "ParentId" : 1253,
           "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
           "RelativeScale" : [1.000000, 1.000000, 1.000000],
@@ -2952,15 +2981,16 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1259,
+      "RootComponentId" : 1253,
       "Type" : "AStaticMeshActor"
     },
-    "1261" : {
+    "1255" : {
       "Name" : "AStaticMeshActor_1",
       "OwnedComponents" : [{
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
-          "Id" : 1263,
-          "ParentId" : 1264,
+          "Id" : 1257,
+          "IsNative" : false,
+          "ParentId" : 1258,
           "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
           "RelativeScale" : [1.000000, 1.000000, 1.000000],
@@ -2972,7 +3002,8 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }, {
-          "Id" : 1264,
+          "Id" : 1258,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [-336.369171, -28.448875, 3.906608],
@@ -2985,15 +3016,16 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1264,
+      "RootComponentId" : 1258,
       "Type" : "AStaticMeshActor"
     },
-    "1265" : {
+    "1259" : {
       "Name" : "AStaticMeshActor_2",
       "OwnedComponents" : [{
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
-          "Id" : 1267,
-          "ParentId" : 1268,
+          "Id" : 1261,
+          "IsNative" : false,
+          "ParentId" : 1262,
           "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
           "RelativeScale" : [1.000000, 1.000000, 1.000000],
@@ -3005,7 +3037,8 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }, {
-          "Id" : 1268,
+          "Id" : 1262,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [-340.526062, 12.737670, 3.228466],
@@ -3018,14 +3051,15 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1268,
+      "RootComponentId" : 1262,
       "Type" : "AStaticMeshActor"
     },
-    "1269" : {
+    "1263" : {
       "Name" : "Directional Light Actor",
       "OwnedComponents" : [{
-          "Id" : 1271,
+          "Id" : 1265,
           "Intensity" : 1.000000,
+          "IsNative" : false,
           "LightColor" : [1.000000, 1.000000, 1.000000, 1.000000],
           "MaxSlopeDepthBias" : 1.000000,
           "ParentId" : 0,
@@ -3045,14 +3079,15 @@
           "bSceneAABB" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1271,
+      "RootComponentId" : 1265,
       "Type" : "ADirectionalLightActor"
     },
-    "1272" : {
+    "1266" : {
       "Name" : "Ambient Light Actor",
       "OwnedComponents" : [{
-          "Id" : 1274,
+          "Id" : 1268,
           "Intensity" : 0.100000,
+          "IsNative" : false,
           "LightColor" : [1.000000, 1.000000, 1.000000, 1.000000],
           "MaxSlopeDepthBias" : 1.000000,
           "ParentId" : 0,
@@ -3070,15 +3105,16 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1274,
+      "RootComponentId" : 1268,
       "Type" : "AAmbientLightActor"
     },
-    "1275" : {
+    "1269" : {
       "Name" : "AStaticMeshActor_3",
       "OwnedComponents" : [{
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
-          "Id" : 1277,
-          "ParentId" : 1278,
+          "Id" : 1271,
+          "IsNative" : false,
+          "ParentId" : 1272,
           "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
           "RelativeScale" : [1.000000, 1.000000, 1.000000],
@@ -3090,7 +3126,8 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }, {
-          "Id" : 1278,
+          "Id" : 1272,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [-412.910461, -8.147678, 3.099993],
@@ -3103,13 +3140,29 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1278,
+      "RootComponentId" : 1272,
       "Type" : "AStaticMeshActor"
     },
-    "1279" : {
+    "1273" : {
       "Name" : "AStaticMeshActor_4",
       "OwnedComponents" : [{
-          "Id" : 1281,
+          "BoxExtent" : [1.000000, 1.000000, 1.000000],
+          "Id" : 1276,
+          "IsNative" : false,
+          "ParentId" : 1275,
+          "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
+          "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
+          "RelativeScale" : [1.000000, 1.000000, 1.000000],
+          "ShapeColor" : [1.000000, 0.340000, 0.280000, 1.000000],
+          "Type" : "UBoxComponent",
+          "bDrawOnlyIfSelected" : false,
+          "bHiddenInGame" : false,
+          "bIsActive" : true,
+          "bIsVisible" : true,
+          "bTickEnabled" : true
+        }, {
+          "Id" : 1275,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [-244.615707, -8.108547, 3.087589],
@@ -3121,30 +3174,17 @@
           "bIsActive" : true,
           "bIsVisible" : true,
           "bTickEnabled" : true
-        }, {
-          "BoxExtent" : [1.000000, 1.000000, 1.000000],
-          "Id" : 1282,
-          "ParentId" : 1281,
-          "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
-          "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
-          "RelativeScale" : [1.000000, 1.000000, 1.000000],
-          "ShapeColor" : [1.000000, 0.340000, 0.280000, 1.000000],
-          "Type" : "UBoxComponent",
-          "bDrawOnlyIfSelected" : false,
-          "bHiddenInGame" : false,
-          "bIsActive" : true,
-          "bIsVisible" : true,
-          "bTickEnabled" : true
         }],
-      "RootComponentId" : 1281,
+      "RootComponentId" : 1275,
       "Type" : "AStaticMeshActor"
     },
-    "1283" : {
+    "1277" : {
       "Name" : "AStaticMeshActor_5",
       "OwnedComponents" : [{
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
-          "Id" : 1285,
-          "ParentId" : 1286,
+          "Id" : 1279,
+          "IsNative" : false,
+          "ParentId" : 1280,
           "RelativeLocation" : [-0.094208, 0.000000, 0.000000],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
           "RelativeScale" : [1.000000, 1.000000, 1.000000],
@@ -3156,7 +3196,8 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }, {
-          "Id" : 1286,
+          "Id" : 1280,
+          "IsNative" : false,
           "MaterialSlots" : [],
           "ParentId" : 0,
           "RelativeLocation" : [-253.907623, 13.560312, 3.087589],
@@ -3169,15 +3210,16 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1286,
+      "RootComponentId" : 1280,
       "Type" : "AStaticMeshActor"
     },
-    "1287" : {
+    "1281" : {
       "Name" : "스태틱 메시_0",
       "OwnedComponents" : [{
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
-          "Id" : 1289,
-          "ParentId" : 1290,
+          "Id" : 1283,
+          "IsNative" : false,
+          "ParentId" : 1284,
           "RelativeLocation" : [0.000000, 0.000000, 1.815152],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
           "RelativeScale" : [1.000000, 1.000000, 1.861644],
@@ -3189,7 +3231,8 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }, {
-          "Id" : 1290,
+          "Id" : 1284,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "Overrides" : {
                 "Scalars" : {
@@ -3225,13 +3268,14 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1290,
+      "RootComponentId" : 1284,
       "Type" : "AStaticMeshActor"
     },
-    "1292" : {
+    "1286" : {
       "Name" : "스태틱 메시_1",
       "OwnedComponents" : [{
-          "Id" : 1294,
+          "Id" : 1288,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "AssetPath" : "MI_Squidward",
               "Type" : "UMaterial"
@@ -3248,8 +3292,9 @@
           "bTickEnabled" : true
         }, {
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
-          "Id" : 1295,
-          "ParentId" : 1294,
+          "Id" : 1289,
+          "IsNative" : false,
+          "ParentId" : 1288,
           "RelativeLocation" : [0.000000, 0.000000, 1.148833],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
           "RelativeScale" : [0.404713, 0.352855, 1.353268],
@@ -3261,15 +3306,16 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1294,
+      "RootComponentId" : 1288,
       "Type" : "AStaticMeshActor"
     },
-    "1296" : {
+    "1290" : {
       "Name" : "스태틱 메시_2",
       "OwnedComponents" : [{
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
-          "Id" : 1298,
-          "ParentId" : 1299,
+          "Id" : 1292,
+          "IsNative" : false,
+          "ParentId" : 1293,
           "RelativeLocation" : [0.000000, 0.000000, 0.702632],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
           "RelativeScale" : [1.000000, 1.237201, 1.000000],
@@ -3281,7 +3327,8 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }, {
-          "Id" : 1299,
+          "Id" : 1293,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "AssetPath" : "material_0",
               "Type" : "UMaterial"
@@ -3297,13 +3344,14 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1299,
+      "RootComponentId" : 1293,
       "Type" : "AStaticMeshActor"
     },
-    "1300" : {
+    "1294" : {
       "Name" : "스태틱 메시_0",
       "OwnedComponents" : [{
-          "Id" : 1304,
+          "Id" : 1296,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "Overrides" : {
                 "Scalars" : {
@@ -3344,9 +3392,16 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }, {
+          "IsNative" : false,
+          "ScriptFilePath" : "Scripts/Bus_Obstacle_0_0.lua",
+          "Type" : "UScriptComponent",
+          "bIsActive" : true,
+          "bTickEnabled" : true
+        }, {
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
-          "Id" : 1302,
-          "ParentId" : 1304,
+          "Id" : 1299,
+          "IsNative" : false,
+          "ParentId" : 1296,
           "RelativeLocation" : [0.000000, 0.000000, 1.586309],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
           "RelativeScale" : [5.854026, 11.402449, 15.810375],
@@ -3357,19 +3412,15 @@
           "bIsActive" : true,
           "bIsVisible" : true,
           "bTickEnabled" : true
-        }, {
-          "ScriptFilePath" : "Scripts/Bus_Obstacle_0_0.lua",
-          "Type" : "UScriptComponent",
-          "bIsActive" : true,
-          "bTickEnabled" : true
         }],
-      "RootComponentId" : 1304,
+      "RootComponentId" : 1296,
       "Type" : "AStaticMeshActor"
     },
-    "1307" : {
+    "1301" : {
       "Name" : "스태틱 메시_1",
       "OwnedComponents" : [{
-          "Id" : 1309,
+          "Id" : 1303,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "Overrides" : {
                 "Scalars" : {
@@ -3396,13 +3447,14 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1309,
+      "RootComponentId" : 1303,
       "Type" : "AStaticMeshActor"
     },
-    "1311" : {
+    "1305" : {
       "Name" : "AStaticMeshActor_0",
       "OwnedComponents" : [{
-          "Id" : 1313,
+          "Id" : 1307,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "Overrides" : {
                 "Scalars" : {
@@ -3429,13 +3481,14 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1313,
+      "RootComponentId" : 1307,
       "Type" : "AStaticMeshActor"
     },
-    "1315" : {
+    "1309" : {
       "Name" : "AStaticMeshActor_1",
       "OwnedComponents" : [{
-          "Id" : 1317,
+          "Id" : 1311,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "Overrides" : {
                 "Scalars" : {
@@ -3462,13 +3515,14 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1317,
+      "RootComponentId" : 1311,
       "Type" : "AStaticMeshActor"
     },
-    "1319" : {
+    "1313" : {
       "Name" : "AStaticMeshActor_2",
       "OwnedComponents" : [{
-          "Id" : 1321,
+          "Id" : 1315,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "Overrides" : {
                 "Scalars" : {
@@ -3495,13 +3549,14 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1321,
+      "RootComponentId" : 1315,
       "Type" : "AStaticMeshActor"
     },
-    "1323" : {
+    "1317" : {
       "Name" : "AStaticMeshActor_3",
       "OwnedComponents" : [{
-          "Id" : 1325,
+          "Id" : 1319,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "Overrides" : {
                 "Scalars" : {
@@ -3528,13 +3583,14 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1325,
+      "RootComponentId" : 1319,
       "Type" : "AStaticMeshActor"
     },
-    "1327" : {
+    "1321" : {
       "Name" : "AStaticMeshActor_4",
       "OwnedComponents" : [{
-          "Id" : 1329,
+          "Id" : 1323,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "Overrides" : {
                 "Scalars" : {
@@ -3561,13 +3617,14 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1329,
+      "RootComponentId" : 1323,
       "Type" : "AStaticMeshActor"
     },
-    "1331" : {
+    "1325" : {
       "Name" : "AStaticMeshActor_5",
       "OwnedComponents" : [{
-          "Id" : 1333,
+          "Id" : 1327,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "Overrides" : {
                 "Scalars" : {
@@ -3594,13 +3651,14 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1333,
+      "RootComponentId" : 1327,
       "Type" : "AStaticMeshActor"
     },
-    "1335" : {
+    "1329" : {
       "Name" : "AStaticMeshActor_6",
       "OwnedComponents" : [{
-          "Id" : 1337,
+          "Id" : 1331,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "Overrides" : {
                 "Scalars" : {
@@ -3627,13 +3685,14 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1337,
+      "RootComponentId" : 1331,
       "Type" : "AStaticMeshActor"
     },
-    "1339" : {
+    "1333" : {
       "Name" : "스태틱 메시_2",
       "OwnedComponents" : [{
-          "Id" : 1344,
+          "Id" : 1335,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "Type" : "None"
             }],
@@ -3651,8 +3710,9 @@
           "DecalOpacity" : 1.000000,
           "DecalTexture" : "Data/Icon/Mundi_Logo.png",
           "FadeSpeed" : 0.500000,
-          "Id" : 1341,
-          "ParentId" : 1344,
+          "Id" : 1336,
+          "IsNative" : false,
+          "ParentId" : 1335,
           "RelativeLocation" : [0.000000, 0.000000, 0.000000],
           "RelativeRotationEuler" : [0.000000, 0.000000, 0.000000],
           "RelativeScale" : [1.000000, 1.000000, 1.000000],
@@ -3662,13 +3722,35 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1344,
+      "RootComponentId" : 1335,
       "Type" : "AStaticMeshActor"
     },
-    "1345" : {
+    "1339" : {
       "Name" : "AStaticMeshActor_2",
       "OwnedComponents" : [{
-          "Id" : 1347,
+          "IsNative" : false,
+          "ScriptFilePath" : "Scripts/Bus_Obstacle_0_0.lua",
+          "Type" : "UScriptComponent",
+          "bIsActive" : true,
+          "bTickEnabled" : true
+        }, {
+          "BoxExtent" : [1.000000, 1.000000, 1.000000],
+          "Id" : 1342,
+          "IsNative" : false,
+          "ParentId" : 1341,
+          "RelativeLocation" : [0.000000, 0.000000, 0.643994],
+          "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
+          "RelativeScale" : [2.278811, 1.000000, 0.618790],
+          "ShapeColor" : [1.000000, 0.340000, 0.280000, 1.000000],
+          "Type" : "UBoxComponent",
+          "bDrawOnlyIfSelected" : false,
+          "bHiddenInGame" : false,
+          "bIsActive" : true,
+          "bIsVisible" : true,
+          "bTickEnabled" : true
+        }, {
+          "Id" : 1341,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "AssetPath" : "Body",
               "Type" : "UMaterial"
@@ -3704,33 +3786,21 @@
           "bIsActive" : true,
           "bIsVisible" : true,
           "bTickEnabled" : true
-        }, {
-          "BoxExtent" : [1.000000, 1.000000, 1.000000],
-          "Id" : 1348,
-          "ParentId" : 1347,
-          "RelativeLocation" : [0.000000, 0.000000, 0.643994],
-          "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
-          "RelativeScale" : [2.278811, 1.000000, 0.618790],
-          "ShapeColor" : [1.000000, 0.340000, 0.280000, 1.000000],
-          "Type" : "UBoxComponent",
-          "bDrawOnlyIfSelected" : false,
-          "bHiddenInGame" : false,
-          "bIsActive" : true,
-          "bIsVisible" : true,
-          "bTickEnabled" : true
-        }, {
+        }],
+      "RootComponentId" : 1341,
+      "Type" : "AStaticMeshActor"
+    },
+    "1344" : {
+      "Name" : "AStaticMeshActor_3",
+      "OwnedComponents" : [{
+          "IsNative" : false,
           "ScriptFilePath" : "Scripts/Bus_Obstacle_0_0.lua",
           "Type" : "UScriptComponent",
           "bIsActive" : true,
           "bTickEnabled" : true
-        }],
-      "RootComponentId" : 1347,
-      "Type" : "AStaticMeshActor"
-    },
-    "1350" : {
-      "Name" : "AStaticMeshActor_3",
-      "OwnedComponents" : [{
-          "Id" : 1352,
+        }, {
+          "Id" : 1346,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "AssetPath" : "Body",
               "Type" : "UMaterial"
@@ -3768,7 +3838,29 @@
           "bTickEnabled" : true
         }, {
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
+          "Id" : 1347,
+          "IsNative" : false,
+          "ParentId" : 1346,
+          "RelativeLocation" : [0.000000, 0.000000, 0.643994],
+          "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
+          "RelativeScale" : [2.278811, 1.000000, 0.618790],
+          "ShapeColor" : [1.000000, 0.340000, 0.280000, 1.000000],
+          "Type" : "UBoxComponent",
+          "bDrawOnlyIfSelected" : false,
+          "bHiddenInGame" : false,
+          "bIsActive" : true,
+          "bIsVisible" : true,
+          "bTickEnabled" : true
+        }],
+      "RootComponentId" : 1346,
+      "Type" : "AStaticMeshActor"
+    },
+    "1349" : {
+      "Name" : "AStaticMeshActor_4",
+      "OwnedComponents" : [{
+          "BoxExtent" : [1.000000, 1.000000, 1.000000],
           "Id" : 1353,
+          "IsNative" : false,
           "ParentId" : 1352,
           "RelativeLocation" : [0.000000, 0.000000, 0.643994],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
@@ -3781,18 +3873,14 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }, {
+          "IsNative" : false,
           "ScriptFilePath" : "Scripts/Bus_Obstacle_0_0.lua",
           "Type" : "UScriptComponent",
           "bIsActive" : true,
           "bTickEnabled" : true
-        }],
-      "RootComponentId" : 1352,
-      "Type" : "AStaticMeshActor"
-    },
-    "1355" : {
-      "Name" : "AStaticMeshActor_4",
-      "OwnedComponents" : [{
-          "Id" : 1357,
+        }, {
+          "Id" : 1352,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "AssetPath" : "Body",
               "Type" : "UMaterial"
@@ -3828,35 +3916,17 @@
           "bIsActive" : true,
           "bIsVisible" : true,
           "bTickEnabled" : true
-        }, {
-          "ScriptFilePath" : "Scripts/Bus_Obstacle_0_0.lua",
-          "Type" : "UScriptComponent",
-          "bIsActive" : true,
-          "bTickEnabled" : true
-        }, {
-          "BoxExtent" : [1.000000, 1.000000, 1.000000],
-          "Id" : 1359,
-          "ParentId" : 1357,
-          "RelativeLocation" : [0.000000, 0.000000, 0.643994],
-          "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
-          "RelativeScale" : [2.278811, 1.000000, 0.618790],
-          "ShapeColor" : [1.000000, 0.340000, 0.280000, 1.000000],
-          "Type" : "UBoxComponent",
-          "bDrawOnlyIfSelected" : false,
-          "bHiddenInGame" : false,
-          "bIsActive" : true,
-          "bIsVisible" : true,
-          "bTickEnabled" : true
         }],
-      "RootComponentId" : 1357,
+      "RootComponentId" : 1352,
       "Type" : "AStaticMeshActor"
     },
-    "1360" : {
+    "1354" : {
       "Name" : "AStaticMeshActor_5",
       "OwnedComponents" : [{
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
-          "Id" : 1362,
-          "ParentId" : 1363,
+          "Id" : 1356,
+          "IsNative" : false,
+          "ParentId" : 1357,
           "RelativeLocation" : [0.000000, 0.000000, 1.586309],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
           "RelativeScale" : [5.854026, 11.402449, 15.810375],
@@ -3868,7 +3938,8 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }, {
-          "Id" : 1363,
+          "Id" : 1357,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "Overrides" : {
                 "Scalars" : {
@@ -3909,18 +3980,20 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }, {
+          "IsNative" : false,
           "ScriptFilePath" : "Scripts/Bus_Obstacle_0_0.lua",
           "Type" : "UScriptComponent",
           "bIsActive" : true,
           "bTickEnabled" : true
         }],
-      "RootComponentId" : 1363,
+      "RootComponentId" : 1357,
       "Type" : "AStaticMeshActor"
     },
-    "1367" : {
+    "1361" : {
       "Name" : "스태틱 메시_1",
       "OwnedComponents" : [{
-          "Id" : 1369,
+          "Id" : 1364,
+          "IsNative" : false,
           "MaterialSlots" : [{
               "Overrides" : {
                 "Scalars" : {
@@ -3947,9 +4020,16 @@
           "bIsVisible" : true,
           "bTickEnabled" : true
         }, {
+          "IsNative" : false,
+          "ScriptFilePath" : "Scripts/Bus_Obstacle_0_0.lua",
+          "Type" : "UScriptComponent",
+          "bIsActive" : true,
+          "bTickEnabled" : true
+        }, {
           "BoxExtent" : [1.000000, 1.000000, 1.000000],
-          "Id" : 1372,
-          "ParentId" : 1369,
+          "Id" : 1366,
+          "IsNative" : false,
+          "ParentId" : 1364,
           "RelativeLocation" : [0.000000, 0.000000, 0.707061],
           "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
           "RelativeScale" : [1.000000, 1.294829, 1.310461],
@@ -3960,23 +4040,131 @@
           "bIsActive" : true,
           "bIsVisible" : true,
           "bTickEnabled" : true
-        }, {
-          "ScriptFilePath" : "Scripts/Bus_Obstacle_0_0.lua",
+        }],
+      "RootComponentId" : 1364,
+      "Type" : "AStaticMeshActor"
+    },
+    "1367" : {
+      "Name" : "카 폰_0",
+      "OwnedComponents" : [{
+          "IsNative" : false,
+          "ScriptFilePath" : "Scripts/Bus_카 폰_1_0.lua",
           "Type" : "UScriptComponent",
           "bIsActive" : true,
           "bTickEnabled" : true
+        }, {
+          "CapsuleHalfHeight" : 2.700000,
+          "CapsuleRadius" : 1.400000,
+          "Id" : 1370,
+          "IsNative" : false,
+          "ParentId" : 1368,
+          "RelativeLocation" : [-0.359000, 0.000000, 0.359000],
+          "RelativeRotationEuler" : [0.000000, -90.000000, 0.000000],
+          "RelativeScale" : [1.000000, 1.000000, 1.000000],
+          "ShapeColor" : [1.000000, 0.340000, 0.280000, 1.000000],
+          "Type" : "UCapsuleComponent",
+          "bDrawOnlyIfSelected" : false,
+          "bHiddenInGame" : false,
+          "bIsActive" : true,
+          "bIsVisible" : true,
+          "bTickEnabled" : true
+        }, {
+          "Id" : 1368,
+          "IsNative" : true,
+          "MaterialSlots" : [{
+              "AssetPath" : "Material_Redbull",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Material_Redbull",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Material_Redbull",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Material_Redbull",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Material_Redbull",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Material_Redbull",
+              "Type" : "UMaterial"
+            }, {
+              "AssetPath" : "Material_Redbull",
+              "Type" : "UMaterial"
+            }],
+          "ParentId" : 0,
+          "RelativeLocation" : [-480.779755, 4.252076, 1.522939],
+          "RelativeRotationEuler" : [0.000000, -0.000000, -179.999969],
+          "RelativeScale" : [2.000000, 2.000000, 2.000000],
+          "StaticMesh" : "Data/Model/Redbull/Redbull.obj",
+          "Type" : "UStaticMeshComponent",
+          "bHiddenInGame" : false,
+          "bIsActive" : true,
+          "bIsVisible" : true,
+          "bTickEnabled" : true
+        }, {
+          "AttenuationRadius" : 5.000000,
+          "FalloffExponent" : 2.000000,
+          "Id" : 1369,
+          "InnerConeAngle" : 30.000000,
+          "Intensity" : 1.000000,
+          "IsNative" : false,
+          "LightColor" : [1.000000, 1.000000, 1.000000, 1.000000],
+          "MaxSlopeDepthBias" : 1.000000,
+          "OuterConeAngle" : 45.000000,
+          "ParentId" : 1368,
+          "RelativeLocation" : [0.000000, 0.000000, -1.975030],
+          "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
+          "RelativeScale" : [1.000000, 1.000000, 1.000000],
+          "ShadowBias" : 0.000100,
+          "ShadowSharpen" : 0.500000,
+          "ShadowSlopeBias" : 0.001000,
+          "SourceRadius" : 0.000000,
+          "Temperature" : 6500.000000,
+          "Type" : "USpotLightComponent",
+          "bCastShadows" : true,
+          "bHiddenInGame" : false,
+          "bIsActive" : true,
+          "bIsVisible" : true,
+          "bOverrideLightPerspective" : false,
+          "bTickEnabled" : true,
+          "bUseInverseSquareFalloff" : true
+        }, {
+          "IsNative" : false,
+          "Type" : "UPlayerComponent",
+          "bIsActive" : true,
+          "bTickEnabled" : false
+        }, {
+          "AspectRatio" : 1.000000,
+          "FarClip" : 100.000000,
+          "FieldOfView" : 60.000000,
+          "Id" : 1388,
+          "IsNative" : false,
+          "NearClip" : 0.100000,
+          "ParentId" : 1368,
+          "ProjectionMode" : 0,
+          "RelativeLocation" : [1.116837, -0.000000, 0.973641],
+          "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
+          "RelativeScale" : [1.000000, 1.000000, 1.000000],
+          "Type" : "UCameraComponent",
+          "ZooMFactor" : 1.000000,
+          "bHiddenInGame" : false,
+          "bIsActive" : true,
+          "bIsVisible" : true,
+          "bTickEnabled" : true
         }],
-      "RootComponentId" : 1369,
-      "Type" : "AStaticMeshActor"
+      "RootComponentId" : 1368,
+      "Type" : "ACarPawn"
     }
   },
-  "NextUUID" : 2269,
+  "NextUUID" : 1389,
   "PerspectiveCamera" : {
     "FOV" : [60.000000],
     "FarClip" : [1000.000000],
-    "Location" : [-489.686768, 0.945166, 4.124660],
+    "Location" : [-497.759308, -0.197529, 7.353193],
     "NearClip" : [0.100000],
-    "Rotation" : [0.000000, 14.301316, -1.503954]
+    "Rotation" : [0.000000, 17.701338, -2.404036]
   },
   "Version" : 1
 }

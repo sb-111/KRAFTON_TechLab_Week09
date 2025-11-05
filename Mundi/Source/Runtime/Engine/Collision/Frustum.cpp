@@ -152,6 +152,52 @@ FFrustum CreateFrustumFromCamera(const UCameraComponent& Camera, float OverrideA
     return Result;
 }
 
+FFrustum CreateFrustum(const FVector& Location, const FQuat& Rotation, float ZNear, float ZFar, float Fov, float Aspect)
+{
+    
+    const float FovRad = DegreesToRadians(Fov);
+
+    const FVector4 Origin = FVector4::FromPoint(Location);
+    const FVector4 Forward = FVector4::FromDirection(Rotation.RotateVector(FVector(1, 0, 0)));
+    const FVector4 Right = FVector4::FromDirection(Rotation.RotateVector(FVector(0, 1, 0)));
+    const FVector4 Up = FVector4::FromDirection(Rotation.RotateVector(FVector(0, 0, 1)));
+
+    // Far 평면에서의 절반 높이/너비
+    const float HalfVSide = ZNear * tanf(FovRad * 0.5f); // 세로(Vertical) 반폭
+    const float HalfHSide = HalfVSide * Aspect;            // 가로(Horizontal) 반폭
+    const FVector4 FrontMultFar = FVector4(Forward.X * ZFar, Forward.Y * ZFar, Forward.Z * ZFar, 0.0f);        // Far까지의 전방 벡터
+
+    FFrustum Result;
+
+    // ------------------------------------------------------------
+    // Near / Far
+    //  - 평면 법선이 "프러스텀 내부"를 향하도록 잡는다.
+    //    Near: +Forward,  Far: -Forward
+    // ------------------------------------------------------------
+    Result.NearFace = MakePlane(Origin + Forward * ZNear, Forward);
+    Result.FarFace = MakePlane(Origin + FrontMultFar, Forward * -1.0f);
+
+
+    // ------------------------------------------------------------
+    // 측면 평면(Left/Right/Top/Bottom)
+    //  - 외적은 RH 정의를 사용한다.
+    //  - 피연산자 순서를 적절히 선택해 "내부"를 바라보는 법선을 만든다.
+    // 
+    //	- 현재 좌표축이 LH(Left-Handed) 기준이므로, 
+    //  - Cross 연산 순서 또한 왼손으로 A 먼저, 그 후 B를 감았을 때 나오는 방향이 법선이 된다.
+    // 
+    //  - Right  : Cross( F*Far + R*HalfH,  U )  → (+X, -Y, 0)
+    //  - Left   : Cross( U, F*Far - R*HalfH ) → (+X, +Y, 0)
+    //  - Top    : Cross( R, F*Far + U*HalfV ) → (+X, 0, -Z)
+    //  - Bottom : Cross( F*Far - U*HalfV,   R )  → (+X, 0, +Z)
+    // ------------------------------------------------------------
+    Result.RightFace = MakePlane(Origin, Cross3(FrontMultFar + Right * HalfHSide, Up));
+    Result.LeftFace = MakePlane(Origin, Cross3(Up, FrontMultFar - Right * HalfHSide));
+    Result.TopFace = MakePlane(Origin, Cross3(Right, FrontMultFar + Up * HalfVSide));
+    Result.BottomFace = MakePlane(Origin, Cross3(FrontMultFar - Up * HalfVSide, Right));
+    return Result;
+}
+
 // ------------------------------------------------------------
 // AABB vs 프러스텀 판정
 //  - 각 평면에 대해: 중심의 부호 + 박스의 "프로젝션 반경"으로 배제 테스트

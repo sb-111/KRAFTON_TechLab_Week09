@@ -7,16 +7,18 @@ class TWeakPtr
 public:
 	TWeakPtr() = default;
 
-	TWeakPtr(UObject* InObject)
+	TWeakPtr(T* InObject)
 	{
+		static_assert(std::is_base_of_v<UObject, T>, "T must be derived from UObject");
 		if (InObject)
 		{
 			Index = InObject->InternalIndex;
 		}
 	}
 
-	TWeakPtr& operator=(UObject* InObject)
+	TWeakPtr& operator=(T* InObject)
 	{
+		static_assert(std::is_base_of_v<UObject, T>, "T must be derived from UObject");
 		if (InObject)
 		{
 			Index = InObject->InternalIndex;
@@ -25,6 +27,7 @@ public:
 		{
 			Index = -1;
 		}
+		return *this;
 	}
 
 	// UObject가 소멸할때 GUObjectArray에서 InternalIndex element를 nullptr로 설정함
@@ -37,7 +40,6 @@ public:
 	T* Get() const { return static_cast<T*>(UObject::GetObjectFromIndex(Index)); }
 
 	T* operator->() { return Get(); }
-	T& operator*() { return *Get(); }
 
 private:
 	// 인덱스 재활용 안 한다고 가정
