@@ -628,6 +628,10 @@ bool FObjImporter::LoadObjModel(const FString& InFileName, FObjInfo* const OutOb
 		{
 			// 현재 'usemtl'을 기준으로 그룹을 나누므로 'g' 태그는 무시합니다.
 		}
+		else if (line.rfind("s ", 0) == 0) // 스무딩 그룹 (s 1, s off)
+		{
+			// 스무딩 그룹은 현재 지원하지 않으므로 무시합니다.
+		}
 		else if (line.rfind("f ", 0) == 0) // 면 (f v1/vt1/vn1 v2/vt2/vn2 ...)
 		{
 			Face = line.substr(2);
