@@ -13,6 +13,8 @@
 #include "Picking.h" // FRay
 
 #include "StaticMeshComponent.h"
+#include "ResourceManager.h"
+#include "StaticMesh.h"
 
 namespace {
     inline bool RayAABB_IntersectT(const FRay& ray, const FAABB& box, float& outTMin, float& outTMax)
@@ -479,6 +481,162 @@ void FBVHierarchy::QueryRayClosest(const FRay& Ray, AActor*& OutActor, OUT float
             {
                 if (!OutActor || tminR <= OutBestT + Epsilon)
                     heap.push({ node.Right, tminR });
+            }
+        }
+    }
+}
+
+void FBVHierarchy::QueryRayClosestStrict(const FRay& Ray, AActor*& OutActor, OUT float& OutBestT) const
+{
+    OutActor = nullptr;
+    if (!(std::isfinite(OutBestT) && OutBestT > 0.0f))
+    {
+        OutBestT = std::numeric_limits<float>::infinity();
+    }
+
+    if (Nodes.empty())
+    {
+        return;
+    }
+
+    float tminRoot, tmaxRoot;
+    if (!RayAABB_IntersectT(Ray, Nodes[0].Bounds, tminRoot, tmaxRoot))
+    {
+        return;
+    }
+
+    struct FHeapEntry
+    {
+        int32 NodeIndex;
+        float EntryT;
+        bool operator<(const FHeapEntry& Other) const
+        {
+            return EntryT > Other.EntryT;
+        }
+    };
+
+    std::priority_queue<FHeapEntry> Heap;
+    Heap.push({ 0, tminRoot });
+
+    const float Epsilon = 1e-3f;
+    while (!Heap.empty())
+    {
+        const FHeapEntry Entry = Heap.top();
+        Heap.pop();
+
+        if (OutActor && Entry.EntryT > OutBestT + Epsilon)
+        {
+            break;
+        }
+
+        const FLBVHNode& Node = Nodes[Entry.NodeIndex];
+        if (Node.IsLeaf())
+        {
+            for (int32 i = 0; i < Node.Count; ++i)
+            {
+                UStaticMeshComponent* Component = StaticMeshComponentArray[Node.First + i];
+                if (!Component)
+                {
+                    continue;
+                }
+
+                AActor* Owner = Component->GetOwner();
+                if (!Owner || Owner->GetActorHiddenInEditor())
+                {
+                    continue;
+                }
+
+                const FAABB* Cached = StaticMeshComponentBounds.Find(Component);
+                const FAABB ComponentBounds = Cached ? *Cached : Component->GetWorldAABB();
+
+                float ComponentTMin, ComponentTMax;
+                if (!RayAABB_IntersectT(Ray, ComponentBounds, ComponentTMin, ComponentTMax))
+                {
+                    continue;
+                }
+                if (OutActor && ComponentTMin > OutBestT + Epsilon)
+                {
+                    continue;
+                }
+
+                UStaticMesh* MeshResource = Component->GetStaticMesh();
+                if (!MeshResource)
+                {
+                    continue;
+                }
+
+                FStaticMesh* StaticMeshAsset = MeshResource->GetStaticMeshAsset();
+                if (!StaticMeshAsset || StaticMeshAsset->Vertices.Num() == 0 || StaticMeshAsset->Indices.Num() < 3)
+                {
+                    continue;
+                }
+
+                FMeshBVH* MeshBVH = UResourceManager::GetInstance().GetOrBuildMeshBVH(MeshResource->GetAssetPathFileName(), StaticMeshAsset);
+                if (!MeshBVH)
+                {
+                    continue;
+                }
+
+                const FMatrix WorldMatrix = Component->GetWorldMatrix();
+                const FMatrix InvWorld = WorldMatrix.InverseAffine();
+
+                const FVector4 RayOrigin4(Ray.Origin.X, Ray.Origin.Y, Ray.Origin.Z, 1.0f);
+                const FVector4 RayDir4(Ray.Direction.X, Ray.Direction.Y, Ray.Direction.Z, 0.0f);
+                const FVector4 LocalOrigin4 = RayOrigin4 * InvWorld;
+                const FVector4 LocalDir4 = RayDir4 * InvWorld;
+
+                FVector LocalOrigin(LocalOrigin4.X, LocalOrigin4.Y, LocalOrigin4.Z);
+                FVector LocalDirection(LocalDir4.X, LocalDir4.Y, LocalDir4.Z);
+                if (LocalDirection.IsZero())
+                {
+                    continue;
+                }
+                LocalDirection.Normalize();
+
+                FRay LocalRay{ LocalOrigin, LocalDirection };
+
+                float LocalHitDistance = 0.0f;
+                if (!MeshBVH->IntersectRay(LocalRay, StaticMeshAsset->Vertices, StaticMeshAsset->Indices, LocalHitDistance))
+                {
+                    continue;
+                }
+
+                const FVector LocalHitPoint = LocalOrigin + LocalDirection * LocalHitDistance;
+                const FVector4 LocalHit4(LocalHitPoint.X, LocalHitPoint.Y, LocalHitPoint.Z, 1.0f);
+                const FVector4 WorldHit4 = LocalHit4 * WorldMatrix;
+                const FVector WorldHit(WorldHit4.X, WorldHit4.Y, WorldHit4.Z);
+                const float WorldHitDistance = (WorldHit - Ray.Origin).Size();
+
+                if (WorldHitDistance < OutBestT)
+                {
+                    OutBestT = WorldHitDistance;
+                    OutActor = Owner;
+                }
+            }
+            continue;
+        }
+
+        if (Node.Left >= 0)
+        {
+            float LeftTMin, LeftTMax;
+            if (RayAABB_IntersectT(Ray, Nodes[Node.Left].Bounds, LeftTMin, LeftTMax))
+            {
+                if (!OutActor || LeftTMin <= OutBestT + Epsilon)
+                {
+                    Heap.push({ Node.Left, LeftTMin });
+                }
+            }
+        }
+
+        if (Node.Right >= 0)
+        {
+            float RightTMin, RightTMax;
+            if (RayAABB_IntersectT(Ray, Nodes[Node.Right].Bounds, RightTMin, RightTMax))
+            {
+                if (!OutActor || RightTMin <= OutBestT + Epsilon)
+                {
+                    Heap.push({ Node.Right, RightTMin });
+                }
             }
         }
     }
