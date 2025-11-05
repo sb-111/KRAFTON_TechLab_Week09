@@ -6,6 +6,7 @@ class D3D11RHI;
 class UWorld;
 class FViewport;
 class FViewportClient;
+class USplashScreen;
 
 struct FWorldContext
 {
@@ -69,6 +70,10 @@ private:
     // Release_StandAlone 모드용 풀스크린 뷰포트
     std::unique_ptr<FViewport> StandaloneViewport;
     std::unique_ptr<FViewportClient> StandaloneViewportClient;
+
+    // 스플래시 스크린
+    std::unique_ptr<USplashScreen> SplashScreen;
+    bool bSplashScreenFinished = false;
 #endif
 
     //월드 핸들

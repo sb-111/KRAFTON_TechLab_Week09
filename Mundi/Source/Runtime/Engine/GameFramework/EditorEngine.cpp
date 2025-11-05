@@ -9,6 +9,7 @@
 #include "FViewport.h"
 #include "FViewportClient.h"
 #include "CameraActor.h"
+#include "SplashScreen.h"
 
 
 float UEditorEngine::ClientWidth = 1024.0f;
@@ -244,13 +245,21 @@ bool UEditorEngine::Startup(HINSTANCE hInstance)
     bRunning = true;
 
 #ifdef _RELEASE_STANDALONE
-    // Release_StandAlone 모드: Bus.Scene 로드 후 자동으로 PIE 시작
-    UE_LOG("=== RELEASE_STANDALONE MODE: Starting LoadSceneAndStartPIE ===");
-    LoadSceneAndStartPIE("Scene/Bus.Scene");
-    UE_LOG("=== RELEASE_STANDALONE MODE: LoadSceneAndStartPIE completed ===");
-
-    // PIE 시작 후 GWorld가 PIEWorld로 변경되므로 UI에 다시 설정
-    UI.SetWorld(GWorld);
+    // Release_StandAlone 모드: 스플래시 스크린 초기화
+    UE_LOG("=== RELEASE_STANDALONE MODE: Initializing Splash Screen ===");
+    SplashScreen = std::make_unique<USplashScreen>();
+    if (SplashScreen->Initialize(RHIDevice.GetDevice(), RHIDevice.GetDeviceContext(), "Data/UI/MadeWithMundi.png"))
+    {
+        UE_LOG("Splash Screen initialized successfully");
+        bSplashScreenFinished = false;
+    }
+    else
+    {
+        UE_LOG("Splash Screen failed to initialize, loading scene immediately");
+        bSplashScreenFinished = true;
+        LoadSceneAndStartPIE("Scene/Bus.Scene");
+        UI.SetWorld(GWorld);
+    }
 #else
     UE_LOG("=== EDITOR MODE (not standalone) ===");
 #endif
@@ -260,6 +269,27 @@ bool UEditorEngine::Startup(HINSTANCE hInstance)
 
 void UEditorEngine::Tick(float DeltaSeconds)
 {
+#ifdef _RELEASE_STANDALONE
+    // 스플래시 스크린 처리
+    if (!bSplashScreenFinished && SplashScreen)
+    {
+        SplashScreen->Update(DeltaSeconds);
+
+        // 스플래시 스크린이 끝나면 씬 로드
+        if (SplashScreen->IsFinished())
+        {
+            UE_LOG("=== Splash Screen finished, loading scene ===");
+            bSplashScreenFinished = true;
+            LoadSceneAndStartPIE("Scene/Bus.Scene");
+            UI.SetWorld(GWorld);
+        }
+
+        // 스플래시 스크린 진행 중에는 게임 로직 실행 안 함
+        INPUT.Update();
+        return;
+    }
+#endif
+
     //@TODO UV 스크롤 입력 처리 로직 이동
     HandleUVInput(DeltaSeconds);
 
@@ -293,35 +323,46 @@ void UEditorEngine::Render()
     Renderer->BeginFrame();
 
 #ifdef _RELEASE_STANDALONE
-    // Release_StandAlone 모드: 게임 화면만 전체 화면으로 렌더링
-    static bool bLoggedRenderOnce = false;
-    if (!bLoggedRenderOnce)
+    // 스플래시 스크린 진행 중
+    if (!bSplashScreenFinished && SplashScreen)
     {
-        UE_LOG("EditorEngine::Render - Release_StandAlone mode");
-        UE_LOG("  StandaloneViewport=%p, StandaloneViewportClient=%p, GWorld=%p",
-               StandaloneViewport.get(), StandaloneViewportClient.get(), GWorld);
-        bLoggedRenderOnce = true;
+        // 스플래시 스크린만 렌더링
+        UI.Render();
+        SplashScreen->Render();
+        UI.EndFrame();
     }
-
-    if (StandaloneViewport && StandaloneViewportClient && GWorld)
+    else
     {
-        // 뷰포트 클라이언트에 현재 월드 설정
-        // 카메라는 FViewportClient가 생성자에서 만든 자체 카메라를 사용
-        StandaloneViewportClient->SetWorld(GWorld);
+        // Release_StandAlone 모드: 게임 화면만 전체 화면으로 렌더링
+        static bool bLoggedRenderOnce = false;
+        if (!bLoggedRenderOnce)
+        {
+            UE_LOG("EditorEngine::Render - Release_StandAlone mode");
+            UE_LOG("  StandaloneViewport=%p, StandaloneViewportClient=%p, GWorld=%p",
+                   StandaloneViewport.get(), StandaloneViewportClient.get(), GWorld);
+            bLoggedRenderOnce = true;
+        }
 
-        // 뷰포트 렌더링 (내부적으로 ViewportClient->Draw()를 호출)
-        StandaloneViewport->Render();
-    }
+        if (StandaloneViewport && StandaloneViewportClient && GWorld)
+        {
+            // 뷰포트 클라이언트에 현재 월드 설정
+            // 카메라는 FViewportClient가 생성자에서 만든 자체 카메라를 사용
+            StandaloneViewportClient->SetWorld(GWorld);
 
-    // 게임 UI 렌더링 (에디터 UI는 제외)
-    static bool bLoggedUIRender = false;
-    if (!bLoggedUIRender)
-    {
-        UE_LOG("EditorEngine::Render - About to call UI.Render()");
-        bLoggedUIRender = true;
+            // 뷰포트 렌더링 (내부적으로 ViewportClient->Draw()를 호출)
+            StandaloneViewport->Render();
+        }
+
+        // 게임 UI 렌더링 (에디터 UI는 제외)
+        static bool bLoggedUIRender = false;
+        if (!bLoggedUIRender)
+        {
+            UE_LOG("EditorEngine::Render - About to call UI.Render()");
+            bLoggedUIRender = true;
+        }
+        UI.Render();
+        UI.EndFrame();
     }
-    UI.Render();
-    UI.EndFrame();
 #else
     // 에디터 모드: 에디터 UI + 게임 UI 렌더링
     UI.Render();

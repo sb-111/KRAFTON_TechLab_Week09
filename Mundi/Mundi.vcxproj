@@ -471,6 +471,7 @@ xcopy /Y /D "$(ProjectDir)Scripts\*.*" "$(OutDir)Scripts\"</Command>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Source\Slate\ImGui\ImGuiHelper.cpp" />
+    <ClCompile Include="Source\Slate\SplashScreen.cpp" />
     <ClCompile Include="Source\Slate\StatsOverlayD2D.cpp" />
     <ClCompile Include="Source\Slate\UIManager.cpp" />
     <ClCompile Include="Source\Slate\USlateManager.cpp" />
@@ -788,6 +789,7 @@ xcopy /Y /D "$(ProjectDir)Scripts\*.*" "$(OutDir)Scripts\"</Command>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Source\Slate\ImGui\ImGuiHelper.h" />
+    <ClInclude Include="Source\Slate\SplashScreen.h" />
     <ClInclude Include="Source\Slate\StatsOverlayD2D.h" />
     <ClInclude Include="Source\Slate\UIManager.h" />
     <ClInclude Include="Source\Slate\USlateManager.h" />
