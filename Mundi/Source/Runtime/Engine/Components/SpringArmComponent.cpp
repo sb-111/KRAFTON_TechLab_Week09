@@ -52,7 +52,11 @@ FTransform USpringArmComponent::GetSocketWorldTransform() const
 
 void USpringArmComponent::RenderDebugVolume(URenderer* Renderer) const
 {
+	const FLinearColor LineColor(1.0f, 0.0f, 0.0f, 1.0f);
 
+	FVector Start = GetWorldTransform().TransformPosition(TargetOffset);
+	FVector End = GetSocketWorldTransform().Translation;
+	Renderer->AddLine(Start, End, LineColor.ToFVector4());
 }
 
 void USpringArmComponent::EvaluateArm(float DeltaTime)
