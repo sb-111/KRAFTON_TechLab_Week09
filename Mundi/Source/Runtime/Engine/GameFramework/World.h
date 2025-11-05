@@ -92,6 +92,8 @@ public:
 
     /** === 타임 / 틱 === */
     virtual void Tick(float DeltaSeconds);
+	void SetGlobalTimeDilation(float NewDilation) { GlobalTimeDeliation = std::max(0.0f, NewDilation); }
+	float GetGlobalTimeDilation() const { return GlobalTimeDeliation; }
 
     /** === 필요한 엑터 게터 === */
     const TArray<AActor*>& GetActors() { static TArray<AActor*> Empty; return Level ? Level->GetActors() : Empty; }
@@ -123,6 +125,10 @@ public:
     static UWorld* DuplicateWorldForPIE(UWorld* InEditorWorld);
 
 private:
+    /** === World Runtime === */
+    float GlobalTimeDeliation = 1.0f; // 전역 시간 흐름 배율
+    std::unique_ptr<UWorldPhysics> Physics = nullptr;
+
     /** === 에디터 특수 액터 관리 === */
     TArray<AActor*> EditorActors;
     ACameraActor* MainCameraActor = nullptr;
@@ -145,7 +151,6 @@ private:
 
     //partition
     std::unique_ptr<UWorldPartitionManager> Partition = nullptr;
-	std::unique_ptr<UWorldPhysics> Physics = nullptr;
 
     // Per-world selection manager
     std::unique_ptr<USelectionManager> SelectionMgr;

@@ -15,15 +15,8 @@ public:
 
 	void HandleThrustInput(float InValue) override;
 	void HandleSteerInput(float InValue) override;
-
-	void HandleMuteInput() override;
-	void HandlePlayPauseInput() override;
-	void HandleStopInput() override;
-	void HandleLeftArrowInput() override;
-	void HandleRightArrowInput() override;
-	void HandleUpArrowInput() override;
-	void HandleDownArrowInput() override;
-
+	void HandleBoosterInput() override;
+	
 	void BeginPlay() override;
 
 	DECLARE_DUPLICATE(ACarPawn)

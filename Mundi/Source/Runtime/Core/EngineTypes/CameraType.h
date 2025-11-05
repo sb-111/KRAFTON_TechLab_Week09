@@ -6,6 +6,7 @@ enum class ECameraProjectionMode
     Perspective,
     Orthographic
 };
+inline float BezierValue[5];
 
 struct FMinimalViewInfo
 {

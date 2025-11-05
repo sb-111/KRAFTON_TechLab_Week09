@@ -289,6 +289,20 @@ void UWorld::InitializeLuaState()
 		"GetAudioComponent", [](AActor* Actor) -> UAudioComponent* {
 			return Actor->GetComponentByClass<UAudioComponent>();
 		},
+		"GetAudioComponentByName", [](AActor* Actor, const FString& Name) -> UAudioComponent* {
+			const TSet<UActorComponent*>& Components = Actor->GetOwnedComponents();
+			for (UActorComponent* Comp : Components)
+			{
+				if (UAudioComponent* AudioComp = Cast<UAudioComponent>(Comp))
+				{
+					if (AudioComp->GetComponentName() == Name)
+					{
+						return AudioComp;
+					}
+				}
+			}
+			return nullptr;
+		},
 		// Lua에서 C++ 액터를 소멸시킬 수 있게 함(주의)
 		"Destroy", &AActor::Destroy,
 		// Lua에서 액터 이름을 가져올 수 있게 함(디버깅 유용)
@@ -324,7 +338,9 @@ void UWorld::InitializeLuaState()
 		"GetPlaybackPosition", &UAudioComponent::GetPlaybackPosition,
 		"SetPlaybackPosition", &UAudioComponent::SetPlaybackPosition,
 		"GetDuration", &UAudioComponent::GetDuration,
-		"SeekRelative", &UAudioComponent::SeekRelative
+		"SeekRelative", &UAudioComponent::SeekRelative,
+		"SetComponentName", &UAudioComponent::SetComponentName,
+		"GetComponentName", &UAudioComponent::GetComponentName
 	);
 
 	LuaState.new_usertype<UHeightFogComponent>("UHeightFogComponent",
@@ -635,6 +651,8 @@ void UWorld::InitializeLuaState()
 
 void UWorld::Tick(float DeltaSeconds)
 {
+	DeltaSeconds *= GlobalTimeDeliation;
+
 	Partition->Update(DeltaSeconds, /*budget*/256);
 	Physics->Update(DeltaSeconds);
 
@@ -646,7 +664,7 @@ void UWorld::Tick(float DeltaSeconds)
 
 	if (PlayerController)
 	{
-		PlayerController->Tick(DeltaSeconds);
+		PlayerController->ExecuteTick(DeltaSeconds);
 	}
 //순서 바꾸면 안댐
 	if (Level)
@@ -655,13 +673,13 @@ void UWorld::Tick(float DeltaSeconds)
 		{
 			if (Actor && (Actor->CanTickInEditor() || bPie))
 			{
-				Actor->Tick(DeltaSeconds);
+				Actor->ExecuteTick(DeltaSeconds);
 			}
 		}
 	}
 	for (AActor* EditorActor : EditorActors)
 	{
-		if (EditorActor && !bPie) EditorActor->Tick(DeltaSeconds);
+		if (EditorActor && !bPie) EditorActor->ExecuteTick(DeltaSeconds);
 	}
 }
 
