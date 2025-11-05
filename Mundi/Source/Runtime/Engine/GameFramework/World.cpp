@@ -453,6 +453,7 @@ void UWorld::InitializeLuaState()
 		// Vignette (즉시 적용)
 		"SetVignetteIntensity", &APlayerCameraManager::SetVignetteIntensity,
 		"SetVignetteRadius", &APlayerCameraManager::SetVignetteRadius,
+		"SetVignetteColor", &APlayerCameraManager::SetVignetteColor,
 		"EnableVignetting", &APlayerCameraManager::EnableVignetting,
 
 		// Vignette (보간)
@@ -461,6 +462,7 @@ void UWorld::InitializeLuaState()
 
 		// Letterbox (즉시 적용)
 		"SetLetterboxSize", &APlayerCameraManager::SetLetterboxSize,
+		"SetLetterboxColor", &APlayerCameraManager::SetLetterboxColor,
 		"EnableLetterbox", &APlayerCameraManager::EnableLetterbox,
 
 		// Letterbox (보간)

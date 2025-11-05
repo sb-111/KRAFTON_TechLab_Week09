@@ -82,6 +82,9 @@ struct PostProcessChainBufferType
     float VignetteRadius = 0.0f;
     float LetterBoxSize = 0.1f;
 
+    FVector4 VignetteColor = FVector4(0.0f, 0.0f, 0.0f, 1.0f);  // 기본값: 검은색
+    FVector4 LetterboxColor = FVector4(0.0f, 0.0f, 0.0f, 1.0f); // 기본값: 검은색
+
     int32 bEnableGammaCorrection = false;
     int32 bEnableVignetting = false;
     int32 bEnableLetterBox = false;

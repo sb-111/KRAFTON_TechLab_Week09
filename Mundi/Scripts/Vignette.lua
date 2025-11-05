@@ -6,15 +6,25 @@ local pcm = PlayerController:GetPlayerCameraManager()
 function BeginPlay()
     pcm:EnableVignetting(true)
 
+    -- Vignette 색상 설정 (기본: 검은색)
+    -- 다른 색상 예시:
+    -- pcm:SetVignetteColor(Color(1.0, 0.0, 0.0, 1.0))  -- 빨간색
+    -- pcm:SetVignetteColor(Color(0.1, 0.1, 0.3, 1.0))  -- 어두운 파란색
+    pcm:SetVignetteColor(Color(1.0, 0.5, 0.0, 1.0))  -- 주황색
 
     -- 시작값과 끝값을 모두 명시적으로 지정
     -- pcm:StartVignetteBlend(StartIntensity, StartRadius, TargetIntensity, TargetRadius, Duration, bEnable)
-    pcm:StartVignetteBlend(0.0, 0.0, 1.0, 0.6, 2.0, true)
+    pcm:StartVignetteBlend(0.0, 0.0, 1.0, 0.5, 2.0, true)
 
+    -- Letterbox 색상 설정 (기본: 검은색)
+    -- 다른 색상 예시:
+    -- pcm:SetLetterboxColor(Color(1.0, 1.0, 1.0, 1.0))  -- 흰색
+    -- pcm:SetLetterboxColor(Color(0.2, 0.0, 0.0, 1.0))  -- 어두운 빨간색
+    --pcm:SetLetterboxColor(Color(0.0, 0.0, 0.0, 1.0))  -- 검은색
 
-    -- 방법 2: 시작값과 끝값을 명시적으로 지정
-    -- pcm:StartLetterboxBlend(StartSize, TargetSize, 1.0, true)
-    pcm:StartLetterboxBlend(0.0, 0.3, 1.0, true)
+    -- 시작값과 끝값을 명시적으로 지정
+    -- pcm:StartLetterboxBlend(StartSize, TargetSize, Duration, bEnable)
+    --pcm:StartLetterboxBlend(0.0, 0.3, 1.0, true)
 end
 
 function Tick(dt)
@@ -24,6 +34,10 @@ function Tick(dt)
     -- 즉시 값을 설정하려면 (보간 없이):
     --pcm:SetVignetteIntensity(1.0)
     --pcm:SetVignetteRadius(0.7)
+
+    -- 색상도 즉시 변경 가능:
+    --pcm:SetVignetteColor(Color(1.0, 0.5, 0.0, 1.0))  -- 주황색
+    --pcm:SetLetterboxColor(Color(0.0, 0.0, 0.5, 1.0)) -- 파란색
 end
 
 function EndPlay()

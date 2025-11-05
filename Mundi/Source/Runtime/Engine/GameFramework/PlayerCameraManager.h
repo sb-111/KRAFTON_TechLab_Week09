@@ -11,9 +11,11 @@ struct FPostProcessSettings
     // Vignette
     float VignetteIntensity = 0.6f;
     float VignetteRadius = 0.7f;
+    FLinearColor VignetteColor = FLinearColor(0.0f, 0.0f, 0.0f, 1.0f); // 기본값: 검은색
 
     // Letterbox
     float LetterboxSize = 0.1f;
+    FLinearColor LetterboxColor = FLinearColor(0.0f, 0.0f, 0.0f, 1.0f); // 기본값: 검은색
 
     // Gamma Correction
     float Gamma = 2.2f;
@@ -61,10 +63,12 @@ public:
     // Vignette
     void SetVignetteIntensity(float Intensity) { DefaultPostProcessSettings.VignetteIntensity = Intensity; }
     void SetVignetteRadius(float Radius) { DefaultPostProcessSettings.VignetteRadius = Radius; }
+    void SetVignetteColor(const FLinearColor& Color) { DefaultPostProcessSettings.VignetteColor = Color; }
     void EnableVignetting(bool bEnable) { DefaultPostProcessSettings.bEnableVignetting = bEnable; }
 
     // Letterbox
     void SetLetterboxSize(float Size) { DefaultPostProcessSettings.LetterboxSize = Size; }
+    void SetLetterboxColor(const FLinearColor& Color) { DefaultPostProcessSettings.LetterboxColor = Color; }
     void EnableLetterbox(bool bEnable) { DefaultPostProcessSettings.bEnableLetterbox = bEnable; }
 
     // Gamma

@@ -23,6 +23,9 @@ cbuffer PostProcessChainConstants : register(b0)
     float VignetteRadius;
     float LetterBoxSize;
 
+    float4 VignetteColor;  // RGB + Alpha
+    float4 LetterboxColor; // RGB + Alpha
+
     int bEnableGammaCorrection;
     int bEnableVignetting;
     int bEnableLetterbox;
@@ -62,11 +65,16 @@ float4 mainPS(VS_OUTPUT Input) : SV_Target
         float DistFromCenter = length(UV);
 
         // VignetteRadius: 밝은 영역의 반경 (0.0 ~ 1.4, 작을수록 좁은 영역)
-        // VignetteIntensity: 어두운 정도 (0.0 = 효과 없음, 1.0 = 완전히 검게)
+        // VignetteIntensity: 어두운 정도 (0.0 = 효과 없음, 1.0 = 완전히 강하게)
+        // Vignette: 중심(1.0) -> 가장자리(0.0)
         float Vignette = 1.0f - smoothstep(VignetteRadius, VignetteRadius + 0.5f, DistFromCenter);
 
-        // Intensity를 적용하여 최종 밝기 계산
-        Output.rgb *= lerp(1.0f, Vignette, VignetteIntensity);
+        // 원본 색상과 비네팅 색상 블렌딩
+        // 중심(Vignette=1.0): 원본 색상, 가장자리(Vignette=0.0): VignetteColor
+        float3 VignettedColor = lerp(VignetteColor.rgb, Output.rgb, Vignette);
+
+        // VignetteIntensity로 효과 강도 조절 (0.0 = 효과 없음, 1.0 = 완전 적용)
+        Output.rgb = lerp(Output.rgb, VignettedColor, VignetteIntensity);
     }
 
     // Apply Letterbox
@@ -75,7 +83,7 @@ float4 mainPS(VS_OUTPUT Input) : SV_Target
         // 뷰포트 로컬 UV 사용
         if(LocalUV.y < LetterBoxSize || LocalUV.y > 1.0f - LetterBoxSize)
         {
-            Output.rgb = float3(0.0f, 0.0f, 0.0f);
+            Output.rgb = LetterboxColor.rgb;
         }
     }
     return Output;

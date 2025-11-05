@@ -1227,6 +1227,8 @@ void FSceneRenderer::RenderPostProcessChainPass()
 		PPConstants.VignetteIntensity = PPSettings.VignetteIntensity;
 		PPConstants.VignetteRadius = PPSettings.VignetteRadius;
 		PPConstants.LetterBoxSize = PPSettings.LetterboxSize;
+		PPConstants.VignetteColor = FVector4(PPSettings.VignetteColor.R, PPSettings.VignetteColor.G, PPSettings.VignetteColor.B, PPSettings.VignetteColor.A);
+		PPConstants.LetterboxColor = FVector4(PPSettings.LetterboxColor.R, PPSettings.LetterboxColor.G, PPSettings.LetterboxColor.B, PPSettings.LetterboxColor.A);
 	}
 	else
 	{
@@ -1238,6 +1240,8 @@ void FSceneRenderer::RenderPostProcessChainPass()
 		PPConstants.VignetteIntensity = RenderSettings.GetVignetteIntensity();
 		PPConstants.VignetteRadius = RenderSettings.GetVignetteRadius();
 		PPConstants.LetterBoxSize = RenderSettings.GetLetterboxSize();
+		PPConstants.VignetteColor = FVector4(0.0f, 0.0f, 0.0f, 1.0f);  // 기본값: 검은색
+		PPConstants.LetterboxColor = FVector4(0.0f, 0.0f, 0.0f, 1.0f); // 기본값: 검은색
 	}
 
 	RHIDevice->SetAndUpdateConstantBuffer(PPConstants);
