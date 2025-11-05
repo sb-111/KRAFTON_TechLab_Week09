@@ -441,7 +441,9 @@ void UWorld::InitializeLuaState()
 		"GetPlayerCameraManager", &APlayerController::GetPlayerCameraManager);
 	LuaState.new_usertype<APlayerCameraManager>("PlayerCameraManager",
 		sol::base_classes, sol::bases<AActor>(),
-		"SetViewTarget", &APlayerCameraManager::SetViewTarget);
+		"SetViewTarget", &APlayerCameraManager::SetViewTarget,
+		"StartFadeIn", &APlayerCameraManager::StartFadeIn,
+		"StartFadeOut", &APlayerCameraManager::StartFadeOut);
 
 	// Lua 스크립트 어디서나 접근할 수 있게전역 Input 객체 생성
 	LuaState["Input"] = &UInputManager::GetInstance();
