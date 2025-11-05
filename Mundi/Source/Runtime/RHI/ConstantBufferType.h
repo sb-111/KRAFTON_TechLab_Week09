@@ -279,5 +279,5 @@ CONSTANT_BUFFER_INFO(FTileCullingBufferType, 11, false, true)  // b11, PS only (
 CONSTANT_BUFFER_INFO(FClusterCullingBufferType, 13, false, true) // b13, PS only (LightingBuffers.hlsl과 일치)
 CONSTANT_BUFFER_INFO(FShadowBufferType, 12, true, true)
 CONSTANT_BUFFER_INFO(FShadowBufferIndexType, 9, true, true) // b9 used by DepthOnly VS+PS
-CONSTANT_BUFFER_INFO(PostProcessChainBufferType, 14, false, true) // 포스트 프로세스용 (Letter Box, Bignetting, Gamma)
+CONSTANT_BUFFER_INFO(PostProcessChainBufferType, 0, false, true) // 포스트 프로세스용 (Letter Box, Bignetting, Gamma), PS only이므로 b0 공유 가능
 // (Removed global shadow filter constant buffer; per-light sharpen is used.)

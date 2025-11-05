@@ -1206,15 +1206,16 @@ void FSceneRenderer::RenderPostProcessChainPass()
 		return;
 	}
 	RHIDevice->GetDeviceContext()->PSSetShaderResources(0, 1, &SourceSRV);
-	RHIDevice->GetDeviceContext()->PSSetSamplers(0, 1, &SamplerState);
+	RHIDevice->GetDeviceContext()->PSSetSamplers(1, 1, &SamplerState);
 
 	PostProcessChainBufferType PPConstants;
 	PPConstants.bEnableGammaCorrection = bGammaEnabled;
 	PPConstants.bEnableVignetting = true; // 일단 true
 	PPConstants.bEnableLetterBox = true; // 일단 true
-	PPConstants.Gamma = RenderSettings.GetGamma(); // 예시
-	PPConstants.VignetteIntensity = RenderSettings.GetVignetteIntensity(); // 예시
-	PPConstants.LetterBoxSize = RenderSettings.GetLetterboxSize(); // 예시
+	PPConstants.Gamma = RenderSettings.GetGamma();
+	PPConstants.VignetteIntensity = RenderSettings.GetVignetteIntensity();
+	PPConstants.VignetteRadius = RenderSettings.GetVignetteRadius();
+	PPConstants.LetterBoxSize = RenderSettings.GetLetterboxSize();
 	RHIDevice->SetAndUpdateConstantBuffer(PPConstants);
 
 	// full screen quad 그리기

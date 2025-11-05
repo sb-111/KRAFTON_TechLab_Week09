@@ -7,7 +7,7 @@ struct VS_OUTPUT
 Texture2D SourceTexture : register(t0);
 SamplerState SourceSampler : register(s1);
 
-cbuffer PostProcessChainConstants : register(b14)
+cbuffer PostProcessChainConstants : register(b0)
 {
     float Gamma;
     float VignetteIntensity;
