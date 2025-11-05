@@ -83,11 +83,9 @@ LRESULT CALLBACK UEditorEngine::WndProc(HWND hWnd, UINT message, WPARAM wParam, 
     // Input first
     INPUT.ProcessMessage(hWnd, message, wParam, lParam);
 
-#ifndef _RELEASE_STANDALONE
-    // ImGui next (Release_StandAlone 모드에서는 호출하지 않음)
+    // ImGui 입력 처리 (게임 UI를 위해 필요)
     if (ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
         return true;
-#endif
 
     switch (message)
     {
@@ -223,9 +221,7 @@ bool UEditorEngine::Startup(HINSTANCE hInstance)
 #endif
 
     //매니저 초기화
-#ifndef _RELEASE_STANDALONE
     UI.Initialize(HWnd, RHIDevice.GetDevice(), RHIDevice.GetDeviceContext());
-#endif
     INPUT.Initialize(HWnd);
 
     FObjManager::Preload();
@@ -236,13 +232,13 @@ bool UEditorEngine::Startup(HINSTANCE hInstance)
     WorldContexts[0].World->Initialize();
     ///////////////////////////////////
 
-#ifndef _RELEASE_STANDALONE
-    // 슬레이트 매니저 (singleton)
-    FRect ScreenRect(0, 0, ClientWidth, ClientHeight);
-    SLATE.Initialize(RHIDevice.GetDevice(), GWorld, ScreenRect);
-
     //스폰을 위한 월드셋
     UI.SetWorld(WorldContexts[0].World);
+
+#ifndef _RELEASE_STANDALONE
+    // 슬레이트 매니저 (singleton) - 에디터 전용
+    FRect ScreenRect(0, 0, ClientWidth, ClientHeight);
+    SLATE.Initialize(RHIDevice.GetDevice(), GWorld, ScreenRect);
 #endif
 
     bRunning = true;
@@ -252,6 +248,9 @@ bool UEditorEngine::Startup(HINSTANCE hInstance)
     UE_LOG("=== RELEASE_STANDALONE MODE: Starting LoadSceneAndStartPIE ===");
     LoadSceneAndStartPIE("Scene/Bus.Scene");
     UE_LOG("=== RELEASE_STANDALONE MODE: LoadSceneAndStartPIE completed ===");
+
+    // PIE 시작 후 GWorld가 PIEWorld로 변경되므로 UI에 다시 설정
+    UI.SetWorld(GWorld);
 #else
     UE_LOG("=== EDITOR MODE (not standalone) ===");
 #endif
@@ -278,10 +277,12 @@ void UEditorEngine::Tick(float DeltaSeconds)
         //}
     }
 
-#ifndef _RELEASE_STANDALONE
-    // Release_StandAlone 모드에서는 EditorUI를 업데이트하지 않음
-    SLATE.Update(DeltaSeconds);
+    // UI 업데이트 (게임 UI 포함)
     UI.Update(DeltaSeconds);
+
+#ifndef _RELEASE_STANDALONE
+    // 에디터 전용 SLATE 업데이트
+    SLATE.Update(DeltaSeconds);
 #endif
 
     INPUT.Update();
@@ -293,6 +294,15 @@ void UEditorEngine::Render()
 
 #ifdef _RELEASE_STANDALONE
     // Release_StandAlone 모드: 게임 화면만 전체 화면으로 렌더링
+    static bool bLoggedRenderOnce = false;
+    if (!bLoggedRenderOnce)
+    {
+        UE_LOG("EditorEngine::Render - Release_StandAlone mode");
+        UE_LOG("  StandaloneViewport=%p, StandaloneViewportClient=%p, GWorld=%p",
+               StandaloneViewport.get(), StandaloneViewportClient.get(), GWorld);
+        bLoggedRenderOnce = true;
+    }
+
     if (StandaloneViewport && StandaloneViewportClient && GWorld)
     {
         // 뷰포트 클라이언트에 현재 월드 설정
@@ -302,8 +312,18 @@ void UEditorEngine::Render()
         // 뷰포트 렌더링 (내부적으로 ViewportClient->Draw()를 호출)
         StandaloneViewport->Render();
     }
+
+    // 게임 UI 렌더링 (에디터 UI는 제외)
+    static bool bLoggedUIRender = false;
+    if (!bLoggedUIRender)
+    {
+        UE_LOG("EditorEngine::Render - About to call UI.Render()");
+        bLoggedUIRender = true;
+    }
+    UI.Render();
+    UI.EndFrame();
 #else
-    // 에디터 모드: EditorUI 렌더링
+    // 에디터 모드: 에디터 UI + 게임 UI 렌더링
     UI.Render();
     SLATE.Render();
     UI.EndFrame();
@@ -493,6 +513,12 @@ void UEditorEngine::StartPIE()
 #endif
 
     bPIEActive = true;
+
+    // 게임 UI 초기화 (GameUIWidget 등)
+    UE_LOG("StartPIE: Initializing Game UI...");
+    UI.InitializeGameUI();
+    UI.SetInGameUIVisibility(true);
+    UE_LOG("StartPIE: Game UI initialized and set to visible");
 
     //// 슬레이트 매니저 (singleton)
     //FRect ScreenRect(0, 0, ClientWidth, ClientHeight);

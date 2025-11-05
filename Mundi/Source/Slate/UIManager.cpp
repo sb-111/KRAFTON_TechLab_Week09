@@ -145,13 +145,23 @@ void UUIManager::Update(float DeltaTime)
  */
 void UUIManager::Render()
 {
+	static bool bLoggedOnce = false;
+	if (!bLoggedOnce)
+	{
+		UE_LOG("UIManager::Render - bIsInitialized=%d, ImGuiHelper=%p, GameUIWidgetRef=%p",
+		       bIsInitialized, ImGuiHelper, GameUIWidgetRef);
+		bLoggedOnce = true;
+	}
+
 	if (!bIsInitialized)
 	{
+		UE_LOG("UIManager::Render - Not initialized, returning");
 		return;
 	}
 
 	if (!ImGuiHelper)
 	{
+		UE_LOG("UIManager::Render - ImGuiHelper is null, returning");
 		return;
 	}
 
@@ -173,6 +183,12 @@ void UUIManager::Render()
 	// 게임 UI 위젯 렌더링 (윈도우가 아닌 독립 위젯)
 	if (GameUIWidgetRef)
 	{
+		static bool bLoggedGameUI = false;
+		if (!bLoggedGameUI)
+		{
+			UE_LOG("UIManager::Render - Rendering GameUIWidget");
+			bLoggedGameUI = true;
+		}
 		GameUIWidgetRef->RenderWidget();
 	}
 

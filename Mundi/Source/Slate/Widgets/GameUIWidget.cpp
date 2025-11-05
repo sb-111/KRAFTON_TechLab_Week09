@@ -30,22 +30,36 @@ void UGameUIWidget::RenderWidget()
 	}
 
 	// 메인 Viewport의 영역 가져오기 (게임이 실행되는 뷰포트)
+	float viewportWidth, viewportHeight;
+	float viewportLeft = 0.0f, viewportTop = 0.0f;
+
 	SViewportWindow* mainViewport = USlateManager::GetInstance().GetMainViewport();
-	if (!mainViewport)
+	if (mainViewport)
 	{
-		return; // Viewport가 없으면 렌더링하지 않음
+		// 에디터 모드: Viewport 영역 사용
+		FRect viewportRect = mainViewport->GetRect();
+		viewportWidth = viewportRect.GetWidth();
+		viewportHeight = viewportRect.GetHeight();
+		viewportLeft = viewportRect.Left;
+		viewportTop = viewportRect.Top;
+	}
+	else
+	{
+		// Release_StandAlone 모드: 전체 화면 사용
+		ImGuiIO& io = ImGui::GetIO();
+		viewportWidth = io.DisplaySize.x;
+		viewportHeight = io.DisplaySize.y;
+		viewportLeft = 0.0f;
+		viewportTop = 0.0f;
 	}
 
-	FRect viewportRect = mainViewport->GetRect();
-	float viewportWidth = viewportRect.GetWidth();
-	float viewportHeight = viewportRect.GetHeight();
-
 	// Viewport 영역 내에서 상단 중앙에 UI 배치
-	// 툴바 높이를 고려하여 충분한 마진 확보 (약 60픽셀)
+	// 툴바 높이를 고려하여 충분한 마진 확보 (에디터: 60픽셀, StandAlone: 20픽셀)
 	ImVec2 windowSize = ImVec2(300, 100);
+	float topMargin = mainViewport ? 60.0f : 20.0f; // 에디터는 툴바 고려, StandAlone은 작은 마진
 	ImVec2 windowPos = ImVec2(
-		viewportRect.Left + (viewportWidth - windowSize.x) * 0.5f,
-		viewportRect.Top + 60
+		viewportLeft + (viewportWidth - windowSize.x) * 0.5f,
+		viewportTop + topMargin
 	);
 
 	ImGui::SetNextWindowPos(windowPos, ImGuiCond_Always);
