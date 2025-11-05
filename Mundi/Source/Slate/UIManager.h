@@ -152,4 +152,5 @@ private:
 	bool bIsGameStarted = false;
 
 	void HandleGameStartRequest();
+	void HandleGameExitRequest();
 };

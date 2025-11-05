@@ -32,9 +32,14 @@ public:
 	bool HasStartCallback() const { return StartCallback != nullptr; }
 	void InvokeStartCallback();
 
+	void SetExitCallback(std::function<void()> InCallback);
+	bool HasExitCallback() const { return ExitCallback != nullptr; }
+	void InvokeExitCallback();
+
 private:
 	bool bIsVisible = false;
 	std::function<void()> StartCallback;
+	std::function<void()> ExitCallback;
 	UTexture* TitleTexture = nullptr;
 
 	const ImVec2 WindowSize = ImVec2(840.0f, 480.0f);

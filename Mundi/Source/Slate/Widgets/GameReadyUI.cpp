@@ -18,6 +18,7 @@ void UGameReadyUI::Initialize()
 {
 	bIsVisible = true;
 	StartCallback = nullptr;
+	ExitCallback = nullptr;
 
 	if (!TitleTexture)
 	{
@@ -108,6 +109,13 @@ void UGameReadyUI::RenderWidget()
 
 		ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[0]);
 
+		const char* creditsText = "Minchan Kim, Myunggyo Seo, Jinhyeok Choi, Seungbin Heo";
+		ImVec2 creditsSize = ImGui::CalcTextSize(creditsText);
+		ImGui::SetCursorPos(ImVec2((WindowSize.x - creditsSize.x) * 0.5f, cursorY));
+		ImGui::TextColored(ImVec4(1.0f, 0.8f, 0.4f, 1.0f), creditsText);
+
+		cursorY += creditsSize.y + 20.0f;
+
 		const char* guideText = "제한 시간 안에 장애물을 피해 목표 지점까지 달리세요!";
 		ImVec2 guideSize = ImGui::CalcTextSize(guideText);
 		ImGui::SetCursorPos(ImVec2((WindowSize.x - guideSize.x) * 0.5f, cursorY));
@@ -115,12 +123,23 @@ void UGameReadyUI::RenderWidget()
 
 		cursorY += guideSize.y + 35.0f;
 
-		ImVec2 buttonSize(220.0f, 50.0f);
-		ImGui::SetCursorPos(ImVec2((WindowSize.x - buttonSize.x) * 0.5f, cursorY));
+		const ImVec2 buttonSize(220.0f, 50.0f);
+		const float buttonSpacing = 30.0f;
+		const float totalButtonWidth = buttonSize.x * 2.0f + buttonSpacing;
+		const float startX = (WindowSize.x - totalButtonWidth) * 0.5f;
+
+		ImGui::SetCursorPos(ImVec2(startX, cursorY));
 
 		if (ImGui::Button("Start Game", buttonSize))
 		{
 			InvokeStartCallback();
+		}
+
+		ImGui::SameLine(0.0f, buttonSpacing);
+
+		if (ImGui::Button("Exit Game", buttonSize))
+		{
+			InvokeExitCallback();
 		}
 
 		ImGui::PopFont();
@@ -138,5 +157,18 @@ void UGameReadyUI::InvokeStartCallback()
 	if (StartCallback)
 	{
 		StartCallback();
+	}
+}
+
+void UGameReadyUI::SetExitCallback(std::function<void()> InCallback)
+{
+	ExitCallback = std::move(InCallback);
+}
+
+void UGameReadyUI::InvokeExitCallback()
+{
+	if (ExitCallback)
+	{
+		ExitCallback();
 	}
 }

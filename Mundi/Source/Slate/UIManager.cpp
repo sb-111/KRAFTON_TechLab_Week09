@@ -11,6 +11,9 @@
 #include "Widgets/GameUIWidget.h"
 #include "Widgets/GameOverWidget.h"
 #include "Widgets/GameReadyUI.h"
+#ifdef _EDITOR
+#include "EditorEngine.h"
+#endif
 
 IMPLEMENT_CLASS(UUIManager)
 
@@ -438,6 +441,10 @@ void UUIManager::InitializeGameUI()
 		{
 			HandleGameStartRequest();
 		});
+		GameReadyWidgetRef->SetExitCallback([this]()
+		{
+			HandleGameExitRequest();
+		});
 	}
 }
 
@@ -721,6 +728,22 @@ void UUIManager::HandleGameStartRequest()
 	{
 		UE_LOG("UIManager: Warning: HandleGameStartRequest called without valid World reference");
 	}
+}
+
+void UUIManager::HandleGameExitRequest()
+{
+#if !defined(_RELEASE_STANDALONE) && defined(_EDITOR)
+	extern UEditorEngine GEngine;
+	if (GEngine.IsPIEActive())
+	{
+		UE_LOG("UIManager: Exit requested - ending PIE session");
+		GEngine.EndPIE();
+		return;
+	}
+#endif
+
+	UE_LOG("UIManager: Exit requested - closing application");
+	PostQuitMessage(0);
 }
 
 
