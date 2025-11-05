@@ -116,10 +116,13 @@ function UpdateScore()
 end
 
 function BeginOverlap(Other)
+    -- 속도 반전
     Velocity = Velocity * (-1.0)
 
+    -- 반전된 방향으로 충분히 밀어내서 콜리전이 겹치지 않도록 함
+    local SeparationDistance = 2.0
+    obj:SetActorLocation(obj:GetActorLocation() + Velocity:GetNormalized() * SeparationDistance)
 
-    obj:SetActorLocation(obj:GetActorLocation() + Velocity:GetNormalized())
     UI:SetAfterCollisionTime(3)
     UI:AddScore(-30)
 
