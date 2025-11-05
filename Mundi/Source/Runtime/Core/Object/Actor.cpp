@@ -264,6 +264,7 @@ void AActor::RegisterAllComponents(UWorld* InWorld)
 	if (!RootComponent)
 	{
 		RootComponent = CreateDefaultSubobject<USceneComponent>("DefaultSceneComponent");
+		RootComponent->SetNative(false);
 		RootComponent->RegisterComponent(InWorld);
 	}
 }
