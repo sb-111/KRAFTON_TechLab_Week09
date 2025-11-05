@@ -33,7 +33,7 @@ public:
     void FlushRebuild();
 
     void QueryRayClosest(const FRay& Ray, AActor*& OutActor, OUT float& OutBestT) const;
-    void QueryRayClosestStrict(const FRay& Ray, AActor*& OutActor, OUT float& OutBestT) const;
+    void QueryRayClosestStrict(const FRay& Ray, AActor*& OutActor, OUT float& OutBestT, TArray<AActor*> ExcludeList = {}) const;
     void QueryFrustum(const FFrustum& InFrustum);
     TArray<UStaticMeshComponent*> QueryIntersectedComponents(const FAABB& InBound) const;
     TArray<UStaticMeshComponent*> QueryIntersectedComponents(const FOBB& InBound) const;
