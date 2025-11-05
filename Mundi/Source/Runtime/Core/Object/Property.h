@@ -16,6 +16,7 @@ enum class EPropertyType : uint8
 	Texture,        // UTexture* 타입 (리소스 선택 UI)
 	StaticMesh,     // UStaticMesh* 타입 (리소스 선택 UI)
 	Material,		// UMaterial* 타입 (리소스 선택 UI)
+	Audio,			// FString 타입 (사운드 파일 경로 - AudioManager에서 드롭다운 선택 UI)
 	Array			// TArray 용으로 추가
 
 	// 추후 추가될 프로퍼티들은 직접 해줘야함.

@@ -2,6 +2,7 @@
 #include "EditorEngine.h"
 #include "USlateManager.h"
 #include "SelectionManager.h"
+#include "AudioComponent.h"
 #include <ObjManager.h>
 
 
@@ -362,9 +363,32 @@ void UEditorEngine::StartPIE()
     //PIEWorld->InitializeActorsForPlay();
 
     UWorld* EditorWorld = WorldContexts[0].World;
+
+    // PIE 시작 전 에디터 World의 모든 AudioComponent 정지
+    if (EditorWorld && EditorWorld->GetLevel())
+    {
+        for (AActor* Actor : EditorWorld->GetLevel()->GetActors())
+        {
+            if (Actor)
+            {
+                const TSet<UActorComponent*>& Components = Actor->GetOwnedComponents();
+                for (UActorComponent* Comp : Components)
+                {
+                    if (UAudioComponent* AudioComp = Cast<UAudioComponent>(Comp))
+                    {
+                        if (AudioComp->IsPlaying())
+                        {
+                            AudioComp->Stop(true);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     UWorld* PIEWorld = UWorld::DuplicateWorldForPIE(EditorWorld);
-    
-    
+
+
     GWorld = PIEWorld;
     SLATE.SetPIEWorld(GWorld);
 
