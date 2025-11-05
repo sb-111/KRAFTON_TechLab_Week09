@@ -260,6 +260,7 @@ void APlayerCameraManager::UpdateCameraModifiers(float DeltaTime)
 			else
 			{
 				// Disabled된 Modifier는 제거 (메모리 관리는 ObjectFactory에서)
+				ObjectFactory::DeleteObject(Modifier);
 				it = ModifierList.erase(it);
 			}
 		}
