@@ -1,20 +1,7 @@
 ﻿#pragma once
 #include "Actor.h"
-#include "CameraComponent.h"
 
 class UCameraModifier;
-
-struct FMinimalViewInfo
-{
-    FVector Location;
-    FQuat Rotation;
-    // 이번 발제에서는 뷰포트 aspect를 그대로 쓸 것 같은데 일단 추가함
-    float Aspect;
-    float ZNear;
-    float ZFar;
-    float Fov;
-    ECameraProjectionMode ProjectionMode = ECameraProjectionMode::Perspective;
-};
 
 struct FViewTarget
 {
@@ -31,20 +18,31 @@ class APlayerCameraManager : public AActor
 public:
 
     DECLARE_CLASS(APlayerCameraManager, AActor)
-
     void Tick(float DeltaTime) override;
-    void UpdateViewInfo();
+
+    void StartFadeInOut(float InFadeTime, float InTargetAlpha);
+    void StartFadeOut(float InFadeTime, FLinearColor InFadeColor);
+    void StartFadeIn(float InFadeTime);
+    bool IsFade() { return FadeTimeRemaining > 0; }
+    const FLinearColor& GetFadeColor() const { return FadeColor; }
+    float GetFadeAmount() const { return FadeAmount; }
+
     void SetViewTarget(AActor* InTargetActor, float TransitionTime = 0.0f);
     const FMinimalViewInfo& GetCameraViewInfo() { return ViewTarget.ViewInfo; }
 private:
+    // 페이드 인 아웃에 쓰일 배경색
     FLinearColor FadeColor;
+    // 현재 페이드 알파값
     float FadeAmount;
+    // 알파값 보간 위한 변수(시작, 목표 알파값 저장)
     FVector2D FadeAlpha;
+    // 페이드 in out 총 시간
     float FadeTime;
-    float FadeTimeRemaining;
+    // 페이드 in out 남은 시간
+    float FadeTimeRemaining = 0.0f;
 
     FName CameraStyle;
     FViewTarget ViewTarget;
 
-    TArray<TWeakPtr<UCameraModifier>> ModifierList;
+    TArray<UCameraModifier*> ModifierList;
 };

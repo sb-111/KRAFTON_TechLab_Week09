@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Frustum.h"
 
 // 전방 선언 (헤더 파일 의존성 최소화)
@@ -126,6 +126,9 @@ private:
 	
 	/** @brief FXAA 등 화면에서 최종 이미지 품질을 위해 적용되는 효과를 적용하는 패스입니다. */
 	void ApplyScreenEffectsPass();
+
+	/** @brief 카메라의 Fade In Out 효과를 적용하는 패스입니다 */
+	void ApplyCameraFadeInOut();
 
 	void CompositeToBackBuffer();
 
