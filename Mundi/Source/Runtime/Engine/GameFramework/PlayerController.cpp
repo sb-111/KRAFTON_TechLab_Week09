@@ -16,7 +16,8 @@ APlayerController::~APlayerController()
 {
 	if (PlayerCameraManager.IsValid())
 	{
-		PlayerCameraManager->Destroy();
+		//PlayerCameraManager->Destroy();
+		ObjectFactory::DeleteObject(PlayerCameraManager.Get());
 	}
 }
 
@@ -35,7 +36,7 @@ void APlayerController::Tick(float DeltaSecond)
 	}
 }
 
-APlayerCameraManager* APlayerController::GetPlayerCameraManager() const
+APlayerCameraManager* APlayerController::GetPlayerCameraManager()
 {
 	return PlayerCameraManager.Get();
 }
