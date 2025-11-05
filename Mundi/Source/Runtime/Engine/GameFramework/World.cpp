@@ -285,6 +285,9 @@ void UWorld::InitializeLuaState()
 			return Actor->GetComponentByClass<UPlayerComponent>();
 		},
 
+		"GetAudioComponent", [](AActor* Actor) -> UAudioComponent* {
+			return Actor->GetComponentByClass<UAudioComponent>();
+		},
 		// Lua에서 C++ 액터를 소멸시킬 수 있게 함(주의)
 		"Destroy", &AActor::Destroy,
 		// Lua에서 액터 이름을 가져올 수 있게 함(디버깅 유용)
@@ -306,7 +309,7 @@ void UWorld::InitializeLuaState()
 		sol::base_classes, sol::bases<USceneComponent>(),
 		"Play", &UAudioComponent::Play,
 		"Stop", &UAudioComponent::Stop,
-		"Pause", &UAudioComponent::Pause,
+		"Pause", sol::resolve<void(bool)>(&UAudioComponent::Pause),
 		"Resume", &UAudioComponent::Resume,
 		"SetVolume", &UAudioComponent::SetVolume,
 		"GetVolume", &UAudioComponent::GetVolume,
@@ -316,7 +319,11 @@ void UWorld::InitializeLuaState()
 		"IsLoop", &UAudioComponent::IsLoop,
 		"IsPlaying", &UAudioComponent::IsPlaying,
 		"SetAudioFile", &UAudioComponent::SetAudioFile,
-		"GetAudioFile", &UAudioComponent::GetAudioFile
+		"GetAudioFile", &UAudioComponent::GetAudioFile,
+		"GetPlaybackPosition", &UAudioComponent::GetPlaybackPosition,
+		"SetPlaybackPosition", &UAudioComponent::SetPlaybackPosition,
+		"GetDuration", &UAudioComponent::GetDuration,
+		"SeekRelative", &UAudioComponent::SeekRelative
 	);
 
 	LuaState.new_usertype<UHeightFogComponent>("UHeightFogComponent",

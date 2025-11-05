@@ -32,6 +32,62 @@ void ACarPawn::HandleSteerInput(float InValue)
 	}
 }
 
+void ACarPawn::HandleMuteInput()
+{
+	if (ScriptComponent)
+	{
+		ScriptComponent->HandleMuteInput();
+	}
+}
+
+void ACarPawn::HandlePlayPauseInput()
+{
+	if (ScriptComponent)
+	{
+		ScriptComponent->HandlePlayPauseInput();
+	}
+}
+
+void ACarPawn::HandleStopInput()
+{
+	if (ScriptComponent)
+	{
+		ScriptComponent->HandleStopInput();
+	}
+}
+
+void ACarPawn::HandleLeftArrowInput()
+{
+	if (ScriptComponent)
+	{
+		ScriptComponent->HandleLeftArrowInput();
+	}
+}
+
+void ACarPawn::HandleRightArrowInput()
+{
+	if (ScriptComponent)
+	{
+		ScriptComponent->HandleRightArrowInput();
+	}
+}
+
+void ACarPawn::HandleUpArrowInput()
+{
+	if (ScriptComponent)
+	{
+		ScriptComponent->HandleUpArrowInput();
+	}
+}
+
+void ACarPawn::HandleDownArrowInput()
+{
+	if (ScriptComponent)
+	{
+		ScriptComponent->HandleDownArrowInput();
+	}
+}
+
 void ACarPawn::BeginPlay()
 {
 	Super_t::BeginPlay();

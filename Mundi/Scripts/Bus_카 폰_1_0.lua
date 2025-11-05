@@ -41,6 +41,133 @@ end
 function OnSteerInput(InValue)
     SteerInput = InValue
 end
+
+local audioComp = nil
+local savedVolume = 100.0  -- 뮤트 해제 시 복원할 볼륨
+
+-- M키: 뮤트/뮤트 해제 토글
+function OnMuteInput()
+    if not audioComp then
+        audioComp = obj:GetAudioComponent()
+        if not audioComp then
+            print("AudioComponent not found")
+            return
+        end
+    end
+
+    local currentVolume = audioComp:GetVolume()
+    if currentVolume > 0.0 then
+        -- 뮤트: 현재 볼륨 저장하고 0으로 설정
+        savedVolume = currentVolume
+        audioComp:SetVolume(0.0)
+        print("Audio muted")
+    else
+        -- 뮤트 해제: 저장된 볼륨으로 복원
+        audioComp:SetVolume(savedVolume)
+        print("Audio unmuted (Volume: " .. savedVolume .. ")")
+    end
+end
+
+-- 스페이스바: 재생/일시정지 토글
+function OnPlayPauseInput()
+    if not audioComp then
+        audioComp = obj:GetAudioComponent()
+        if not audioComp then
+            print("AudioComponent not found")
+            return
+        end
+    end
+
+    if audioComp:IsPlaying() then
+        audioComp:Pause(true)
+        print("Audio paused")
+    else
+        -- 재생 위치가 0이면 처음부터, 아니면 이어서 재생
+        if audioComp:GetPlaybackPosition() > 0.0 then
+            audioComp:Resume()
+            print("Audio resumed")
+        else
+            audioComp:Play(false)
+            print("Audio started playing")
+        end
+    end
+end
+
+-- P키: 정지
+function OnStopInput()
+    if not audioComp then
+        audioComp = obj:GetAudioComponent()
+        if not audioComp then
+            print("AudioComponent not found")
+            return
+        end
+    end
+
+    audioComp:Stop(true)
+    print("Audio stopped")
+end
+
+-- 왼쪽 화살표: 5초 뒤로
+function OnLeftArrowInput()
+    if not audioComp then
+        audioComp = obj:GetAudioComponent()
+        if not audioComp then
+            return
+        end
+    end
+
+    audioComp:SeekRelative(-5.0)
+    local newPos = audioComp:GetPlaybackPosition()
+    print(string.format("Seeked backward to %.2f seconds", newPos))
+end
+
+-- 오른쪽 화살표: 5초 앞으로
+function OnRightArrowInput()
+    if not audioComp then
+        audioComp = obj:GetAudioComponent()
+        if not audioComp then
+            return
+        end
+    end
+
+    audioComp:SeekRelative(5.0)
+    local newPos = audioComp:GetPlaybackPosition()
+    print(string.format("Seeked forward to %.2f seconds", newPos))
+end
+
+-- 위쪽 화살표: 볼륨 증가
+function OnUpArrowInput()
+    if not audioComp then
+        audioComp = obj:GetAudioComponent()
+        if not audioComp then
+            return
+        end
+    end
+
+    local currentVolume = audioComp:GetVolume()
+    local newVolume = math.min(currentVolume + 10.0, 100.0)
+    audioComp:SetVolume(newVolume)
+    savedVolume = newVolume  -- 뮤트 해제 시 복원할 볼륨도 업데이트
+    print(string.format("Volume: %.0f", newVolume))
+end
+
+-- 아래쪽 화살표: 볼륨 감소
+function OnDownArrowInput()
+    if not audioComp then
+        audioComp = obj:GetAudioComponent()
+        if not audioComp then
+            return
+        end
+    end
+
+    local currentVolume = audioComp:GetVolume()
+    local newVolume = math.max(currentVolume - 10.0, 0.0)
+    audioComp:SetVolume(newVolume)
+    if newVolume > 0.0 then
+        savedVolume = newVolume  -- 뮤트 해제 시 복원할 볼륨도 업데이트
+    end
+    print(string.format("Volume: %.0f", newVolume))
+end
 -- 코루틴 에러때문에 boolean으로 처리
 function UpdateScore()
     local CurrentLocation = obj:GetActorLocation().x
@@ -134,6 +261,13 @@ function BeginPlay()
     ShapeComponent:RegisterBeginOverlapFunction(BeginOverlap)
     ShapeComponent:RegisterEndOverlapFunction(EndOverlap)
 
+    -- AudioComponent 확인
+    audioComp = obj:GetAudioComponent()
+    if audioComp then
+        print("[Audio] AudioComponent found! File: " .. tostring(audioComp:GetAudioFile()))
+    else
+        print("[Audio] WARNING: AudioComponent NOT FOUND! Please add AudioComponent to this actor.")
+    end
 end
 
 function SetCameraPos()

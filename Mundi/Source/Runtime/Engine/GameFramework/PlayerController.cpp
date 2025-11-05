@@ -83,4 +83,36 @@ void APlayerController::ProcessInput()
 	{
 		Pawn->HandleSteerInput(0.0f);
 	}
+
+	// 오디오 제어 키
+	if (InputManager.IsKeyPressed('M'))
+	{
+		Pawn->HandleMuteInput();
+	}
+	if (InputManager.IsKeyPressed(VK_SPACE))
+	{
+		Pawn->HandlePlayPauseInput();
+	}
+	if (InputManager.IsKeyPressed('P'))
+	{
+		Pawn->HandleStopInput();
+	}
+
+	// 화살표 키 - 오디오 제어
+	if (InputManager.IsKeyPressed(VK_LEFT))
+	{
+		Pawn->HandleLeftArrowInput();
+	}
+	if (InputManager.IsKeyPressed(VK_RIGHT))
+	{
+		Pawn->HandleRightArrowInput();
+	}
+	if (InputManager.IsKeyPressed(VK_UP))
+	{
+		Pawn->HandleUpArrowInput();
+	}
+	if (InputManager.IsKeyPressed(VK_DOWN))
+	{
+		Pawn->HandleDownArrowInput();
+	}
 }

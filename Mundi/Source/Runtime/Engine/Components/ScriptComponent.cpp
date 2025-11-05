@@ -116,6 +116,62 @@ void UScriptComponent::HandleSteerInput(float InValue)
 	}
 }
 
+void UScriptComponent::HandleMuteInput()
+{
+	if (OnMuteInput.valid())
+	{
+		OnMuteInput();
+	}
+}
+
+void UScriptComponent::HandlePlayPauseInput()
+{
+	if (OnPlayPauseInput.valid())
+	{
+		OnPlayPauseInput();
+	}
+}
+
+void UScriptComponent::HandleStopInput()
+{
+	if (OnStopInput.valid())
+	{
+		OnStopInput();
+	}
+}
+
+void UScriptComponent::HandleLeftArrowInput()
+{
+	if (OnLeftArrowInput.valid())
+	{
+		OnLeftArrowInput();
+	}
+}
+
+void UScriptComponent::HandleRightArrowInput()
+{
+	if (OnRightArrowInput.valid())
+	{
+		OnRightArrowInput();
+	}
+}
+
+void UScriptComponent::HandleUpArrowInput()
+{
+	if (OnUpArrowInput.valid())
+	{
+		OnUpArrowInput();
+	}
+}
+
+void UScriptComponent::HandleDownArrowInput()
+{
+	if (OnDownArrowInput.valid())
+	{
+		OnDownArrowInput();
+	}
+}
+
 void UScriptComponent::InitializeEnvironment()
 {
 	if (bEnvironmentInitialized) return;
@@ -309,6 +365,13 @@ void UScriptComponent::LoadScript(const FString& FilePath)
 
 	OnThrustInput = Env["OnThrustInput"];
 	OnSteerInput = Env["OnSteerInput"];
+	OnMuteInput = Env["OnMuteInput"];
+	OnPlayPauseInput = Env["OnPlayPauseInput"];
+	OnStopInput = Env["OnStopInput"];
+	OnLeftArrowInput = Env["OnLeftArrowInput"];
+	OnRightArrowInput = Env["OnRightArrowInput"];
+	OnUpArrowInput = Env["OnUpArrowInput"];
+	OnDownArrowInput = Env["OnDownArrowInput"];
 }
 
 void UScriptComponent::ReloadScript()
