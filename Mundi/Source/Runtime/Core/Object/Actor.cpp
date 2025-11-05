@@ -187,11 +187,6 @@ void AActor::AddOwnedComponent(UActorComponent* Component)
 	if (USceneComponent* SC = Cast<USceneComponent>(Component))
 	{
 		SceneComponents.AddUnique(SC);
-		// 루트가 없으면 자동 루트 지정
-		if (!RootComponent)
-		{
-			SetRootComponent(SC);
-		}
 	}
 
 	if (UShapeComponent* SHC = Cast<UShapeComponent>(Component))
