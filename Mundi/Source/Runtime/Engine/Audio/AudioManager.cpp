@@ -1,4 +1,4 @@
-// Copyright Mundi Game Engine. All Rights Reserved.
+﻿// Copyright Mundi Game Engine. All Rights Reserved.
 
 #include "pch.h"
 #include "AudioManager.h"
@@ -60,35 +60,32 @@ void UAudioManager::Initialize()
 	if (FAILED(hr))
 	{
 		UE_LOG("Failed to initialize COM: 0x%08X", hr);
-		UE_LOG("AudioManager will continue without audio playback support.");
-	}
-	else
-	{
-		// XAudio2 생성
-		hr = XAudio2Create(&XAudio2, 0, XAUDIO2_DEFAULT_PROCESSOR);
-		if (FAILED(hr))
-		{
-			UE_LOG("Failed to create XAudio2: 0x%08X", hr);
-			UE_LOG("AudioManager will continue without audio playback support.");
-		}
-		else
-		{
-			// MasteringVoice 생성
-			hr = XAudio2->CreateMasteringVoice(&MasteringVoice);
-			if (FAILED(hr))
-			{
-				UE_LOG("Failed to create MasteringVoice (no audio device?): 0x%08X", hr);
-				UE_LOG("AudioManager will continue without audio playback support.");
-				// MasteringVoice 생성 실패해도 계속 진행 (사운드 장치 없어도 파일 로드는 가능)
-			}
-			else
-			{
-				UE_LOG("XAudio2 initialized successfully.");
-			}
-		}
+		return;
 	}
 
-	// 사운드 장치 없어도 파일은 로드
+	// XAudio2 생성
+	hr = XAudio2Create(&XAudio2, 0, XAUDIO2_DEFAULT_PROCESSOR);
+	if (FAILED(hr))
+	{
+		UE_LOG("Failed to create XAudio2: 0x%08X", hr);
+		CoUninitialize();
+		return;
+	}
+
+	// MasteringVoice 생성
+	hr = XAudio2->CreateMasteringVoice(&MasteringVoice);
+	if (FAILED(hr))
+	{
+		UE_LOG("Failed to create MasteringVoice: 0x%08X", hr);
+		XAudio2->Release();
+		XAudio2 = nullptr;
+		CoUninitialize();
+		return;
+	}
+
+	UE_LOG("XAudio2 initialized successfully.");
+
+
 	LoadAllSounds();
 
 	bIsInitialized = true;
@@ -131,27 +128,31 @@ void UAudioManager::Shutdown()
 
 void UAudioManager::LoadAllSounds()
 {
+	if (!XAudio2)
+	{
+		UE_LOG("XAudio2 not initialized. Cannot load sounds.");
+		return;
+	}
+
+
 	// 기존 데이터 클리어
 	WavDataMap.clear();
 	SoundFilePaths.Empty();
 
-	// 실행 파일의 경로를 기준으로 Data/Sound 폴더 경로 구성
-	wchar_t ExePath[MAX_PATH];
-	GetModuleFileNameW(nullptr, ExePath, MAX_PATH);
-	std::filesystem::path ExeDir = std::filesystem::path(ExePath).parent_path();
-	std::filesystem::path SoundFolderPath = ExeDir / L"Data" / L"Sound";
+	// Data/Sound 폴더 경로
+	FWideString SoundFolderPath = L"Data/Sound";
 
 	// 폴더가 존재하는지 확인
 	if (!std::filesystem::exists(SoundFolderPath))
 	{
-		UE_LOG("Sound folder not found: %ws", SoundFolderPath.c_str());
-		UE_LOG("Executable path: %ws", ExeDir.c_str());
+		UE_LOG("Sound folder not found: Data/Sound");
 		return;
 	}
 
 	// 재귀적으로 .wav 파일 검색
 	TArray<FWideString> WavFiles;
-	ScanFolderRecursive(SoundFolderPath.wstring(), WavFiles);
+	ScanFolderRecursive(SoundFolderPath, WavFiles);
+
 
 	// 각 .wav 파일 로드
 	for (const FWideString& FilePath : WavFiles)
